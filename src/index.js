@@ -1,2 +1,1 @@
-const hello = (hey) => hey
-
+import './logic/ships'
