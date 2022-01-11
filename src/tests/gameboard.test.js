@@ -18,8 +18,13 @@ describe('gameboard works correctly', () => {
 
   test('virtual board changes after placing ship', () => {
     const gameboard = Gameboard()
-    const ship = Ship(2, 1, 1)
+    const ship = Ship(2, 0, 0)
+    const expected = new Array(100).fill(1, 0, 2).fill(0, 2)
+    console.log(expected)
+    console.log(gameboard.board)
     gameboard.place(ship).horizontally()
-    expect().toEqual()
+    expect(gameboard.board).toEqual(
+      expected
+    )
   })
 })

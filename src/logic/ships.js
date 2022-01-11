@@ -16,8 +16,8 @@ const Ship = (size, x, y) => {
   let tailCoords
 
   return {
-    get size() { return size },
-    get type() { return type },
+    get size () { return size },
+    get type () { return type },
     get headCoords () { return headCoords },
     get tailCoords () { return tailCoords },
     set tailCoords (val) { tailCoords = val },
