@@ -1,7 +1,6 @@
 import { Ship } from '../logic/ships'
 
 describe('ship factory is working correctly', () => {
-
   test('correctly defines type of a ship based on length', () => {
     const ship = Ship(2)
     expect(ship.type).toBe('Patrol boat')
@@ -15,11 +14,9 @@ describe('ship factory is working correctly', () => {
   test("can't create ships with improper size", () => {
     expect(() => Ship(6)).toThrow('Improper ship size')
   })
-
 })
 
 describe('ship methods are working correctly', () => {
-
   test('hit() changes segment value from 1 to 0', () => {
     const ship = Ship(2)
     ship.hit(0)
@@ -45,5 +42,4 @@ describe('ship methods are working correctly', () => {
     ship.hit(1)
     expect(ship.isSunk()).toBe(true)
   })
-
 })

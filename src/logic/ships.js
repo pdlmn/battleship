@@ -7,19 +7,23 @@ const types = {
   5: 'Carrier'
 }
 
-const isSunk = (segments) => segments
-
-const Ship = (size) => {
+const Ship = (size, x, y) => {
   const type = types[String(size)]
   if (type === undefined) throw new Error('Improper ship size')
 
   const segments = new Array(size).fill(1)
+  const headCoords = { x, y }
+  let tailCoords
 
   return {
-    type,
-    segments,
-    hit(segment) { segments[segment] = 0 },
-    isSunk() { return !(H.areArrValuesTruthy(segments)) },
+    get size() { return size },
+    get type() { return type },
+    get headCoords () { return headCoords },
+    get tailCoords () { return tailCoords },
+    set tailCoords (val) { tailCoords = val },
+    get segments () { return segments },
+    hit (segment) { segments[segment] = 0 },
+    isSunk () { return !(H.hasTruthyValues(segments)) }
   }
 }
 
