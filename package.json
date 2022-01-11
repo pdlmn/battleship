@@ -5,7 +5,7 @@
   "author": "pdlmn",
   "license": "MIT",
   "scripts": {
-    "test": "jest tests/ --verbose",
+    "test": "jest --verbose",
     "start": "webpack serve",
     "watch": "webpack --watch",
     "build": "webpack",
