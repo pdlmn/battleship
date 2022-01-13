@@ -1,20 +1,21 @@
 import * as H from '../utils/func_helpers'
 
 const Gameboard = () => {
-  let board = new Array(100).fill(0)
+  let board = Array(10).fill(Array(10).fill('w'))
 
   const place = (ship) => {
-    const { x, y } = ship.headCoords
+    const { x: headX, y: headY } = ship.headCoords
     return {
       horizontally () {
-        const fillHorizontally = H.pipe(
-          H.replaceAt(0, 1),
-
-        )
-        ship.tailCoords = { x, y: y + ship.size }
-        for (let i = y - 1; i < ship.tailCoords.y - 1; ++i) {
-          board[i] = 1
-        }
+        const fillHorizontally = () => {}
+        console.log(ship.headCoords)
+        console.log(headX, headY)
+        ship.tailCoords = { x: headX, y: headY + ship.size }
+        console.log(ship.tailCoords)
+        const { x: tailX, y: tailY } = ship.tailCoords
+        console.log(tailY)
+        console.log(tailX)
+        board[headX - 1] = H.replaceEveryNth(1, headY-1, tailY-1, 's', board[headX - 1])
       },
 
       vertically () {
@@ -22,7 +23,8 @@ const Gameboard = () => {
           H.replaceAt(0, 1),
           H.replaceEveryNth(11, 1, (y * 10 + 1))
         )
-        ship.tailCoords = { x: x + ship.size, y }
+        ship.tailCoords = { x: headX + ship.size, y: headY }
+        const { tailX, tailY } = ship.tailCoords
         board = fillVertically(board)
       }
     }
