@@ -11,7 +11,7 @@ const printBoard = (board) => {
       console.log(...column)
     }
   }
-} 
+}
 
 describe('gameboard works correctly', () => {
   test('gameboard correctly places ships horizontally (1)', () => {

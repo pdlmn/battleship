@@ -11,29 +11,26 @@ const createGameBoard = () => {
   return board
 }
 
-const decrement = H.map((n) => n - 1)
-
 const Gameboard = () => {
   let board = createGameBoard()
 
   const place = (ship) => {
-    const { x: headX, y: headY } = ship.headCoords
+    const { x: headX, y: headY } = H.decrement(ship.headCoords)
     return {
       horizontally () {
-        ship.tailCoords = { x: headX, y: headY + (ship.size - 1) }
+        ship.tailCoords = { x: headX + 1, y: headY + (ship.size) }
         const { y: tailY } = ship.tailCoords
-        const fillHorizontally = H.replaceEveryNth(1, headY - 1, tailY, 's')
-        board[headX - 1] = fillHorizontally(board[headX - 1])
+        const fillHorizontally = H.replaceEveryNth(1, headY, tailY, 's')
+        board[headX] = fillHorizontally(board[headX])
       },
 
       vertically () {
-        ship.tailCoords = { x: headX + (ship.size - 1), y: headY }
+        ship.tailCoords = { x: headX + (ship.size), y: headY + 1 }
         const { x: tailX } = ship.tailCoords
-        const placeShipSegment = H.replaceAt(tailX - 1, 's')
         const fillVertically = (board) => {
           const result = [...board]
-          for (let i = headX - 1; i < tailX; i++) {
-            result[i][headY - 1] = 's'
+          for (let i = headX; i < tailX; i++) {
+            result[i][headY] = 's'
           }
           return result
         }

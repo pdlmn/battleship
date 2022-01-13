@@ -1,4 +1,4 @@
-import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry } from '../utils/func_helpers'
+import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement } from '../utils/func_helpers'
 
 describe('func helpers work properly', () => {
   test('hasTruthyValues correctly determines truthiness of values in an array (1)', () => {
@@ -72,5 +72,13 @@ describe('func helpers work properly', () => {
     const func = (a, b) => a + b
     const curriedFunc = curry(func)
     expect(curriedFunc(1, 2)).toBe(3)
+  })
+
+  test('decrement correctly subracts from an array items', () => {
+    expect(decrement([1, 2, 3])).toEqual([0, 1, 2])
+  })
+
+  test('decrement correctly subracts from an object properties', () => {
+    expect(decrement({a: 1, b: 2, c: 3})).toEqual({a: 0, b: 1, c: 2})
   })
 })

@@ -48,4 +48,6 @@ const map = curry((fn, functor) => {
 const pipe = (...functions) =>
   (value) => functions.reduce((acc, fn) => fn(acc), value)
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry }
+const decrement = map((n) => n - 1)
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement }
