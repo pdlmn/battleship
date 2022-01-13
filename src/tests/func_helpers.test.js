@@ -46,7 +46,7 @@ describe('func helpers work properly', () => {
 
   test('map correctly applies function to object properties', () => {
     const mapAdd = map((a) => a + 2)
-    expect(mapAdd({a: 1, b: 2, c: 3})).toEqual({a: 3, b: 4, c: 5})
+    expect(mapAdd({ a: 1, b: 2, c: 3 })).toEqual({ a: 3, b: 4, c: 5 })
   })
 
   test('pipe joins different functions in a correct order', () => {

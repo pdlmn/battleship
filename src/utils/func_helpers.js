@@ -1,5 +1,5 @@
 const curry = (fn) => {
-  return function curried(...args) {
+  return function curried (...args) {
     if (fn.length !== args.length) {
       return curried.bind(null, ...args)
     }
@@ -28,19 +28,24 @@ const replaceAt = curry((index, value, arr) => {
 })
 
 const map = curry((fn, functor) => {
+  let result
   switch (Object.prototype.toString.call(functor)) {
     case '[object Array]':
-      return functor.map(fn)
+      result = []
+      for (const item of functor) {
+        result.push(fn(item))
+      }
+      return result
     case '[object Object]':
-      let result = {}
-      for (let prop of Object.keys(functor)) {
+      result = {}
+      for (const prop of Object.keys(functor)) {
         result[prop] = fn(functor[prop])
       }
       return result
   }
 })
 
-const pipe = (...functions) => 
+const pipe = (...functions) =>
   (value) => functions.reduce((acc, fn) => fn(acc), value)
 
 export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry }
