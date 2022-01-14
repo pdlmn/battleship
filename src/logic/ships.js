@@ -1,17 +1,27 @@
 import * as H from '../utils/func_helpers'
 
-const types = {
+const _types = {
   2: 'Patrol boat',
   3: 'Destroyer',
   4: 'Battleship',
   5: 'Carrier'
 }
 
+const _createShipSegments = (size) => {
+  const segments = []
+  let i = 0;
+  while (i < size) {
+    segments[i] = 1
+    i++
+  }
+  return segments
+}
+
 const Ship = (size, x, y) => {
-  const type = types[String(size)]
+  const type = _types[size]
   if (type === undefined) throw new Error('Improper ship size')
 
-  const segments = new Array(size).fill(1)
+  const segments = _createShipSegments(size)
   const headCoords = { x, y }
   let tailCoords
 
