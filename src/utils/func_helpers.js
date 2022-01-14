@@ -50,4 +50,14 @@ const pipe = (...functions) =>
 
 const decrement = map((n) => n - 1)
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement }
+const repeat = curry((num, value) => {
+  const result = []
+  let i = 0
+  while (i < num) {
+    result[i] = value
+    i++
+  }
+  return result
+})
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, repeat }

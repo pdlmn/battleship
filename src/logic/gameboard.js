@@ -29,6 +29,7 @@ const _fillColumn = (headX, tailX, headY, board) => {
 
 
 const Gameboard = () => {
+  const ships = []
   let board = _createGameBoard()
 
   const place = (ship) => {

@@ -1,4 +1,4 @@
-import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement } from '../utils/func_helpers'
+import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, repeat } from '../utils/func_helpers'
 
 describe('func helpers work properly', () => {
   test('hasTruthyValues correctly determines truthiness of values in an array (1)', () => {
@@ -80,5 +80,9 @@ describe('func helpers work properly', () => {
 
   test('decrement correctly subracts from an object properties', () => {
     expect(decrement({a: 1, b: 2, c: 3})).toEqual({a: 0, b: 1, c: 2})
+  })
+
+  test('repeat correctly creates an array of repeated values', () => {
+    expect(repeat(3, 'heh')).toEqual(['heh', 'heh', 'heh'])
   })
 })

@@ -7,21 +7,11 @@ const _types = {
   5: 'Carrier'
 }
 
-const _createShipSegments = (size) => {
-  const segments = []
-  let i = 0;
-  while (i < size) {
-    segments[i] = 1
-    i++
-  }
-  return segments
-}
-
 const Ship = (size, x, y) => {
   const type = _types[size]
   if (type === undefined) throw new Error('Improper ship size')
 
-  const segments = _createShipSegments(size)
+  const segments = H.repeat(size, 1)
   const headCoords = { x, y }
   let tailCoords
 
