@@ -1,5 +1,5 @@
 import * as H from '../utils/func_helpers'
-import { Ship } from './ships'
+import { Ship } from './ship'
 
 const _createGameBoard = () => 
   H.repeat(() => H.repeat(() => 'w', 10), 10)

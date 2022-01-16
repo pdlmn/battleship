@@ -1,4 +1,4 @@
-import { Ship } from '../logic/ships'
+import { Ship } from '../logic/ship'
 
 describe('ship factory is working correctly', () => {
   test('correctly defines type of a ship based on length', () => {

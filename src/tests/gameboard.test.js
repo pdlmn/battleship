@@ -1,4 +1,3 @@
-import { Ship } from '../logic/ships'
 import { Gameboard } from '../logic/gameboard'
 import * as H from '../utils/func_helpers'
 
