@@ -1,15 +1,7 @@
 import * as H from '../utils/func_helpers'
 
-const _createGameBoard = () => {
-  const board = []
-  for (let i = 0; i < 10; i++) {
-    board[i] = []
-    for (let j = 0; j < 10; j++) {
-      board[i][j] = 'w'
-    }
-  }
-  return board
-}
+const _createGameBoard = () => 
+  H.repeat(() => H.repeat(() => 'w', 10), 10)
 
 const _fillRow = (headX, headY, tailY, board) => {
   const result = [...board]
@@ -26,7 +18,6 @@ const _fillColumn = (headX, tailX, headY, board) => {
   }
   return result
 }
-
 
 const Gameboard = () => {
   const ships = []
@@ -58,7 +49,8 @@ const Gameboard = () => {
 
   return {
     get board () { return board },
-    place
+    place,
+    recieveAttack
   }
 }
 

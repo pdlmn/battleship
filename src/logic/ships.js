@@ -11,7 +11,7 @@ const Ship = (size, x, y) => {
   const type = _types[size]
   if (type === undefined) throw new Error('Improper ship size')
 
-  const segments = H.repeat(size, 1)
+  const segments = H.repeat(() => 1, size)
   const headCoords = { x, y }
   let tailCoords
 

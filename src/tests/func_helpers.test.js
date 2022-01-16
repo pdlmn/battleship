@@ -83,6 +83,6 @@ describe('func helpers work properly', () => {
   })
 
   test('repeat correctly creates an array of repeated values', () => {
-    expect(repeat(3, 'heh')).toEqual(['heh', 'heh', 'heh'])
+    expect(repeat(() => 'heh', 3)).toEqual(['heh', 'heh', 'heh'])
   })
 })

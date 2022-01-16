@@ -50,11 +50,11 @@ const pipe = (...functions) =>
 
 const decrement = map((n) => n - 1)
 
-const repeat = curry((num, value) => {
+const repeat = curry((fn, num) => {
   const result = []
   let i = 0
   while (i < num) {
-    result[i] = value
+    result[i] = fn(i)
     i++
   }
   return result

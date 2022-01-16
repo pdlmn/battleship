@@ -1,9 +1,9 @@
 import { Ship } from '../logic/ships'
 import { Gameboard } from '../logic/gameboard'
+import * as H from '../utils/func_helpers'
 
 const createPseudoBoard = () =>
-  Array.from({ length: 10 }, () =>
-    Array.from({ length: 10 }, () => 'w'))
+  H.repeat(() => H.repeat(() => 'w', 10), 10)
 
 describe('gameboard methods work correctly', () => {
   test('horizontally correctly places ships (1)', () => {
@@ -41,6 +41,8 @@ describe('gameboard methods work correctly', () => {
     expected[0][0] = 's'
     expected[0][1] = 's'
     gameboard.place(ship).horizontally()
+    console.table(expected)
+    console.table(gameboard.board)
     expect(gameboard.board).toEqual(expected)
   })
 
@@ -79,6 +81,8 @@ describe('gameboard methods work correctly', () => {
   test('receiveAttack correctly determines whether ship was hit or not (1)', () => {
     const gameboard = Gameboard()
     const ship = Ship(2, 1, 1)
-    const expected = createPseudoBoard()
+    gameboard.place(ship).horizontally()
+    gameboard.recieveAttack(1, 1)
+    expect(ship)
   })
 })
