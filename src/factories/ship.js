@@ -1,5 +1,3 @@
-import * as H from '../utils/func_helpers'
-
 const _types = {
   2: 'Patrol boat',
   3: 'Destroyer',

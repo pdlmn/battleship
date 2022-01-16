@@ -1,8 +1,8 @@
-import * as H from '../utils/func_helpers'
+import { repeat, find } from '../utils/func_helpers'
 import { Ship } from './ship'
 
-const _createGameBoard = () => 
-  H.repeat(() => H.repeat(() => 'w', 10), 10)
+const _createGameBoard = () =>
+  repeat(() => repeat(() => 'w', 10), 10)
 
 const _fillRow = (headX, headY, tailY, board) => {
   const result = [...board]
@@ -25,10 +25,10 @@ const Gameboard = () => {
   const missed = []
   let board = _createGameBoard()
 
-  const _findHitShip = (x, y) =>
-    fleet.find((ship) => 
-      ship.segments.find((segment) =>
-        segment.x === x && segment.y === y))
+  const _findHitShip = (x, y, fleet) => 
+    find((ship) => find((segment) =>
+      segment.x === x && segment.y === y, ship.segments))
+  (fleet)
 
   const place = (size, headX, headY) => {
     return {
@@ -49,16 +49,17 @@ const Gameboard = () => {
   }
 
   const recieveAttack = (x, y) => {
-    const hitShip = _findHitShip(x, y)
+    const hitShip = _findHitShip(x, y, fleet)
     if (!hitShip) {
-      missed.push({x, y})
-      return 
+      missed.push({ x, y })
+      return false
     }
     const hitSegment = hitShip.segments.findIndex(segment => segment.x === x && segment.y === y)
     hitShip.hit(hitSegment)
+    return true
   }
 
-  const isFleetSunk = () => 
+  const isFleetSunk = () =>
     fleet.every((ship) => ship.isSunk())
 
   return {

@@ -79,7 +79,7 @@ describe('func helpers work properly', () => {
   })
 
   test('decrement correctly subracts from an object properties', () => {
-    expect(decrement({a: 1, b: 2, c: 3})).toEqual({a: 0, b: 1, c: 2})
+    expect(decrement({ a: 1, b: 2, c: 3 })).toEqual({ a: 0, b: 1, c: 2 })
   })
 
   test('repeat correctly creates an array of repeated values', () => {
