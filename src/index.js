@@ -1,1 +1,1 @@
-import './logic/ships'
+import './factories/ship'
