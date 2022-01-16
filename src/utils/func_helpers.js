@@ -14,8 +14,8 @@ const hasTruthyValues = (arr) => arr.some(checkTruthiness)
 const replaceEveryNth = curry((nth, start, until, value, arr) => {
   const result = [...arr]
   const s = (typeof start === 'number') ? start : nth - 1
-  const l = until || arr.length
-  for (let i = s; i < l; i += nth) {
+  const len = until || arr.length
+  for (let i = s; i < len; i += nth) {
     result[i] = value
   }
   return result
@@ -60,4 +60,15 @@ const repeat = curry((fn, num) => {
   return result
 })
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, repeat }
+const find = curry((fn, arr) => {
+  const len = arr.length
+  let i = 0
+  while (i < len) {
+    if (fn(arr[i])) {
+      return arr[i]
+    }
+    i++
+  }
+})
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, repeat, find }

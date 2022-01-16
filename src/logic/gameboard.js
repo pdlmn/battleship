@@ -6,26 +6,31 @@ const _createGameBoard = () =>
 
 const _fillRow = (headX, headY, tailY, board) => {
   const result = [...board]
-  for (let i = headY; i < tailY; i++) {
-    result[headX][i] = 's'
+  for (let i = headY - 1; i < tailY - 1; i++) {
+    result[headX - 1][i] = 's'
   }
   return result
 }
 
 const _fillColumn = (headX, tailX, headY, board) => {
   const result = [...board]
-  for (let i = headX; i < tailX; i++) {
-    result[i][headY] = 's'
+  for (let i = headX - 1; i < tailX - 1; i++) {
+    result[i][headY - 1] = 's'
   }
   return result
 }
 
 const Gameboard = () => {
   const fleet = []
+  const missed = []
   let board = _createGameBoard()
 
+  const _findHitShip = (x, y) =>
+    fleet.find((ship) => 
+      ship.segments.find((segment) =>
+        segment.x === x && segment.y === y))
+
   const place = (size, headX, headY) => {
-    // decrement so that coords would match array indexes
     return {
       horizontally () {
         const tailY = headY + size
@@ -35,24 +40,34 @@ const Gameboard = () => {
       },
 
       vertically () {
-        ship.tailCoords = { x: (headX + ship.size - 1), y: headY }
-        const { x: tailX } = ship.tailCoords
+        const tailX = headX + size
+        const ship = Ship(size, headX, headY, 'vertically')
+        fleet.push(ship)
         board = _fillColumn(headX, tailX, headY, board)
       }
     }
   }
 
   const recieveAttack = (x, y) => {
-    // decrement so that coords would match array indexes
-    const [dx, dy] = H.decrement([x, y])
-    
+    const hitShip = _findHitShip(x, y)
+    if (!hitShip) {
+      missed.push({x, y})
+      return 
+    }
+    const hitSegment = hitShip.segments.findIndex(segment => segment.x === x && segment.y === y)
+    hitShip.hit(hitSegment)
   }
+
+  const isFleetSunk = () => 
+    fleet.every((ship) => ship.isSunk())
 
   return {
     get board () { return board },
     get fleet () { return fleet },
+    get missed () { return missed },
     place,
-    recieveAttack
+    recieveAttack,
+    isFleetSunk
   }
 }
 
