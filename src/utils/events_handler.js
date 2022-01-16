@@ -1,24 +1,22 @@
-export const eventsHandler = (() => {
-  let events = {};
+export const eventsHander = (() => {
+  let events = {}
 
   return {
-    on(eventName, fn) {
-      events[eventName] = events[eventName] || [];
-      events[eventName].push(fn);
+    on (eventName, fn) {
+      events[eventName] = events[eventName] || []
+      events[eventName].push(fn)
     },
 
-    off(eventName, removedFn) {
+    off (eventName, removedFn) {
       if (events[eventName]) {
-        events[eventName] = events[eventName].filter((fn) => fn !== removedFn);
+        events[eventName] = events[eventName].filter((fn) => fn !== removedFn)
       }
     },
 
-    trigger(eventName, data) {
+    trigger (eventName, data) {
       if (events[eventName]) {
-        events[eventName].forEach((fn) => {
-          fn(data);
-        });
+        events[eventName].forEach((fn) => fn(data))
       }
-    },
-  };
+    }
+  }
 })();
