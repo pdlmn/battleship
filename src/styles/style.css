@@ -1,0 +1,43 @@
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+main {
+  margin-bottom: auto;
+}
+
+.boards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3vw;
+}
+
+.board {
+  height: 500px;
+  width: 500px;
+  background: yellow;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.cell {
+  height: 50px;
+  width: 50px;
+  background: rgb(0, 80, 250);
+}
+
+.cell:hover {
+  background: rgb(0, 80, 200);
+}
+
+.fog-of-war {
+  background: rgb(100, 100, 100);
+}
+
+.fog-of-war:hover {
+  background: rgb(120, 120, 120);
+}
