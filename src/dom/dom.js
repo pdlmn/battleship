@@ -6,7 +6,7 @@ const createCell = (isHidden) => {
   cell.classList.add('cell')
   if (isHidden) cell.classList.add('fog-of-war')
   return cell
-} 
+}
 
 const renderBoard = (board, isHidden) => {
   for (let i = 0; i < 10; i++) {

@@ -1,5 +1,5 @@
 export const eventsHander = (() => {
-  let events = {}
+  const events = {}
 
   return {
     on (eventName, fn) {
@@ -19,4 +19,4 @@ export const eventsHander = (() => {
       }
     }
   }
-})();
+})()

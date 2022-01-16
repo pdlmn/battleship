@@ -25,10 +25,10 @@ const Gameboard = () => {
   const missed = []
   let board = _createGameBoard()
 
-  const _findHitShip = (x, y, fleet) => 
+  const _findHitShip = (x, y, fleet) =>
     find((ship) => find((segment) =>
       segment.x === x && segment.y === y, ship.segments))
-  (fleet)
+    (fleet)
 
   const place = (size, headX, headY) => {
     return {

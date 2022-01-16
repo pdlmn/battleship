@@ -13,7 +13,7 @@ const Player = (name, isFirst) => {
   return {
     get name () { return name },
     get turn () { return turn },
-    set turn(val) { turn = val },
+    set turn (val) { turn = val },
     attack
   }
 }
