@@ -1,4 +1,4 @@
-import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, repeat, find } from '../utils/func_helpers'
+import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, repeat, find, findIndex } from '../utils/func_helpers'
 
 describe('func helpers work properly', () => {
   test('hasTruthyValues correctly determines truthiness of values in an array (1)', () => {
@@ -88,5 +88,9 @@ describe('func helpers work properly', () => {
 
   test('find returns correct item from an array', () => {
     expect(find((n) => n % 2 === 0, [1, 5, 9, 10])).toBe(10)
+  })
+
+  test('findIndex returns correct index of an item from an array', () => {
+    expect(findIndex((n) => n % 2 === 0, [1, 5, 9, 10])).toBe(3)
   })
 })

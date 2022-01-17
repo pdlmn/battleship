@@ -71,4 +71,15 @@ const find = curry((fn, arr) => {
   }
 })
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, repeat, find }
+const findIndex = curry((fn, arr) => {
+  const len = arr.length
+  let i = 0
+  while (i < len) {
+    if (fn(arr[i])) {
+      return i
+    }
+    i++
+  }
+})
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, repeat, find, findIndex }
