@@ -80,25 +80,17 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.place(3, 9, 7, 'vertically')).toBe('Ship is too big')
   })
 
-  test.todo("vertically() doesn't place ships in an invalid position (1)", /*() => {
+  test("place() doesn't place ships if adjacent to any ship (1)", () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
-    expected[6][6] = 's'
-    expected[7][6] = 's'
-    expected[8][6] = 's'
-    gameboard.place(3, 7, 7).vertically()
-    expect(gameboard.board).toEqual(expected)
-  }*/)
+    gameboard.place(2, 2, 2, 'horizontally')
+    expect(gameboard.place(2, 3, 2, 'horizontally')).toBe('Ship is adjacent to other ship')
+  })
 
-  test.todo("vertically() doesn't place ships in an invalid position (2)", /*() => {
+  test("place() doesn't place ships if adjacent to any ship (2)", () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
-    expected[6][6] = 's'
-    expected[7][6] = 's'
-    expected[8][6] = 's'
-    gameboard.place(3, 7, 7).vertically()
-    expect(gameboard.board).toEqual(expected)
-  }*/)
+    gameboard.place(2, 2, 2, 'horizontally')
+    expect(gameboard.place(2, 1, 2, 'horizontally')).toBe('Ship is adjacent to other ship')
+  })
 
   test('recieveAttack() correctly determines whether ship was hit or not (1)', () => {
     const gameboard = Gameboard()
