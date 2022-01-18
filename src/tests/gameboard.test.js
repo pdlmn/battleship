@@ -55,24 +55,29 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.place(2, 1, 2, 'horizontally')).toBe('This spot is occupied')
   })
 
-  test("place() doesn't place ships if there is not enough room (1)", () => {
+  test("place() places ships if they are on the edge of a board (1)", () => {
     const gameboard = Gameboard()
     expect(gameboard.place(2, 10, 9, 'horizontally')).toBe('Ship was placed successfully')
   })
 
-  test("place() doesn't place ships if there is not enough room (2)", () => {
+  test("place() places ships if they are on the edge of a board (2)", () => {
+    const gameboard = Gameboard()
+    expect(gameboard.place(3, 8, 10, 'vertically')).toBe('Ship was placed successfully')
+  })
+
+  test("place() doesn't place ships if there is not enough room (1)", () => {
     const gameboard = Gameboard()
     expect(gameboard.place(2, 10, 10, 'horizontally')).toBe('Ship is too big')
   })
 
-  test("place() doesn't place ships if there is not enough room (3)", () => {
+  test("place() doesn't place ships if there is not enough room (2)", () => {
     const gameboard = Gameboard()
-    expect(gameboard.place(3, 9, 7, 'horizontally')).toBe('Ship is too big')
+    expect(gameboard.place(3, 7, 9, 'horizontally')).toBe('Ship is too big')
   })
 
-  test("place() doesn't place ships if there is not enough room (4)", () => {
+  test("place() doesn't place ships if there is not enough room (3)", () => {
     const gameboard = Gameboard()
-    expect(gameboard.place(3, 7, 9, 'vertically')).toBe('Ship is too big')
+    expect(gameboard.place(3, 9, 7, 'vertically')).toBe('Ship is too big')
   })
 
   test.todo("vertically() doesn't place ships in an invalid position (1)", /*() => {

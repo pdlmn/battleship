@@ -37,8 +37,6 @@ const Gameboard = () => {
       find((segment) => segment.y === y && segment.x === x, ship.segments)
       , fleet)
 
-  const isOccupied = (y, x) => Boolean(_findShip(y, x))
-
   const _shipPlacer = {
     horizontally (size, y, x) {
       const shipTail = x + size
@@ -55,10 +53,19 @@ const Gameboard = () => {
     }
   }
 
+  const isOccupied = (y, x) => Boolean(_findShip(y, x))
+
+  const isEnoughRoom = (size, y, x, plane) => {
+    if (plane === 'horizontally' && x + (size - 1) > 10 ||
+        plane === 'vertically' && y + (size - 1) > 10) {
+      return true
+    }
+    return false
+  }
+
   const place = (size, y, x, plane) => {
     if (isOccupied(y, x)) return 'This spot is occupied'
-    if (plane === 'horizontally' && x + size > 10 ||
-        plane === 'vertically' && y + size > 10) return 'Ship is too big'
+    if (isEnoughRoom(size, y, x, plane)) return 'Ship is too big'
 
     _shipPlacer[plane](size, y, x)
     return 'Ship was placed successfully'
