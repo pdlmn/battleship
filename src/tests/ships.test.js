@@ -8,23 +8,23 @@ describe('Ship factory is working correctly', () => {
 
   test('segments of a ship filled with correct segment objects (1)', () => {
     const ship = Ship(2, 1, 1, 'horizontally')
-    expect(ship.segments[0]).toEqual({ x: 1, y: 1, intact: true })
-    expect(ship.segments[1]).toEqual({ x: 1, y: 2, intact: true })
+    expect(ship.segments[0]).toEqual({ y: 1, x: 1, intact: true })
+    expect(ship.segments[1]).toEqual({ y: 1, x: 2, intact: true })
   })
 
   test('segments of a ship filled with correct segment objects (2)', () => {
     const ship = Ship(3, 7, 7, 'horizontally')
-    expect(ship.segments[0]).toEqual({ x: 7, y: 7, intact: true })
-    expect(ship.segments[1]).toEqual({ x: 7, y: 8, intact: true })
-    expect(ship.segments[2]).toEqual({ x: 7, y: 9, intact: true })
+    expect(ship.segments[0]).toEqual({ y: 7, x: 7, intact: true })
+    expect(ship.segments[1]).toEqual({ y: 7, x: 8, intact: true })
+    expect(ship.segments[2]).toEqual({ y: 7, x: 9, intact: true })
   })
 
   test('segments of a ship filled with correct segment objects (3)', () => {
     const ship = Ship(4, 6, 6, 'vertically')
-    expect(ship.segments[0]).toEqual({ x: 6, y: 6, intact: true })
-    expect(ship.segments[1]).toEqual({ x: 7, y: 6, intact: true })
-    expect(ship.segments[2]).toEqual({ x: 8, y: 6, intact: true })
-    expect(ship.segments[3]).toEqual({ x: 9, y: 6, intact: true })
+    expect(ship.segments[0]).toEqual({ y: 6, x: 6, intact: true })
+    expect(ship.segments[1]).toEqual({ y: 7, x: 6, intact: true })
+    expect(ship.segments[2]).toEqual({ y: 8, x: 6, intact: true })
+    expect(ship.segments[3]).toEqual({ y: 9, x: 6, intact: true })
   })
 
   test("can't create ships with improper size", () => {
@@ -36,8 +36,8 @@ describe('ship methods are working correctly', () => {
   test('hit() changes segment.intact to false (1)', () => {
     const ship = Ship(2, 1, 1, 'horizontally')
     ship.hit(0)
-    expect(ship.segments[0]).toEqual({ x: 1, y: 1, intact: false })
-    expect(ship.segments[1]).toEqual({ x: 1, y: 2, intact: true })
+    expect(ship.segments[0]).toEqual({ y: 1, x: 1, intact: false })
+    expect(ship.segments[1]).toEqual({ y: 1, x: 2, intact: true })
   })
 
   test('hit() changes segment.intact to false (2)', () => {

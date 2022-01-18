@@ -10,18 +10,18 @@ const _SIZE = 10
 const _createGameBoard = () =>
   repeat(() => repeat(() => _WATER, _SIZE), _SIZE)
 
-const _fillRow = (x, yStart, yFinish, value, board) => {
+const _fillRow = (y, xStart, xFinish, value, board) => {
   const result = [...board]
-  for (let i = yStart - 1; i < yFinish - 1; i++) {
-    result[x - 1][i] = value
+  for (let i = xStart - 1; i < xFinish - 1; i++) {
+    result[y - 1][i] = value
   }
   return result
 }
 
-const _fillColumn = (xStart, xFinish, y, value, board) => {
+const _fillColumn = (yStart, yFinish, x, value, board) => {
   const result = [...board]
-  for (let i = xStart - 1; i < xFinish - 1; i++) {
-    result[i][y - 1] = value
+  for (let i = yStart - 1; i < yFinish - 1; i++) {
+    result[i][x - 1] = value
   }
   return result
 }
@@ -29,48 +29,54 @@ const _fillColumn = (xStart, xFinish, y, value, board) => {
 const Gameboard = () => {
   const fleet = []
   const missed = []
+  const hit = []
   let board = _createGameBoard()
 
-  const _findShip = (x, y) => 
+  const _findShip = (y, x) => 
     find((ship) => 
-      find((segment) => segment.x === x && segment.y === y, ship.segments)
+      find((segment) => segment.y === y && segment.x === x, ship.segments)
       , fleet)
 
+  const isOccupied = (y, x) => Boolean(_findShip(y, x))
+
   const _shipPlacer = {
-    horizontally (size, x, y) {
-      const shipTail = y + size
-      const ship = Ship(size, x, y, 'horizontally')
+    horizontally (size, y, x) {
+      const shipTail = x + size
+      const ship = Ship(size, y, x, 'horizontally')
       fleet.push(ship)
-      board = _fillRow(x, y, shipTail, _SHIP, board)
+      board = _fillRow(y, x, shipTail, _SHIP, board)
     },
 
-    vertically (size, x, y) {
-      const shipTail = x + size
-      const ship = Ship(size, x, y, 'vertically')
+    vertically (size, y, x) {
+      const shipTail = y + size
+      const ship = Ship(size, y, x, 'vertically')
       fleet.push(ship)
-      board = _fillColumn(x, shipTail, y, _SHIP, board)
+      board = _fillColumn(y, shipTail, x, _SHIP, board)
     }
   }
 
-  const place = (size, x, y, plane) => {
-    const isOccupied = _findShip(x, y)
-    if (isOccupied) return 'This spot is occupied'
+  const place = (size, y, x, plane) => {
+    if (isOccupied(y, x)) return 'This spot is occupied'
+    if (plane === 'horizontally' && x + size > 10 ||
+        plane === 'vertically' && y + size > 10) return 'Ship is too big'
 
-    _shipPlacer[plane](size, x, y)
+    _shipPlacer[plane](size, y, x)
+    return 'Ship was placed successfully'
   }
 
-  const recieveAttack = (x, y) => {
-    const hitShip = _findShip(x, y)
+  const recieveAttack = (y, x) => {
+    const hitShip = _findShip(y, x)
     if (!hitShip) {
-      missed.push({ x, y })
-      board = _fillRow(x, y, (y + 1), _MISSED, board)
+      missed.push({ y, x })
+      board = _fillRow(y, x, (x + 1), _MISSED, board)
       return false
     }
     pipe(
-      findIndex(segment => segment.x === x && segment.y === y),
+      findIndex(segment => segment.y === y && segment.x === x),
       hitShip.hit
     )(hitShip.segments)
-    board = _fillRow(x, y, (y + 1), _HIT, board)
+    hit.push({ y, x })
+    board = _fillRow(y, x, (x + 1), _HIT, board)
     return true
   }
 

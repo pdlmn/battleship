@@ -46,24 +46,34 @@ describe('Gameboard methods work correctly', () => {
   test("place() doesn't place ships in an invalid position (1)", () => {
     const gameboard = Gameboard()
     gameboard.place(2, 1, 1, 'horizontally')
-    expect(gameboard.place(2, 1, 1, 'horizontally')).toEqual('This spot is occupied')
+    expect(gameboard.place(2, 1, 1, 'horizontally')).toBe('This spot is occupied')
   })
 
-  test("place() doesn't place ships in an invalid position (2)", () => {
+  test("place() doesn't place ships on top of another ship (2)", () => {
     const gameboard = Gameboard()
     gameboard.place(2, 1, 1, 'horizontally')
-    expect(gameboard.place(2, 1, 2, 'horizontally')).toEqual('This spot is occupied')
+    expect(gameboard.place(2, 1, 2, 'horizontally')).toBe('This spot is occupied')
   })
 
-  test.todo("horizontally() doesn't place ships in an invalid position (2)", /*() => {
+  test("place() doesn't place ships if there is not enough room (1)", () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
-    expected[6][6] = 's'
-    expected[6][7] = 's'
-    expected[6][8] = 's'
-    gameboard.place(3, 7, 7).horizontally()
-    expect(gameboard.board).toEqual(expected)
-  }*/)
+    expect(gameboard.place(2, 10, 9, 'horizontally')).toBe('Ship was placed successfully')
+  })
+
+  test("place() doesn't place ships if there is not enough room (2)", () => {
+    const gameboard = Gameboard()
+    expect(gameboard.place(2, 10, 10, 'horizontally')).toBe('Ship is too big')
+  })
+
+  test("place() doesn't place ships if there is not enough room (3)", () => {
+    const gameboard = Gameboard()
+    expect(gameboard.place(3, 9, 7, 'horizontally')).toBe('Ship is too big')
+  })
+
+  test("place() doesn't place ships if there is not enough room (4)", () => {
+    const gameboard = Gameboard()
+    expect(gameboard.place(3, 7, 9, 'vertically')).toBe('Ship is too big')
+  })
 
   test.todo("vertically() doesn't place ships in an invalid position (1)", /*() => {
     const gameboard = Gameboard()
@@ -89,32 +99,32 @@ describe('Gameboard methods work correctly', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 1, 1, 'horizontally')
     gameboard.recieveAttack(1, 1)
-    expect(gameboard.fleet[0].segments[0]).toEqual({ x: 1, y: 1, intact: false })
-    expect(gameboard.fleet[0].segments[1]).toEqual({ x: 1, y: 2, intact: true })
+    expect(gameboard.fleet[0].segments[0]).toEqual({ y: 1, x: 1, intact: false })
+    expect(gameboard.fleet[0].segments[1]).toEqual({ y: 1, x: 2, intact: true })
   })
 
   test('recieveAttack() correctly determines whether ship was hit or not (2)', () => {
     const gameboard = Gameboard()
     gameboard.place(3, 7, 7, 'horizontally')
     gameboard.recieveAttack(7, 8)
-    expect(gameboard.fleet[0].segments[0]).toEqual({ x: 7, y: 7, intact: true })
-    expect(gameboard.fleet[0].segments[1]).toEqual({ x: 7, y: 8, intact: false })
-    expect(gameboard.fleet[0].segments[2]).toEqual({ x: 7, y: 9, intact: true })
+    expect(gameboard.fleet[0].segments[0]).toEqual({ y: 7, x: 7, intact: true })
+    expect(gameboard.fleet[0].segments[1]).toEqual({ y: 7, x: 8, intact: false })
+    expect(gameboard.fleet[0].segments[2]).toEqual({ y: 7, x: 9, intact: true })
   })
 
   test('recieveAttack() correctly determines whether ship was hit or not (3)', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 5, 5, 'vertically')
     gameboard.recieveAttack(7, 8)
-    expect(gameboard.fleet[0].segments[0]).toEqual({ x: 5, y: 5, intact: true })
-    expect(gameboard.fleet[0].segments[1]).toEqual({ x: 6, y: 5, intact: true })
+    expect(gameboard.fleet[0].segments[0]).toEqual({ y: 5, x: 5, intact: true })
+    expect(gameboard.fleet[0].segments[1]).toEqual({ y: 6, x: 5, intact: true })
   })
 
   test('recieveAttack() correctly records missed attacks (1)', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 5, 5, 'vertically')
     gameboard.recieveAttack(7, 8)
-    expect(gameboard.missed[0]).toEqual({ x: 7, y: 8 })
+    expect(gameboard.missed[0]).toEqual({ y: 7, x: 8 })
   })
 
   test('recieveAttack() correctly records missed attacks (2)', () => {
@@ -122,8 +132,8 @@ describe('Gameboard methods work correctly', () => {
     gameboard.place(2, 5, 5, 'vertically')
     gameboard.recieveAttack(3, 2)
     gameboard.recieveAttack(5, 2)
-    expect(gameboard.missed[0]).toEqual({ x: 3, y: 2 })
-    expect(gameboard.missed[1]).toEqual({ x: 5, y: 2 })
+    expect(gameboard.missed[0]).toEqual({ y: 3, x: 2 })
+    expect(gameboard.missed[1]).toEqual({ y: 5, x: 2 })
   })
 
   test('recieveAttack() correctly records missed attacks (3)', () => {
