@@ -53,6 +53,7 @@ const Gameboard = () => {
     }
   }
 
+  //possbily public methods
   const isOccupied = (y, x) => Boolean(_findShip(y, x))
 
   const isEnoughRoom = (size, y, x, plane) => {
