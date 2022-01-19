@@ -110,8 +110,7 @@ const Gameboard = () => {
     return true
   }
 
-  const isFleetSunk = () =>
-    fleet.every((ship) => ship.isSunk())
+  const isFleetSunk = () => fleet.every((ship) => ship.isSunk())
 
   return {
     get board () { return board },

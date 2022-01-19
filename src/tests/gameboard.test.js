@@ -180,17 +180,6 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.board).toEqual(expected)
   })
 
-  test.todo("recieveAttack() doesn't map ivalid attacks on the virtual board (1)", /*() => {
-    const gameboard = Gameboard()
-    const expected = createPseudoBoard()
-    gameboard.place(2, 1, 1)
-    gameboard.recieveAttack(1, 1)
-    gameboard.recieveAttack(1, 1)
-    expected[0][0] = 'h'
-    expected[0][0] = 's'
-    expect(gameboard.board).toEqual(expected)
-  }*/)
-
   test('isFleetSunk() correctly determines status of the ships (1)', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 1, 1, 'horizontally')

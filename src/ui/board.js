@@ -1,20 +1,16 @@
-const playerBoard = document.querySelector('#player-board')
-const computerBoard = document.querySelector('#computer-board')
+import { cachedElements } from './cached_elements'
 
-const createCell = (isHidden) => {
+export const createCell = (isHidden) => {
   const cell = document.createElement('div')
   cell.classList.add('cell')
   if (isHidden) cell.classList.add('fog-of-war')
   return cell
 }
 
-const renderBoard = (board, isHidden) => {
+export const renderBoard = (isHidden, board) => {
   for (let i = 0; i < 10; i++) {
     for (let i = 0; i < 10; i++) {
       board.append(createCell(isHidden))
     }
   }
 }
-
-renderBoard(playerBoard, false)
-renderBoard(computerBoard, true)
