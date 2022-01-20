@@ -1,5 +1,3 @@
-import { cachedElements } from './cached_elements'
-
 export const createCell = (isHidden) => {
   const cell = document.createElement('div')
   cell.classList.add('cell')

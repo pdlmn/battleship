@@ -26,7 +26,7 @@ const _fillColumn = (yStart, yFinish, x, value, board) => {
   return result
 }
 
-const Gameboard = () => {
+export const Gameboard = () => {
   const fleet = []
   const missed = []
   const hit = []
@@ -94,7 +94,7 @@ const Gameboard = () => {
     return 'Ship was placed successfully'
   }
 
-  const recieveAttack = (y, x) => {
+  const receiveAttack = (y, x) => {
     const hitShip = _findShip(y, x)
     if (!hitShip) {
       missed.push({ y, x })
@@ -117,9 +117,7 @@ const Gameboard = () => {
     get fleet () { return fleet },
     get missed () { return missed },
     place,
-    recieveAttack,
+    receiveAttack,
     isFleetSunk
   }
 }
-
-export { Gameboard }

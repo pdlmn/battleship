@@ -92,88 +92,88 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.place(2, 1, 2, 'horizontally')).toBe('Ship is adjacent to other ship')
   })
 
-  test('recieveAttack() correctly determines whether ship was hit or not (1)', () => {
+  test('receiveAttack() correctly determines whether ship was hit or not (1)', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 1, 1, 'horizontally')
-    gameboard.recieveAttack(1, 1)
+    gameboard.receiveAttack(1, 1)
     expect(gameboard.fleet[0].segments[0]).toEqual({ y: 1, x: 1, intact: false })
     expect(gameboard.fleet[0].segments[1]).toEqual({ y: 1, x: 2, intact: true })
   })
 
-  test('recieveAttack() correctly determines whether ship was hit or not (2)', () => {
+  test('receiveAttack() correctly determines whether ship was hit or not (2)', () => {
     const gameboard = Gameboard()
     gameboard.place(3, 7, 7, 'horizontally')
-    gameboard.recieveAttack(7, 8)
+    gameboard.receiveAttack(7, 8)
     expect(gameboard.fleet[0].segments[0]).toEqual({ y: 7, x: 7, intact: true })
     expect(gameboard.fleet[0].segments[1]).toEqual({ y: 7, x: 8, intact: false })
     expect(gameboard.fleet[0].segments[2]).toEqual({ y: 7, x: 9, intact: true })
   })
 
-  test('recieveAttack() correctly determines whether ship was hit or not (3)', () => {
+  test('receiveAttack() correctly determines whether ship was hit or not (3)', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 5, 5, 'vertically')
-    gameboard.recieveAttack(7, 8)
+    gameboard.receiveAttack(7, 8)
     expect(gameboard.fleet[0].segments[0]).toEqual({ y: 5, x: 5, intact: true })
     expect(gameboard.fleet[0].segments[1]).toEqual({ y: 6, x: 5, intact: true })
   })
 
-  test('recieveAttack() correctly records missed attacks (1)', () => {
+  test('receiveAttack() correctly records missed attacks (1)', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 5, 5, 'vertically')
-    gameboard.recieveAttack(7, 8)
+    gameboard.receiveAttack(7, 8)
     expect(gameboard.missed[0]).toEqual({ y: 7, x: 8 })
   })
 
-  test('recieveAttack() correctly records missed attacks (2)', () => {
+  test('receiveAttack() correctly records missed attacks (2)', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 5, 5, 'vertically')
-    gameboard.recieveAttack(3, 2)
-    gameboard.recieveAttack(5, 2)
+    gameboard.receiveAttack(3, 2)
+    gameboard.receiveAttack(5, 2)
     expect(gameboard.missed[0]).toEqual({ y: 3, x: 2 })
     expect(gameboard.missed[1]).toEqual({ y: 5, x: 2 })
   })
 
-  test('recieveAttack() correctly records missed attacks (3)', () => {
+  test('receiveAttack() correctly records missed attacks (3)', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 1, 1, 'horizontally')
-    gameboard.recieveAttack(1, 1)
+    gameboard.receiveAttack(1, 1)
     expect(gameboard.missed).toEqual([])
   })
 
-  test('recieveAttack() correctly maps missed attacks on the virtual board (1)', () => {
+  test('receiveAttack() correctly maps missed attacks on the virtual board (1)', () => {
     const gameboard = Gameboard()
     const expected = createPseudoBoard()
-    gameboard.recieveAttack(1, 1)
+    gameboard.receiveAttack(1, 1)
     expected[0][0] = 'm'
     expect(gameboard.board).toEqual(expected)
   })
 
-  test('recieveAttack() correctly maps missed attacks on the virtual board (2)', () => {
+  test('receiveAttack() correctly maps missed attacks on the virtual board (2)', () => {
     const gameboard = Gameboard()
     const expected = createPseudoBoard()
-    gameboard.recieveAttack(2, 1)
-    gameboard.recieveAttack(7, 7)
+    gameboard.receiveAttack(2, 1)
+    gameboard.receiveAttack(7, 7)
     expected[1][0] = 'm'
     expected[6][6] = 'm'
     expect(gameboard.board).toEqual(expected)
   })
 
-  test('recieveAttack() correctly maps hit attacks on the virtual board (1)', () => {
+  test('receiveAttack() correctly maps hit attacks on the virtual board (1)', () => {
     const gameboard = Gameboard()
     const expected = createPseudoBoard()
     gameboard.place(2, 1, 1, 'vertically')
-    gameboard.recieveAttack(1, 1)
+    gameboard.receiveAttack(1, 1)
     expected[0][0] = 'h'
     expected[1][0] = 's'
     expect(gameboard.board).toEqual(expected)
   })
 
-  test('recieveAttack() correctly maps hit attacks on the virtual board (2)', () => {
+  test('receiveAttack() correctly maps hit attacks on the virtual board (2)', () => {
     const gameboard = Gameboard()
     const expected = createPseudoBoard()
     gameboard.place(3, 7, 7, 'horizontally')
-    gameboard.recieveAttack(7, 7)
-    gameboard.recieveAttack(7, 8)
+    gameboard.receiveAttack(7, 7)
+    gameboard.receiveAttack(7, 8)
     expected[6][6] = 'h'
     expected[6][7] = 'h'
     expected[6][8] = 's'
@@ -183,16 +183,16 @@ describe('Gameboard methods work correctly', () => {
   test('isFleetSunk() correctly determines status of the ships (1)', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 1, 1, 'horizontally')
-    gameboard.recieveAttack(1, 1)
-    gameboard.recieveAttack(1, 2)
+    gameboard.receiveAttack(1, 1)
+    gameboard.receiveAttack(1, 2)
     expect(gameboard.isFleetSunk()).toBe(true)
   })
 
   test('isFleetSunk() correctly determines status of the ships (2)', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 1, 1, 'horizontally')
-    gameboard.recieveAttack(1, 1)
-    gameboard.recieveAttack(2, 2)
+    gameboard.receiveAttack(1, 1)
+    gameboard.receiveAttack(2, 2)
     expect(gameboard.isFleetSunk()).toBe(false)
   })
 
@@ -200,8 +200,8 @@ describe('Gameboard methods work correctly', () => {
     const gameboard = Gameboard()
     gameboard.place(2, 1, 1, 'horizontally')
     gameboard.place(2, 4, 4, 'horizontally')
-    gameboard.recieveAttack(1, 1)
-    gameboard.recieveAttack(1, 2)
+    gameboard.receiveAttack(1, 1)
+    gameboard.receiveAttack(1, 2)
     expect(gameboard.isFleetSunk()).toBe(false)
   })
 })

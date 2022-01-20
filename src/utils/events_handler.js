@@ -1,4 +1,4 @@
-export const eventsHander = (() => {
+export const eventsHandler = (() => {
   const events = {}
 
   return {
