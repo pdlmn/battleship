@@ -82,4 +82,14 @@ const findIndex = curry((fn, arr) => {
   }
 })
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, repeat, find, findIndex }
+const forEach = curry((fn, arr) => {
+  const len = arr.length
+  let i = 0
+  while (i < len) {
+    fn(arr[i])
+    i++
+  }
+  return arr
+})
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, repeat, find, findIndex, forEach }
