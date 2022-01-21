@@ -1,4 +1,4 @@
 import './styles/style.css'
 import './factories/ship'
-import './ui/board'
+import './ui/dom_board'
 import './logic/game_handler'
