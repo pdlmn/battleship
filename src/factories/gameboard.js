@@ -29,6 +29,7 @@ export const Gameboard = () => {
   const fleet = []
   const missed = []
   const hit = []
+  let plane = 'horizontally'
   let board = _createGameboard()
 
   const _findShip = (y, x) => 
@@ -55,7 +56,7 @@ export const Gameboard = () => {
   //possibly public methods
   const isOccupied = (y, x) => Boolean(_findShip(y, x))
 
-  const isEnoughRoom = (size, y, x, plane) => {
+  const isEnoughRoom = (size, y, x) => {
     if (plane === 'horizontally' && x + (size - 1) > 10 ||
         plane === 'vertically' && y + (size - 1) > 10) {
       return true
@@ -75,7 +76,7 @@ export const Gameboard = () => {
     return false
   }
 
-  const isAdjacentToShips = (size, y, x, plane) => {
+  const isAdjacentToShips = (size, y, x) => {
     if (plane === 'horizontally') {
       return _isHorzinotallyAdjacent(size, y, x)
     }
@@ -84,7 +85,7 @@ export const Gameboard = () => {
     }
   }
 
-  const place = (size, y, x, plane) => {
+  const place = (size, y, x) => {
     if (isOccupied(y, x)) return 'This spot is occupied'
     if (isEnoughRoom(size, y, x, plane)) return 'Ship is too big'
     if (isAdjacentToShips(size, y, x, plane)) return 'Ship is adjacent to other ship'
@@ -111,13 +112,16 @@ export const Gameboard = () => {
 
   const isFleetSunk = () => fleet.every((ship) => ship.isSunk())
 
+  const setPlane = (newPlane) => { plane = newPlane }
+
   return {
     get board () { return board },
     get fleet () { return fleet },
     get missed () { return missed },
     place,
     receiveAttack,
-    isFleetSunk
+    isFleetSunk,
+    setPlane,
   }
 }
 

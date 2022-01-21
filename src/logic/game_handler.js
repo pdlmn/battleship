@@ -19,6 +19,14 @@ import { boardHandler, renderBoard } from '../ui/dom_board'
   })
 
   rotate.addEventListener('click', () => {
+    if (rotate.dataset.plane === 'vertically') {
+      rotate.dataset.plane = 'horizontally'
+      rotate.innerText = 'Horizontal'
+    }
+    else if (rotate.dataset.plane === 'horizontally') {
+      rotate.dataset.plane = 'vertically'
+      rotate.innerText = 'Vertical'
+    }
     eventsHandler.trigger(eventTypes.SHIP_ROTATED, rotate.dataset.plane)
   })
 })()
@@ -30,6 +38,6 @@ import { boardHandler, renderBoard } from '../ui/dom_board'
   boardHandler.renderBoard(false, playerBoard)
   boardHandler.renderBoard(true, computerBoard)
 
-  
+  eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.changePlane)
 })()
 
