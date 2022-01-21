@@ -41,3 +41,7 @@ main {
 .fog-of-war:hover {
   background: rgb(120, 120, 120);
 }
+
+.future-ship {
+  background: rgb(150, 50, 50)
+}

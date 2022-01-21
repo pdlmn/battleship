@@ -34,10 +34,18 @@ import { boardHandler, renderBoard } from '../ui/dom_board'
 ;(function boardLogic() {
   const playerBoard = document.querySelector('#player-board')
   const computerBoard = document.querySelector('#computer-board') 
+  const cells = document.querySelectorAll('.cell:not(.fog-of-war)')
+
+  playerBoard.addEventListener('mouseover', (e) => {
+    if (e.target.classList.contains('cell')) {
+      console.log(e.target)
+      boardHandler.highlightFutureShip(e.target)
+    }
+  })
 
   boardHandler.renderBoard(false, playerBoard)
   boardHandler.renderBoard(true, computerBoard)
 
-  eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.changePlane)
+  eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
 })()
 

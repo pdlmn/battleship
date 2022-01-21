@@ -10,11 +10,11 @@ const _createCell = (isHidden, y, x) => {
 }
 
 const _shipPlacer = {
-
+  horizontally () {}
 }
 
 export const boardHandler = (() => {
-  let placedShips = 0
+  const shipsToPlace = [5, 4, 3, 2]
   let plane = 'horizontally'
 
   const renderBoard = (isHidden, board) => {
@@ -25,12 +25,34 @@ export const boardHandler = (() => {
     }
   }
 
-  const place = (size, y, x, plane) => {}
+  const clearHighlights = () => document.querySelectorAll('.cell').forEach((el) => el.classList.remove('future-ship'))
+
+  const highlightFutureShip = (cell) => {
+    if (!shipsToPlace[0]) return
+    clearHighlights()
+    const nextShip = shipsToPlace[0]
+    const y = Number(cell.dataset.y)
+    const x = Number(cell.dataset.x)
+    if (plane === 'horizontally') {
+      const segments = []
+      const tail = x + nextShip
+      for (let i = x; i < tail; i++) {
+        segments.push(document.querySelector(`:not([data-enemy])[data-y='${y}'][data-x='${i}']`))
+      }
+      segments.forEach((el) => el.classList.add('future-ship'))
+    }
+    if (plane === 'vertically') {
+
+    }
+  }
+
+  const place = (size, y, x) => {}
 
   const setPlane = (newPlane) => { plane = newPlane }
 
   return {
     renderBoard,
-    setPlane
+    setPlane,
+    highlightFutureShip
   }
 })()
