@@ -1,13 +1,10 @@
-import { Gameboard } from '../factories/gameboard'
+import { Gameboard, _createGameboard } from '../factories/gameboard'
 import { repeat } from '../utils/func_helpers'
-
-const createPseudoBoard = () =>
-  repeat(() => repeat(() => 'w', 10), 10)
 
 describe('Gameboard methods work correctly', () => {
   test('place() correctly changes virtual board after placing ship horizontally (1)', () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
+    const expected = _createGameboard()
     expected[0][0] = 's'
     expected[0][1] = 's'
     gameboard.place(2, 1, 1, 'horizontally')
@@ -16,7 +13,7 @@ describe('Gameboard methods work correctly', () => {
 
   test('place() correctly changes virtual board after placing ship horizontally (2)', () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
+    const expected = _createGameboard()
     expected[6][6] = 's'
     expected[6][7] = 's'
     expected[6][8] = 's'
@@ -26,7 +23,7 @@ describe('Gameboard methods work correctly', () => {
 
   test('place() correctly changes virtual board after placing ship vertically (1)', () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
+    const expected = _createGameboard()
     expected[0][0] = 's'
     expected[1][0] = 's'
     gameboard.place(2, 1, 1, 'vertically')
@@ -35,7 +32,7 @@ describe('Gameboard methods work correctly', () => {
 
   test('place() correctly changes virtual board after placing ship vertically (2)', () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
+    const expected = _createGameboard()
     expected[6][6] = 's'
     expected[7][6] = 's'
     expected[8][6] = 's'
@@ -142,7 +139,7 @@ describe('Gameboard methods work correctly', () => {
 
   test('receiveAttack() correctly maps missed attacks on the virtual board (1)', () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
+    const expected = _createGameboard()
     gameboard.receiveAttack(1, 1)
     expected[0][0] = 'm'
     expect(gameboard.board).toEqual(expected)
@@ -150,7 +147,7 @@ describe('Gameboard methods work correctly', () => {
 
   test('receiveAttack() correctly maps missed attacks on the virtual board (2)', () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
+    const expected = _createGameboard()
     gameboard.receiveAttack(2, 1)
     gameboard.receiveAttack(7, 7)
     expected[1][0] = 'm'
@@ -160,7 +157,7 @@ describe('Gameboard methods work correctly', () => {
 
   test('receiveAttack() correctly maps hit attacks on the virtual board (1)', () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
+    const expected = _createGameboard()
     gameboard.place(2, 1, 1, 'vertically')
     gameboard.receiveAttack(1, 1)
     expected[0][0] = 'h'
@@ -170,7 +167,7 @@ describe('Gameboard methods work correctly', () => {
 
   test('receiveAttack() correctly maps hit attacks on the virtual board (2)', () => {
     const gameboard = Gameboard()
-    const expected = createPseudoBoard()
+    const expected = _createGameboard()
     gameboard.place(3, 7, 7, 'horizontally')
     gameboard.receiveAttack(7, 7)
     gameboard.receiveAttack(7, 8)

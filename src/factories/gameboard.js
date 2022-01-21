@@ -5,10 +5,9 @@ const _WATER = 'w'
 const _SHIP = 's'
 const _MISSED = 'm'
 const _HIT = 'h'
-const _SIZE = 10
 
-const _createGameBoard = () =>
-  repeat(() => repeat(() => _WATER, _SIZE), _SIZE)
+const _createRow = () => repeat(() => _WATER, 10)
+const _createGameboard = () => repeat(_createRow, 10)
 
 const _fillRow = (y, xStart, xFinish, value, board) => {
   const result = [...board]
@@ -30,7 +29,7 @@ export const Gameboard = () => {
   const fleet = []
   const missed = []
   const hit = []
-  let board = _createGameBoard()
+  let board = _createGameboard()
 
   const _findShip = (y, x) => 
     find((ship) => 
@@ -121,3 +120,5 @@ export const Gameboard = () => {
     isFleetSunk
   }
 }
+
+export { _createGameboard }

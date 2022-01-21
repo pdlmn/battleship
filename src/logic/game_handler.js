@@ -3,7 +3,7 @@ import { eventsHandler } from '../utils/events_handler'
 import { menuController } from '../ui/menu'
 import { Player } from '../factories/player'
 import { Gameboard } from '../factories/gameboard'
-import { renderBoard } from '../ui/board'
+import { boardHandler, renderBoard } from '../ui/board'
 
 ;(function menuLogic() {
   const startGame = document.querySelector('#start-game') 
@@ -22,25 +22,10 @@ import { renderBoard } from '../ui/board'
 })()
 
 ;(function boardLogic() {
-  const playerDomBoard = document.querySelector('#player-board')
-  const computerDomBoard = document.querySelector('#computer-board') 
+  const playerBoard = document.querySelector('#player-board')
+  const computerBoard = document.querySelector('#computer-board') 
 
-  const playerBoard = Gameboard()
-  const computerBoard = Gameboard()
-
-  let size = 2
-  playerBoard.place(size)
-  size++
-
-  eventsHandler.on(eventTypes.GAME_STARTED, (name) => {
-    const humanPlayer = Player(name, true)
-    const computerPlayer = Player('Computer', false)
-    eventsHandler.trigger(
-      eventTypes.PLAYERS_CREATED, 
-      [{humanPlayer, playerBoard}, {computerPlayer, computerBoard}]
-    )
-    renderBoard(false, playerBoard)
-    renderBoard(true, computerBoard)
-  })
+  boardHandler.renderBoard(false, playerBoard)
+  boardHandler.renderBoard(true, computerBoard)
 })()
 
