@@ -1,4 +1,4 @@
-import { pipe, repeat } from '../utils/func_helpers'
+import { hasFalsyValues } from '../utils/func_helpers'
 
 const _createCell = (isHidden, y, x) => {
   const cell = document.createElement('div')
@@ -9,8 +9,13 @@ const _createCell = (isHidden, y, x) => {
   return cell
 }
 
-const _shipPlacer = {
-  horizontally () {}
+const _highlight = {
+  horizontally () {
+
+  },
+  vertically () {
+
+  }
 }
 
 export const boardHandler = (() => {
@@ -25,7 +30,8 @@ export const boardHandler = (() => {
     }
   }
 
-  const clearHighlights = () => document.querySelectorAll('.cell').forEach((el) => el.classList.remove('future-ship'))
+  const clearHighlights = () => document.querySelectorAll('.cell')
+    .forEach((el) => el.classList.remove('future-ship', 'wrong-placement'))
 
   const highlightFutureShip = (cell) => {
     if (!shipsToPlace[0]) return
@@ -33,17 +39,23 @@ export const boardHandler = (() => {
     const nextShip = shipsToPlace[0]
     const y = Number(cell.dataset.y)
     const x = Number(cell.dataset.x)
+    let segments = []
     if (plane === 'horizontally') {
-      const segments = []
       const tail = x + nextShip
       for (let i = x; i < tail; i++) {
-        segments.push(document.querySelector(`:not([data-enemy])[data-y='${y}'][data-x='${i}']`))
+        segments.push(document.querySelector(`[data-y='${y}'][data-x='${i}']`))
       }
-      segments.forEach((el) => el.classList.add('future-ship'))
     }
     if (plane === 'vertically') {
-
+      const tail = y + nextShip
+      for (let i = y; i < tail; i++) {
+        segments.push(document.querySelector(`[data-y='${i}'][data-x='${x}']`))
+      }
     }
+    if (hasFalsyValues(segments)) {
+      segments = segments.filter((el) => Boolean(el))
+      segments.forEach((el) => el.classList.add('wrong-placement'))
+    } else segments.forEach((el) => el.classList.add('future-ship'))
   }
 
   const place = (size, y, x) => {}
@@ -53,6 +65,7 @@ export const boardHandler = (() => {
   return {
     renderBoard,
     setPlane,
-    highlightFutureShip
+    highlightFutureShip,
+    clearHighlights
   }
 })()

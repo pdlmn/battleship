@@ -17,16 +17,16 @@ main {
 }
 
 .board {
-  height: 500px;
-  width: 500px;
+  height: 400px;
+  width: 400px;
   background: yellow;
   display: flex;
   flex-wrap: wrap;
 }
 
 .cell {
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   background: rgb(0, 80, 250);
 }
 
@@ -42,6 +42,14 @@ main {
   background: rgb(120, 120, 120);
 }
 
-.future-ship {
-  background: rgb(150, 50, 50)
+.future-ship,
+.future-ship:hover {
+  background: rgb(120, 200, 120);
 }
+
+.wrong-placement,
+.wrong-placement:hover {
+  background: rgb(250, 120, 120);
+  transition: 0.20s;
+}
+

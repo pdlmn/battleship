@@ -9,7 +9,11 @@ const curry = (fn) => {
 
 const checkTruthiness = (el) => Boolean(el)
 
+const checkFalsiness = (el) => !el
+
 const hasTruthyValues = (arr) => arr.some(checkTruthiness)
+
+const hasFalsyValues = (arr) => arr.some(checkFalsiness)
 
 const replaceEveryNth = curry((nth, start, until, value, arr) => {
   const result = [...arr]
@@ -92,4 +96,4 @@ const forEach = curry((fn, arr) => {
   return arr
 })
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, repeat, find, findIndex, forEach }
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, repeat, find, findIndex, forEach, hasFalsyValues }

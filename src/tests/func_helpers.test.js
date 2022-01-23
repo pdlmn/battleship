@@ -1,4 +1,4 @@
-import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, repeat, find, findIndex, forEach } from '../utils/func_helpers'
+import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, repeat, find, findIndex, forEach, hasFalsyValues } from '../utils/func_helpers'
 
 describe('func helpers work properly', () => {
   test('hasTruthyValues correctly determines truthiness of values in an array (1)', () => {
@@ -7,6 +7,14 @@ describe('func helpers work properly', () => {
 
   test('hasTruthyValues correctly determines truthiness of values in an array (2)', () => {
     expect(hasTruthyValues([null, undefined, 0])).toBe(false)
+  })
+
+  test('hasFalsyValues correctly determines truthiness of values in an array (1)', () => {
+    expect(hasFalsyValues([1, 2, 3])).toBe(false)
+  })
+
+  test('hasFalsyValues correctly determines truthiness of values in an array (2)', () => {
+    expect(hasFalsyValues([1, 2, null])).toBe(true)
   })
 
   test('replaceEveryNth replaces values correctly (1)', () => {

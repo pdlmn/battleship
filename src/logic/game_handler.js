@@ -3,7 +3,7 @@ import { eventsHandler } from '../utils/events_handler'
 import { menuController } from '../ui/menu'
 import { Player } from '../factories/player'
 import { Gameboard } from '../factories/gameboard'
-import { boardHandler, renderBoard } from '../ui/dom_board'
+import { boardHandler } from '../ui/dom_board'
 
 ;(function menuLogic() {
   const startGame = document.querySelector('#start-game') 
@@ -34,18 +34,20 @@ import { boardHandler, renderBoard } from '../ui/dom_board'
 ;(function boardLogic() {
   const playerBoard = document.querySelector('#player-board')
   const computerBoard = document.querySelector('#computer-board') 
-  const cells = document.querySelectorAll('.cell:not(.fog-of-war)')
 
-  playerBoard.addEventListener('mouseover', (e) => {
+  playerBoard.addEventListener('mousemove', (e) => {
     if (e.target.classList.contains('cell')) {
-      console.log(e.target)
       boardHandler.highlightFutureShip(e.target)
     }
   })
 
+  playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
+
   boardHandler.renderBoard(false, playerBoard)
   boardHandler.renderBoard(true, computerBoard)
 
-  eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
+  eventsHandler.on(eventTypes.SHIP_ROTATED, (plane) => {
+    boardHandler.setPlane(plane)
+  })
 })()
 
