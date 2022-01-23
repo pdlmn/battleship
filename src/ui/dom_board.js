@@ -9,17 +9,40 @@ const _createCell = (isHidden, y, x) => {
   return cell
 }
 
-const _highlight = {
-  horizontally () {
-
+const _segmentsFinder = {
+  horizontally (y, x, size) {
+    const segments = []
+    const tail = x + size
+    for (let i = x; i < tail; i++) {
+      segments.push(document.querySelector(`[data-y='${y}'][data-x='${i}']`))
+    }
+    return segments
   },
-  vertically () {
-
+  vertically (y, x, size) {
+    const segments = []
+    const tail = y + size
+    for (let i = y; i < tail; i++) {
+      segments.push(document.querySelector(`[data-y='${i}'][data-x='${x}']`))
+    }
+    return segments
   }
 }
 
+const _highlight = (segments) => {
+  if (hasFalsyValues(segments)) {
+    const validSegments = segments.filter((el) => Boolean(el))
+    validSegments.forEach((el) => el.classList.add('wrong-placement'))
+  } else {
+    segments.forEach((el) => el.classList.add('future-ship'))
+  }
+} 
+
+const _extractCoords = (cell) => 
+  [cell.dataset.y, cell.dataset.x]
+    .map(coord => Number(coord))
+
 export const boardHandler = (() => {
-  const shipsToPlace = [5, 4, 3, 2]
+  const shipsToPlace = [5, 4, 3, 2, 1]
   let plane = 'horizontally'
 
   const renderBoard = (isHidden, board) => {
@@ -35,30 +58,21 @@ export const boardHandler = (() => {
 
   const highlightFutureShip = (cell) => {
     if (!shipsToPlace[0]) return
+    const [y, x] = _extractCoords(cell)
+    const shipSize = shipsToPlace[0]
+    const shipSegments = _segmentsFinder[plane](y, x, shipSize)
     clearHighlights()
-    const nextShip = shipsToPlace[0]
-    const y = Number(cell.dataset.y)
-    const x = Number(cell.dataset.x)
-    let segments = []
-    if (plane === 'horizontally') {
-      const tail = x + nextShip
-      for (let i = x; i < tail; i++) {
-        segments.push(document.querySelector(`[data-y='${y}'][data-x='${i}']`))
-      }
-    }
-    if (plane === 'vertically') {
-      const tail = y + nextShip
-      for (let i = y; i < tail; i++) {
-        segments.push(document.querySelector(`[data-y='${i}'][data-x='${x}']`))
-      }
-    }
-    if (hasFalsyValues(segments)) {
-      segments = segments.filter((el) => Boolean(el))
-      segments.forEach((el) => el.classList.add('wrong-placement'))
-    } else segments.forEach((el) => el.classList.add('future-ship'))
+    _highlight(shipSegments)
   }
 
-  const place = (size, y, x) => {}
+  const place = (cell) => {
+    if (!shipsToPlace[0]) return
+    const [y, x] = _extractCoords(cell)
+    const shipSize = shipsToPlace.shift()
+    const shipSegments = _segmentsFinder[plane](y, x, shipSize)
+    if (hasFalsyValues(shipSegments)) return
+    shipSegments.forEach((el) => el.classList.add('ship'))
+  }
 
   const setPlane = (newPlane) => { plane = newPlane }
 
@@ -66,6 +80,7 @@ export const boardHandler = (() => {
     renderBoard,
     setPlane,
     highlightFutureShip,
-    clearHighlights
+    clearHighlights,
+    place
   }
 })()

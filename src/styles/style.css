@@ -53,3 +53,7 @@ main {
   transition: 0.20s;
 }
 
+.ship {
+  background: rgb(200, 200, 80);
+  transition: 0.20s;
+}

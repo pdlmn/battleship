@@ -35,9 +35,15 @@ import { boardHandler } from '../ui/dom_board'
   const playerBoard = document.querySelector('#player-board')
   const computerBoard = document.querySelector('#computer-board') 
 
-  playerBoard.addEventListener('mousemove', (e) => {
+  playerBoard.addEventListener('mouseover', (e) => {
     if (e.target.classList.contains('cell')) {
       boardHandler.highlightFutureShip(e.target)
+    }
+  })
+
+  playerBoard.addEventListener('click', (e) => {
+    if (e.target.classList.contains('cell')) {
+      boardHandler.place(e.target)
     }
   })
 
