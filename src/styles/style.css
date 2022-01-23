@@ -57,3 +57,7 @@ main {
   background: rgb(200, 200, 80);
   transition: 0.20s;
 }
+
+.ship:hover {
+  background: rgb(200, 200, 80);
+}
