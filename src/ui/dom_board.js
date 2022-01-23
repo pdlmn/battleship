@@ -68,9 +68,10 @@ export const boardHandler = (() => {
   const place = (cell) => {
     if (!shipsToPlace[0]) return
     const [y, x] = _extractCoords(cell)
-    const shipSize = shipsToPlace.shift()
+    const shipSize = shipsToPlace[0]
     const shipSegments = _segmentsFinder[plane](y, x, shipSize)
-    if (hasFalsyValues(shipSegments)) return
+    if (hasFalsyValues(shipSegments) || shipSegments.some((el) => el.classList.contains('ship'))) return
+    shipsToPlace.shift()
     shipSegments.forEach((el) => el.classList.add('ship'))
   }
 
