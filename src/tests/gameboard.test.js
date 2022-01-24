@@ -41,24 +41,6 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.board).toEqual(expected)
   })
 
-  test("isOverlaps() determines if ships are overlap with other ships (1)", () => {
-    const gameboard = Gameboard()
-    gameboard.place(1, 1, 3, 'horizontally')
-    expect(gameboard.place(2, 1, 1, 'horizontally')).toBe('This spot is occupied')
-  })
-
-  test("isOverlaps() determines if ships are overlap with other ships (2)", () => {
-    const gameboard = Gameboard()
-    gameboard.place(1, 1, 2, 'horizontally')
-    expect(gameboard.place(2, 1, 2, 'horizontally')).toBe('This spot is occupied')
-  })
-
-  test("isOverlaps() determines if ships are overlap with other ships (3)", () => {
-    const gameboard = Gameboard()
-    gameboard.place(2, 1, 2, 'horizontally')
-    expect(gameboard.place(2, 1, 1, 'horizontally')).toBe('This spot is occupied')
-  })
-
   test('place() places ships if they are on the edge of a board (1)', () => {
     const gameboard = Gameboard()
     expect(gameboard.place(10, 9, 2, 'horizontally')).toBe('Ship was placed successfully')
@@ -70,20 +52,42 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.place(8, 10, 3)).toBe('Ship was placed successfully')
   })
 
-  test("place() doesn't place ships if there is not enough room (1)", () => {
+  test("isValid() determines if ships are overlap with other ships (1)", () => {
     const gameboard = Gameboard()
-    expect(gameboard.place(10, 10, 2, 'horizontally')).toBe('Ship is too big')
+    gameboard.place(1, 1, 2)
+    expect(gameboard.isValid(1, 1, 2)).toBe(false)
   })
 
-  test("place() doesn't place ships if there is not enough room (2)", () => {
+  test("isValid() determines if ships are overlap with other ships (2)", () => {
     const gameboard = Gameboard()
-    expect(gameboard.place(7, 9, 3, 'horizontally')).toBe('Ship is too big')
+    gameboard.place(1, 1, 2)
+    expect(gameboard.isValid(1, 2, 2)).toBe(false)
   })
 
-  test("place() doesn't place ships if there is not enough room (3)", () => {
+  test("isValid() determines if ships are overlap with other ships (3)", () => {
     const gameboard = Gameboard()
     gameboard.setPlane('vertically')
-    expect(gameboard.place(9, 7, 3)).toBe('Ship is too big')
+    gameboard.place(2, 3, 3)
+    gameboard.setPlane('horizontally')
+    expect(gameboard.isValid(2, 1, 5)).toBe(false)
+  })
+
+  test("isValid() determines if ships are overlap with other ships (4)", () => {
+    const gameboard = Gameboard()
+    gameboard.setPlane('vertically')
+    gameboard.place(2, 1, 2)
+    expect(gameboard.isValid(1, 1, 5)).toBe(false)
+  })
+
+  test("isValid() determines if ship overflows from the board (1)", () => {
+    const gameboard = Gameboard()
+    expect(gameboard.isValid(10, 10, 2)).toBe(false)
+  })
+
+  test("isValid() determines if ship overflows from the board (2)", () => {
+    const gameboard = Gameboard()
+    gameboard.setPlane('vertically')
+    expect(gameboard.isValid(8, 8, 5)).toBe(false)
   })
 
   test("place() doesn't place ships if adjacent to any ship (1)", () => {
