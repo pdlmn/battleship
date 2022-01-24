@@ -28,21 +28,21 @@ const _segmentsFinder = {
   }
 }
 
-const _extractCoords = (cell) => 
+const _extractCoords = (cell) =>
   [cell.dataset.y, cell.dataset.x]
     .map(coord => Number(coord))
 
-const _isOverlapsWithShip = (segments) => 
+const _isOverlapsWithShip = (segments) =>
   segments.some((el) => el.classList.contains('ship'))
 
-const _placeShip = (segments) => 
+const _placeShip = (segments) =>
   segments.forEach((el) => el.classList.add('ship'))
 
 const _adjacencyChecker = {
   horizontal (segments) {
     for (let i = 0; i < segments.length; i++) {
-      let [y, x] = _extractCoords(segments[i])
-      let [left, right] = [
+      const [y, x] = _extractCoords(segments[i])
+      const [left, right] = [
         document.querySelector(`[data-y='${y}'][data-x='${x - 1}']`),
         document.querySelector(`[data-y='${y}'][data-x='${x + 1}']`)
       ]
@@ -57,8 +57,8 @@ const _adjacencyChecker = {
 
   vertical (segments) {
     for (let i = 0; i < segments.length; i++) {
-      let [y, x] = _extractCoords(segments[i])
-      let [top, bottom] = [
+      const [y, x] = _extractCoords(segments[i])
+      const [top, bottom] = [
         document.querySelector(`[data-y='${y - 1}'][data-x='${x}']`),
         document.querySelector(`[data-y='${y + 1}'][data-x='${x}']`)
       ]
@@ -73,9 +73,9 @@ const _adjacencyChecker = {
 
   diagonal (segments) {
     const [head, tail] = [segments[0], segments[segments.length - 1]]
-    for (let end of [head, tail]) {
-      let [y, x] = _extractCoords(end)
-      let [topLeft, topRight, bottomLeft, bottomRight] = [
+    for (const end of [head, tail]) {
+      const [y, x] = _extractCoords(end)
+      const [topLeft, topRight, bottomLeft, bottomRight] = [
         document.querySelector(`[data-y='${y - 1}'][data-x='${x - 1}']`),
         document.querySelector(`[data-y='${y - 1}'][data-x='${x + 1}']`),
         document.querySelector(`[data-y='${y + 1}'][data-x='${x - 1}']`),
@@ -102,7 +102,7 @@ const _highlight = (segments) => {
   } else {
     segments.forEach((el) => el.classList.add('future-ship'))
   }
-} 
+}
 
 export const boardHandler = (() => {
   const shipsToPlace = [5, 4, 3, 2, 1]

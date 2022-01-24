@@ -5,12 +5,12 @@ import { Player } from '../factories/player'
 import { Gameboard } from '../factories/gameboard'
 import { boardHandler } from '../ui/dom_board'
 
-;(function menuLogic() {
-  const startGame = document.querySelector('#start-game') 
+;(function menuLogic () {
+  const startGame = document.querySelector('#start-game')
   const playerName = document.querySelector('#player-name')
   const rotate = document.querySelector('#rotate')
-  let nameInputed = false
-  let allShipsPlaced = false
+  const nameInputed = false
+  const allShipsPlaced = false
 
   startGame.addEventListener('click', () => {
     eventsHandler.trigger(eventTypes.GAME_STARTED, playerName.value)
@@ -22,8 +22,7 @@ import { boardHandler } from '../ui/dom_board'
     if (rotate.dataset.plane === 'vertically') {
       rotate.dataset.plane = 'horizontally'
       rotate.innerText = 'Horizontal'
-    }
-    else if (rotate.dataset.plane === 'horizontally') {
+    } else if (rotate.dataset.plane === 'horizontally') {
       rotate.dataset.plane = 'vertically'
       rotate.innerText = 'Vertical'
     }
@@ -31,9 +30,9 @@ import { boardHandler } from '../ui/dom_board'
   })
 })()
 
-;(function boardLogic() {
+;(function boardLogic () {
   const playerBoard = document.querySelector('#player-board')
-  const computerBoard = document.querySelector('#computer-board') 
+  const computerBoard = document.querySelector('#computer-board')
 
   playerBoard.addEventListener('mouseover', (e) => {
     if (e.target.classList.contains('cell')) {
@@ -56,4 +55,3 @@ import { boardHandler } from '../ui/dom_board'
     boardHandler.setPlane(plane)
   })
 })()
-

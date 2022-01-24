@@ -6,14 +6,14 @@ const _types = {
 }
 
 const _segmentsCreator = {
-  horizontally (size, y, x) {
+  horizontally (y, x, size) {
     const segments = []
     for (let i = 0; i < size; i++) {
       segments[i] = { y, x: (x + i), intact: true }
     }
     return segments
   },
-  vertically (size, y, x) {
+  vertically (y, x, size) {
     const segments = []
     for (let i = 0; i < size; i++) {
       segments[i] = { y: (y + i), x, intact: true }
@@ -22,11 +22,11 @@ const _segmentsCreator = {
   }
 }
 
-const Ship = (size, y, x, position) => {
+const Ship = (y, x, size, plane) => {
   const type = _types[size]
   if (type === undefined) throw new Error('Improper ship size')
 
-  const segments = _segmentsCreator[position](size, y, x)
+  const segments = _segmentsCreator[plane](y, x, size)
 
   return {
     get size () { return size },

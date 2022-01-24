@@ -1,4 +1,4 @@
-import { repeat, find, findIndex, pipe } from '../utils/func_helpers'
+import { repeat, find, findIndex, pipe, map, flatten, decrement, decrementEach } from '../utils/func_helpers'
 import { Ship } from './ship'
 
 const _WATER = 'w'
@@ -25,6 +25,15 @@ const _fillColumn = (yStart, yFinish, x, value, board) => {
   return result
 }
 
+const _mapCoords = (value, board, coords) => {
+  const result = [...board]
+  for (let i = 0; i < coords.length; i++) {
+    let {y, x} = decrement(coords[i])
+    result[y][x] = value
+  }
+  return result
+}
+
 export const Gameboard = () => {
   const fleet = []
   const missed = []
@@ -32,40 +41,44 @@ export const Gameboard = () => {
   let plane = 'horizontally'
   let board = _createGameboard()
 
-  const _findShip = (y, x) => 
-    find((ship) => 
+  const _findShip = (y, x) =>
+    find((ship) =>
       find((segment) => segment.y === y && segment.x === x, ship.segments)
-      , fleet)
+    , fleet)
 
   const _shipPlacer = {
-    horizontally (size, y, x) {
+    horizontally (y, x, size) {
       const shipTail = x + size
-      const ship = Ship(size, y, x, 'horizontally')
+      const ship = Ship(y, x, size, 'horizontally')
       fleet.push(ship)
-      board = _fillRow(y, x, shipTail, _SHIP, board)
+      board = _mapCoords(_SHIP, board, ship.segments)
     },
 
-    vertically (size, y, x) {
+    vertically (y, x, size) {
       const shipTail = y + size
-      const ship = Ship(size, y, x, 'vertically')
+      const ship = Ship(y, x, size, 'vertically')
       fleet.push(ship)
-      board = _fillColumn(y, shipTail, x, _SHIP, board)
+      board = _mapCoords(_SHIP, board, ship.segments)
     }
   }
 
-  //possibly public methods
-  const isOccupied = (y, x) => Boolean(_findShip(y, x))
+  const getOccupiedCells = pipe(
+    map((ship) => ship.segments),
+    flatten
+  )
 
-  const isEnoughRoom = (size, y, x) => {
-    if (plane === 'horizontally' && x + (size - 1) > 10 ||
-        plane === 'vertically' && y + (size - 1) > 10) {
+  const isOverlaps = (y, x) => _findShip(y, x)
+
+  const isEnoughRoom = (y, x, size) => {
+    if ((plane === 'horizontally' && x + (size - 1) > 10) ||
+        (plane === 'vertically' && y + (size - 1) > 10)) {
       return true
     }
     return false
   }
-  
-  const _isHorzinotallyAdjacent = (size, y, x) => {
-    let tail = x + size
+
+  const _isHorzinotallyAdjacent = (y, x, size) => {
+    const tail = x + size
     let i = x
     while (i < tail) {
       if (_findShip(y + 1, i) || _findShip(y - 1, i)) {
@@ -76,21 +89,21 @@ export const Gameboard = () => {
     return false
   }
 
-  const isAdjacentToShips = (size, y, x) => {
+  const isAdjacentToShips = (y, x, size) => {
     if (plane === 'horizontally') {
-      return _isHorzinotallyAdjacent(size, y, x)
+      return _isHorzinotallyAdjacent(y, x, size)
     }
     if (plane === 'vertically') {
-      return
+
     }
   }
 
-  const place = (size, y, x) => {
-    if (isOccupied(y, x)) return 'This spot is occupied'
-    if (isEnoughRoom(size, y, x, plane)) return 'Ship is too big'
-    if (isAdjacentToShips(size, y, x, plane)) return 'Ship is adjacent to other ship'
+  const place = (y, x, size) => {
+    if (isOverlaps(y, x)) return 'This spot is occupied'
+    if (isEnoughRoom(y, x, size)) return 'Ship is too big'
+    if (isAdjacentToShips(y, x, size)) return 'Ship is adjacent to other ship'
 
-    _shipPlacer[plane](size, y, x)
+    _shipPlacer[plane](y, x, size)
     return 'Ship was placed successfully'
   }
 
@@ -118,10 +131,11 @@ export const Gameboard = () => {
     get board () { return board },
     get fleet () { return fleet },
     get missed () { return missed },
+    getOccupiedCells,
     place,
     receiveAttack,
     isFleetSunk,
-    setPlane,
+    setPlane
   }
 }
 

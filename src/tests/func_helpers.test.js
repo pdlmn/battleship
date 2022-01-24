@@ -1,4 +1,4 @@
-import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, repeat, find, findIndex, forEach, hasFalsyValues } from '../utils/func_helpers'
+import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten } from '../utils/func_helpers'
 
 describe('func helpers work properly', () => {
   test('hasTruthyValues correctly determines truthiness of values in an array (1)', () => {
@@ -83,11 +83,16 @@ describe('func helpers work properly', () => {
   })
 
   test('decrement correctly subracts from an array items', () => {
-    expect(decrement([1, 2, 3])).toEqual([0, 1, 2])
+    expect(decrement([1, 2, 3, 'heh', true])).toEqual([0, 1, 2, 'heh', true])
   })
 
   test('decrement correctly subracts from an object properties', () => {
-    expect(decrement({ a: 1, b: 2, c: 3 })).toEqual({ a: 0, b: 1, c: 2 })
+    expect(decrement({ a: 1, b: 2, c: 3, d: 'heh', f: true })).toEqual({ a: 0, b: 1, c: 2, d: 'heh', f: true })
+  })
+
+  test('decrement correctly subracts from nested arrays an objects inside an array', () => {
+    expect(decrementEach([[1, 2, 3, 'heh', true], {a: 1, b: 2, c: 3, d: 'heh', f: true}]))
+      .toEqual([[0, 1, 2, 'heh', true], {a: 0, b: 1, c: 2, d: 'heh', f: true}])
   })
 
   test('repeat correctly creates an array of repeated values', () => {
@@ -106,5 +111,9 @@ describe('func helpers work properly', () => {
     const arr = [1, 2, 3]
     forEach((n) => arr.push(n), [4, 5, 6])
     expect(arr).toEqual([1, 2, 3, 4, 5, 6])
+  })
+
+  test('flatten makes a flat array from a nested one', () => {
+    expect(flatten([1, [2, 3, [4, 5]]])).toEqual([1, 2, 3, 4, 5])
   })
 })

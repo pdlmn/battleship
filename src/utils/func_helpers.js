@@ -52,7 +52,9 @@ const map = curry((fn, functor) => {
 const pipe = (...functions) =>
   (value) => functions.reduce((acc, fn) => fn(acc), value)
 
-const decrement = map((n) => n - 1)
+const decrement = map((n) => (typeof n === 'number') ? n - 1 : n)
+
+const decrementEach = map(decrement)
 
 const repeat = curry((fn, num) => {
   const result = []
@@ -96,4 +98,25 @@ const forEach = curry((fn, arr) => {
   return arr
 })
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, repeat, find, findIndex, forEach, hasFalsyValues }
+const flatten = curry((arr) => {
+  const result = []
+  const ilen = arr.length
+  let i = 0
+  while (i < ilen) {
+    if (Object.prototype.toString.call(arr[i]) === '[object Array]') {
+      const jarr = flatten(arr[i])
+      const jlen = jarr.length
+      let j = 0
+      while (j < jlen) {
+        result.push(jarr[j])
+        j++
+      }
+    } else {
+      result.push(arr[i])
+    }
+    i++
+  }
+  return result
+})
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten }
