@@ -1,4 +1,4 @@
-import { repeat, find, findIndex, pipe, map, flatten, decrement, decrementEach } from '../utils/func_helpers'
+import { repeat, find, findIndex, pipe, map, flatten, decrement, decrementEach, curry } from '../utils/func_helpers'
 import { Ship } from './ship'
 
 const _WATER = 'w'
@@ -9,30 +9,14 @@ const _HIT = 'h'
 const _createRow = () => repeat(() => _WATER, 10)
 const _createGameboard = () => repeat(_createRow, 10)
 
-const _fillRow = (y, xStart, xFinish, value, board) => {
-  const result = [...board]
-  for (let i = xStart - 1; i < xFinish - 1; i++) {
-    result[y - 1][i] = value
-  }
-  return result
-}
-
-const _fillColumn = (yStart, yFinish, x, value, board) => {
-  const result = [...board]
-  for (let i = yStart - 1; i < yFinish - 1; i++) {
-    result[i][x - 1] = value
-  }
-  return result
-}
-
-const _mapCoords = (value, board, coords) => {
+const _mapCoords = curry((value, board, coords) => {
   const result = [...board]
   for (let i = 0; i < coords.length; i++) {
     let {y, x} = decrement(coords[i])
     result[y][x] = value
   }
   return result
-}
+})
 
 export const Gameboard = () => {
   const fleet = []
@@ -41,26 +25,14 @@ export const Gameboard = () => {
   let plane = 'horizontally'
   let board = _createGameboard()
 
+  const _mapShip = _mapCoords(_SHIP, board)
+  const _mapMissed = _mapCoords(_MISSED, board)
+  const _mapHit = _mapCoords(_HIT, board)
+
   const _findShip = (y, x) =>
     find((ship) =>
       find((segment) => segment.y === y && segment.x === x, ship.segments)
     , fleet)
-
-  const _shipPlacer = {
-    horizontally (y, x, size) {
-      const shipTail = x + size
-      const ship = Ship(y, x, size, 'horizontally')
-      fleet.push(ship)
-      board = _mapCoords(_SHIP, board, ship.segments)
-    },
-
-    vertically (y, x, size) {
-      const shipTail = y + size
-      const ship = Ship(y, x, size, 'vertically')
-      fleet.push(ship)
-      board = _mapCoords(_SHIP, board, ship.segments)
-    }
-  }
 
   const getOccupiedCells = pipe(
     map((ship) => ship.segments),
@@ -103,7 +75,9 @@ export const Gameboard = () => {
     if (isEnoughRoom(y, x, size)) return 'Ship is too big'
     if (isAdjacentToShips(y, x, size)) return 'Ship is adjacent to other ship'
 
-    _shipPlacer[plane](y, x, size)
+    const ship = Ship(y, x, size, plane)
+    fleet.push(ship)
+    board = _mapShip(ship.segments)
     return 'Ship was placed successfully'
   }
 
@@ -111,7 +85,7 @@ export const Gameboard = () => {
     const hitShip = _findShip(y, x)
     if (!hitShip) {
       missed.push({ y, x })
-      board = _fillRow(y, x, (x + 1), _MISSED, board)
+      board = _mapMissed([{ y, x }])
       return false
     }
     pipe(
@@ -119,7 +93,7 @@ export const Gameboard = () => {
       hitShip.hit
     )(hitShip.segments)
     hit.push({ y, x })
-    board = _fillRow(y, x, (x + 1), _HIT, board)
+    board = _mapHit([{ y, x }])
     return true
   }
 
