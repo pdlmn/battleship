@@ -76,6 +76,7 @@ export const Gameboard = () => {
 
     if (plane === 'horizontally') {
       const tail = dx + size
+
       for (let i = dx; i < tail; i++) {
         let topCell = board[dy - 1] ? board[dy - 1][i] : null
         let bottomCell = board[dy + 1] ? board[dy + 1][i] : null
@@ -83,11 +84,13 @@ export const Gameboard = () => {
           return true
         }
       }
+
       const leftCell = board[dy][dx - 1]
       const rightCell = board[dy][tail]
       if (leftCell === _SHIP || rightCell === _SHIP) {
         return true
       }
+
       const topLeft = board[dy - 1] ? board[dy - 1][dx - 1] : null
       const bottomLeft = board[dy + 1] ? board[dy + 1][dx - 1] : null
       const topRight = board[dy - 1] ? board[dy - 1][tail] : null
@@ -95,14 +98,17 @@ export const Gameboard = () => {
       if (topLeft === _SHIP || bottomLeft === _SHIP || topRight === _SHIP || bottomRight === _SHIP) {
         return true
       }
+
     }
     if (plane === 'vertically') {
       const tail = dy + size
+
       const topCell = board[dy - 1] ? board[dy - 1][dx] : null
       const bottomCell = board[tail] ? board[tail][dx] : null
       if (topCell === _SHIP || bottomCell === _SHIP) {
         return true
       }
+
       for (let i = dy; i < tail; i++) {
         let leftCell = board[i][dx - 1]
         let rightCell = board[i][dx + 1]
@@ -110,6 +116,7 @@ export const Gameboard = () => {
           return true
         }
       }
+
       const topLeft = board[dy - 1] ? board[dy - 1][dx - 1] : null
       const topRight = board[dy - 1] ? board[dy - 1][dx + 1] : null
       const bottomLeft = board[tail] ? board[tail][dx - 1] : null
@@ -117,6 +124,7 @@ export const Gameboard = () => {
       if (topLeft === _SHIP || bottomLeft === _SHIP || topRight === _SHIP || bottomRight === _SHIP) {
         return true
       }
+
     }
     return false
   }
@@ -140,7 +148,7 @@ export const Gameboard = () => {
     if (!hitShip) {
       missed.push({ y, x })
       board = _mapMissed([{ y, x }])
-      return false
+      return
     }
     pipe(
       findIndex(segment => segment.y === y && segment.x === x),
@@ -148,7 +156,6 @@ export const Gameboard = () => {
     )(hitShip.segments)
     hit.push({ y, x })
     board = _mapHit([{ y, x }])
-    return true
   }
 
   const isFleetSunk = () => fleet.every((ship) => ship.isSunk())

@@ -29,8 +29,7 @@ const _segmentsFinder = {
 }
 
 const _extractCoords = (cell) =>
-  [cell.dataset.y, cell.dataset.x]
-    .map(coord => Number(coord))
+  [cell.dataset.y, cell.dataset.x].map(coord => Number(coord))
 
 const _isOverlapsWithShip = (segments) =>
   segments.some((el) => el.classList.contains('ship'))
@@ -91,18 +90,6 @@ const _adjacencyChecker = {
   }
 }
 
-const _highlight = (segments) => {
-  if (hasFalsyValues(segments) ||
-     _isOverlapsWithShip(segments) ||
-     _adjacencyChecker.horizontal(segments) ||
-     _adjacencyChecker.vertical(segments) ||
-     _adjacencyChecker.diagonal(segments)) {
-    const validSegments = segments.filter((el) => Boolean(el))
-    validSegments.forEach((el) => el.classList.add('wrong-placement'))
-  } else {
-    segments.forEach((el) => el.classList.add('future-ship'))
-  }
-}
 
 export const boardHandler = (() => {
   const shipsToPlace = [5, 4, 3, 2, 1]
@@ -123,9 +110,18 @@ export const boardHandler = (() => {
     if (!shipsToPlace[0]) return
     const [y, x] = _extractCoords(cell)
     const shipSize = shipsToPlace[0]
-    const shipSegments = _segmentsFinder[plane](y, x, shipSize)
+    const segments = _segmentsFinder[plane](y, x, shipSize)
     clearHighlights()
-    _highlight(shipSegments)
+    if (hasFalsyValues(segments) ||
+      _isOverlapsWithShip(segments) ||
+      _adjacencyChecker.horizontal(segments) ||
+      _adjacencyChecker.vertical(segments) ||
+      _adjacencyChecker.diagonal(segments)) {
+      const validSegments = segments.filter((el) => Boolean(el))
+      validSegments.forEach((el) => el.classList.add('wrong-placement'))
+    } else {
+      segments.forEach((el) => el.classList.add('future-ship'))
+    }
   }
 
   const place = (cell) => {

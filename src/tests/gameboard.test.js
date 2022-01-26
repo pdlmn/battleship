@@ -150,7 +150,7 @@ describe('Gameboard methods work correctly', () => {
 
   test('receiveAttack() correctly determines whether ship was hit or not (1)', () => {
     const gameboard = Gameboard()
-    gameboard.place(1, 1, 2, 'horizontally')
+    gameboard.place(1, 1, 2)
     gameboard.receiveAttack(1, 1)
     expect(gameboard.fleet[0].segments[0]).toEqual({ y: 1, x: 1, intact: false })
     expect(gameboard.fleet[0].segments[1]).toEqual({ y: 1, x: 2, intact: true })
@@ -158,7 +158,7 @@ describe('Gameboard methods work correctly', () => {
 
   test('receiveAttack() correctly determines whether ship was hit or not (2)', () => {
     const gameboard = Gameboard()
-    gameboard.place(7, 7, 3, 'horizontally')
+    gameboard.place(7, 7, 3)
     gameboard.receiveAttack(7, 8)
     expect(gameboard.fleet[0].segments[0]).toEqual({ y: 7, x: 7, intact: true })
     expect(gameboard.fleet[0].segments[1]).toEqual({ y: 7, x: 8, intact: false })

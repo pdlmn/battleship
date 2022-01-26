@@ -30,7 +30,7 @@ import { boardHandler } from '../ui/dom_board'
   })
 })()
 
-;(function boardLogic () {
+;(function boardViewLogic () {
   const playerBoard = document.querySelector('#player-board')
   const computerBoard = document.querySelector('#computer-board')
 
@@ -51,7 +51,9 @@ import { boardHandler } from '../ui/dom_board'
   boardHandler.renderBoard(false, playerBoard)
   boardHandler.renderBoard(true, computerBoard)
 
-  eventsHandler.on(eventTypes.SHIP_ROTATED, (plane) => {
-    boardHandler.setPlane(plane)
-  })
+  eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
+})()
+
+;(function gameboardLogic () {
+
 })()
