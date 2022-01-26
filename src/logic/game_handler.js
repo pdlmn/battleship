@@ -35,13 +35,19 @@ import { boardHandler } from '../ui/dom_board'
 
   playerBoard.addEventListener('mouseover', (e) => {
     if (e.target.classList.contains('cell')) {
-      boardHandler.highlightFutureShip(e.target)
+      const coords = boardHandler.extractCoords(e.target)
+      eventsHandler.trigger(eventTypes.BOARD_HOVERED, coords)
     }
+  })
+
+  eventsHandler.on(eventTypes.SHIP_VALIDATED, (data) => {
+    boardHandler.highlightFutureShip(...data)
   })
 
   playerBoard.addEventListener('click', (e) => {
     if (e.target.classList.contains('cell')) {
-      boardHandler.place(e.target)
+      const coords = boardHandler.extractCoords(e.target)
+      eventsHandler.trigger(eventTypes.BOARD_CLICKED, coords)
     }
   })
 
@@ -55,4 +61,27 @@ import { boardHandler } from '../ui/dom_board'
 
 ;(function gameLogic () {
   const shipsToPlace = [5, 4, 3, 2, 1]
+  const playerBoard = Gameboard()
+  let gameStarted = false
+
+  eventsHandler.on(eventTypes.BOARD_HOVERED, (coords) => {
+    if (gameStarted) return
+    const [y, x] = coords
+    const nextShipSize = shipsToPlace[0]
+    const isValid = playerBoard.isValid(y, x, nextShipSize)
+    eventsHandler.trigger(eventTypes.SHIP_VALIDATED, [y, x, nextShipSize, isValid])
+  })
+
+  eventsHandler.on(eventTypes.BOARD_CLICKED, (coords) => {
+    if (gameStarted) return
+    const [y, x] = coords
+    const nextShipSize = shipsToPlace[0]
+    const isValid = playerBoard.isValid(y, x, nextShipSize)
+    if (!isValid) return
+    playerBoard.place(y, x, nextShipSize)
+    shipsToPlace.shift()
+    eventsHandler.trigger(eventTypes.SHIP_PLACED, [y, x, nextShipSize])
+  })
+
+  eventsHandler.on(eventTypes.SHIP_ROTATED, playerBoard.setPlane)
 })()
