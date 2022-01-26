@@ -1,4 +1,4 @@
-import { repeat, findIndex, pipe, map, flatten, decrement, curry } from '../utils/func_helpers'
+import { repeat, findIndex, pipe, map, flatten, decrement, increment, curry } from '../utils/func_helpers'
 import { Ship } from './ship'
 
 const _WATER = 'w'
@@ -72,20 +72,53 @@ export const Gameboard = () => {
   }
 
   const _isAdjacentToShips = (y, x, size) => {
+    const [dy, dx] = decrement([y, x])
+
     if (plane === 'horizontally') {
-      const tail = x + size
-      let i = x
-      while (i < tail) {
-        if (board[y + 1][i] === _SHIP || board[y - 1][i] === _SHIP) {
+      const tail = dx + size
+      for (let i = dx; i < tail; i++) {
+        let topCell = board[dy - 1] ? board[dy - 1][i] : null
+        let bottomCell = board[dy + 1] ? board[dy + 1][i] : null
+        if (topCell === _SHIP || bottomCell === _SHIP) {
           return true
         }
-        i++
       }
-      return false
+      const leftCell = board[dy][dx - 1]
+      const rightCell = board[dy][tail]
+      if (leftCell === _SHIP || rightCell === _SHIP) {
+        return true
+      }
+      const topLeft = board[dy - 1] ? board[dy - 1][dx - 1] : null
+      const bottomLeft = board[dy + 1] ? board[dy + 1][dx - 1] : null
+      const topRight = board[dy - 1] ? board[dy - 1][tail] : null
+      const bottomRight = board[dy + 1] ? board[dy + 1][tail] : null
+      if (topLeft === _SHIP || bottomLeft === _SHIP || topRight === _SHIP || bottomRight === _SHIP) {
+        return true
+      }
     }
     if (plane === 'vertically') {
-
+      const tail = dy + size
+      const topCell = board[dy - 1] ? board[dy - 1][dx] : null
+      const bottomCell = board[tail] ? board[tail][dx] : null
+      if (topCell === _SHIP || bottomCell === _SHIP) {
+        return true
+      }
+      for (let i = dy; i < tail; i++) {
+        let leftCell = board[i][dx - 1]
+        let rightCell = board[i][dx + 1]
+        if (leftCell === _SHIP || rightCell === _SHIP) {
+          return true
+        }
+      }
+      const topLeft = board[dy - 1] ? board[dy - 1][dx - 1] : null
+      const topRight = board[dy - 1] ? board[dy - 1][dx + 1] : null
+      const bottomLeft = board[tail] ? board[tail][dx - 1] : null
+      const bottomRight = board[tail] ? board[tail][dx + 1] : null
+      if (topLeft === _SHIP || bottomLeft === _SHIP || topRight === _SHIP || bottomRight === _SHIP) {
+        return true
+      }
     }
+    return false
   }
 
   const isValid = (y, x, size) => (
@@ -95,14 +128,11 @@ export const Gameboard = () => {
   )
 
   const place = (y, x, size) => {
-    if (_isOverlaps(y, x, size)) return 'This spot is occupied'
-    if (_isOverflows(y, x, size)) return 'Ship is too big'
-    if (_isAdjacentToShips(y, x, size)) return 'Ship is adjacent to other ship'
+    if (!isValid(y, x, size)) return
 
     const ship = Ship(y, x, size, plane)
     fleet.push(ship)
     board = _mapShip(ship.segments)
-    return 'Ship was placed successfully'
   }
 
   const receiveAttack = (y, x) => {

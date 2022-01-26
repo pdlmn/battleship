@@ -41,30 +41,32 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.board).toEqual(expected)
   })
 
-  test('place() places ships if they are on the edge of a board (1)', () => {
+  test('isValid() correctly determines works with ships at the edge of a board (1)', () => {
     const gameboard = Gameboard()
-    expect(gameboard.place(10, 9, 2, 'horizontally')).toBe('Ship was placed successfully')
+    expect(gameboard.isValid(10, 9, 2)).toBe(true)
+    expect(gameboard.isValid(10, 10, 2)).toBe(false)
   })
 
-  test('place() places ships if they are on the edge of a board (2)', () => {
+  test('isValid() correctly determines works with ships at the edge of a board (2)', () => {
     const gameboard = Gameboard()
     gameboard.setPlane('vertically')
-    expect(gameboard.place(8, 10, 3)).toBe('Ship was placed successfully')
+    expect(gameboard.isValid(8, 10, 3)).toBe(true)
+    expect(gameboard.isValid(9, 10, 3)).toBe(false)
   })
 
-  test("isValid() determines if ship is overlaps with other ships (1)", () => {
+  test("isValid() determines if ship overlaps with other ships (1)", () => {
     const gameboard = Gameboard()
     gameboard.place(1, 1, 2)
     expect(gameboard.isValid(1, 1, 2)).toBe(false)
   })
 
-  test("isValid() determines if ship is overlaps with other ships (2)", () => {
+  test("isValid() determines if ship overlaps with other ships (2)", () => {
     const gameboard = Gameboard()
     gameboard.place(1, 1, 2)
     expect(gameboard.isValid(1, 2, 2)).toBe(false)
   })
 
-  test("isValid() determines if ship is overlaps with other ships (3)", () => {
+  test("isValid() determines if ship overlaps with other ships (3)", () => {
     const gameboard = Gameboard()
     gameboard.setPlane('vertically')
     gameboard.place(2, 3, 3)
@@ -72,7 +74,7 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.isValid(2, 1, 5)).toBe(false)
   })
 
-  test("isValid() determines if ship is overlaps with other ships (4)", () => {
+  test("isValid() determines if ship overlaps with other ships (4)", () => {
     const gameboard = Gameboard()
     gameboard.setPlane('vertically')
     gameboard.place(2, 1, 2)
@@ -90,16 +92,60 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.isValid(8, 8, 5)).toBe(false)
   })
 
-  test.only("isValid() doesn't place ships if adjacent to any ship (1)", () => {
+  test("isValid() doesn't place ships if adjacent horizontally to any ship (1)", () => {
     const gameboard = Gameboard()
-    gameboard.place(2, 2, 2)
-    expect(gameboard.isValid(3, 2, 2)).toBe(false)
+    gameboard.place(2, 1, 2)
+    expect(gameboard.isValid(1, 1, 2)).toBe(false)
+    expect(gameboard.isValid(3, 1, 2)).toBe(false)
   })
 
-  test.only("isValid() doesn't place ships if adjacent to any ship (2)", () => {
+  test("isValid() doesn't place ships if adjacent horizontally to any ship (2)", () => {
     const gameboard = Gameboard()
-    gameboard.place(2, 2, 2)
-    expect(gameboard.isValid(1, 2, 2)).toBe(false)
+    gameboard.place(8, 8, 3)
+    expect(gameboard.isValid(7, 7, 4)).toBe(false)
+    expect(gameboard.isValid(9, 9, 2)).toBe(false)
+  })
+
+  test("isValid() doesn't place ships if adjacent horizontally to any ship (3)", () => {
+    const gameboard = Gameboard()
+    gameboard.setPlane('vertically')
+    gameboard.place(3, 3, 3)
+    expect(gameboard.isValid(1, 3, 2)).toBe(false)
+    expect(gameboard.isValid(6, 3, 5)).toBe(false)
+  })
+
+  test("isValid() doesn't place ships if adjacent vertically to any ship (1)", () => {
+    const gameboard = Gameboard()
+    gameboard.place(1, 3, 3)
+    expect(gameboard.isValid(1, 1, 2)).toBe(false)
+    expect(gameboard.isValid(1, 6, 5)).toBe(false)
+  })
+
+  test("isValid() doesn't place ships if adjacent vertically to any ship (2)", () => {
+    const gameboard = Gameboard()
+    gameboard.setPlane('vertically')
+    gameboard.place(8, 8, 3)
+    expect(gameboard.isValid(8, 7, 2)).toBe(false)
+    expect(gameboard.isValid(6, 9, 5)).toBe(false)
+  })
+
+  test("isValid() doesn't place ships if adjacent diagonally to any ship (1)", () => {
+    const gameboard = Gameboard()
+    gameboard.place(2, 3, 3)
+    expect(gameboard.isValid(1, 1, 2)).toBe(false)
+    expect(gameboard.isValid(3, 1, 2)).toBe(false)
+    expect(gameboard.isValid(3, 5, 4)).toBe(false)
+    expect(gameboard.isValid(1, 5, 5)).toBe(false)
+  })
+
+  test("isValid() doesn't place ships if adjacent diagonally to any ship (2)", () => {
+    const gameboard = Gameboard()
+    gameboard.setPlane('vertically')
+    gameboard.place(6, 6, 3)
+    expect(gameboard.isValid(3, 5, 3)).toBe(false)
+    expect(gameboard.isValid(9, 5, 2)).toBe(false)
+    expect(gameboard.isValid(1, 7, 5)).toBe(false)
+    expect(gameboard.isValid(9, 7, 2)).toBe(false)
   })
 
   test('receiveAttack() correctly determines whether ship was hit or not (1)', () => {
