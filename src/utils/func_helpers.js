@@ -56,6 +56,10 @@ const decrement = map((n) => (typeof n === 'number') ? n - 1 : n)
 
 const decrementEach = map(decrement)
 
+const increment = map((n) => (typeof n === 'number') ? n + 1 : n)
+
+const incrementEach = map(increment)
+
 const repeat = curry((fn, num) => {
   const result = []
   let i = 0
@@ -119,4 +123,4 @@ const flatten = curry((arr) => {
   return result
 })
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten }
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten }

@@ -71,21 +71,17 @@ export const Gameboard = () => {
     return false
   }
 
-  const _isHorzinotallyAdjacent = (y, x, size) => {
-    const tail = x + size
-    let i = x
-    while (i < tail) {
-      if (_findShip(y + 1, i) || _findShip(y - 1, i)) {
-        return true
-      }
-      i++
-    }
-    return false
-  }
-
-  const isAdjacentToShips = (y, x, size) => {
+  const _isAdjacentToShips = (y, x, size) => {
     if (plane === 'horizontally') {
-      return _isHorzinotallyAdjacent(y, x, size)
+      const tail = x + size
+      let i = x
+      while (i < tail) {
+        if (board[y + 1][i] === _SHIP || board[y - 1][i] === _SHIP) {
+          return true
+        }
+        i++
+      }
+      return false
     }
     if (plane === 'vertically') {
 
@@ -94,13 +90,14 @@ export const Gameboard = () => {
 
   const isValid = (y, x, size) => (
     !_isOverlaps(y, x, size) &&
-    !_isOverflows(y, x, size)
+    !_isOverflows(y, x, size) &&
+    !_isAdjacentToShips(y, x, size)
   )
 
   const place = (y, x, size) => {
     if (_isOverlaps(y, x, size)) return 'This spot is occupied'
     if (_isOverflows(y, x, size)) return 'Ship is too big'
-    if (isAdjacentToShips(y, x, size)) return 'Ship is adjacent to other ship'
+    if (_isAdjacentToShips(y, x, size)) return 'Ship is adjacent to other ship'
 
     const ship = Ship(y, x, size, plane)
     fleet.push(ship)

@@ -1,4 +1,4 @@
-import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten } from '../utils/func_helpers'
+import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten } from '../utils/func_helpers'
 
 describe('func helpers work properly', () => {
   test('hasTruthyValues correctly determines truthiness of values in an array (1)', () => {
@@ -90,9 +90,22 @@ describe('func helpers work properly', () => {
     expect(decrement({ a: 1, b: 2, c: 3, d: 'heh', f: true })).toEqual({ a: 0, b: 1, c: 2, d: 'heh', f: true })
   })
 
-  test('decrement correctly subracts from nested arrays an objects inside an array', () => {
+  test('decrementEach correctly subracts from nested arrays an objects inside an array', () => {
     expect(decrementEach([[1, 2, 3, 'heh', true], {a: 1, b: 2, c: 3, d: 'heh', f: true}]))
       .toEqual([[0, 1, 2, 'heh', true], {a: 0, b: 1, c: 2, d: 'heh', f: true}])
+  })
+
+  test('increment correctly subracts from an array items', () => {
+    expect(increment([1, 2, 3, 'heh', true])).toEqual([2, 3, 4, 'heh', true])
+  })
+
+  test('increment correctly subracts from an object properties', () => {
+    expect(increment({ a: 1, b: 2, c: 3, d: 'heh', f: true })).toEqual({ a: 2, b: 3, c: 4, d: 'heh', f: true })
+  })
+
+  test('incrementEach correctly subracts from nested arrays an objects inside an array', () => {
+    expect(incrementEach([[1, 2, 3, 'heh', true], {a: 1, b: 2, c: 3, d: 'heh', f: true}]))
+      .toEqual([[2, 3, 4, 'heh', true], {a: 2, b: 3, c: 4, d: 'heh', f: true}])
   })
 
   test('repeat correctly creates an array of repeated values', () => {
