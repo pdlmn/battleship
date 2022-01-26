@@ -1,4 +1,4 @@
-import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten } from '../utils/func_helpers'
+import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter } from '../utils/func_helpers'
 
 describe('func helpers work properly', () => {
   test('hasTruthyValues correctly determines truthiness of values in an array (1)', () => {
@@ -128,5 +128,10 @@ describe('func helpers work properly', () => {
 
   test('flatten makes a flat array from a nested one', () => {
     expect(flatten([1, [2, 3, [4, 5]]])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  test('filter creates a new filtered out array with correct elements', () => {
+    const predicate = (n) => n % 2 === 0
+    expect(filter(predicate, [1, 2, 3, 4, 5])).toEqual([2, 4])
   })
 })

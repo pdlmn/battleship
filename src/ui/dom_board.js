@@ -1,4 +1,4 @@
-import { hasFalsyValues } from '../utils/func_helpers'
+import { forEach, hasFalsyValues, pipe } from '../utils/func_helpers'
 
 const _createCell = (isHidden, y, x) => {
   const cell = document.createElement('div')
@@ -9,7 +9,7 @@ const _createCell = (isHidden, y, x) => {
   return cell
 }
 
-const _segmentsFinder = {
+const _cellsFinder = {
   horizontally (y, x, size) {
     const segments = []
     const tail = x + size
@@ -106,29 +106,40 @@ export const boardHandler = (() => {
   const clearHighlights = () => document.querySelectorAll('.cell')
     .forEach((el) => el.classList.remove('future-ship', 'wrong-placement'))
 
-  const highlightFutureShip = (cell) => {
-    if (!shipsToPlace[0]) return
-    const [y, x] = _extractCoords(cell)
-    const shipSize = shipsToPlace[0]
-    const segments = _segmentsFinder[plane](y, x, shipSize)
+  // const highlightFutureShip = (cell) => {
+  //   if (!shipsToPlace[0]) return
+  //   const [y, x] = _extractCoords(cell)
+  //   const shipSize = shipsToPlace[0]
+  //   const segments = _cellsFinder[plane](y, x, shipSize)
+  //   clearHighlights()
+  //   if (hasFalsyValues(segments) ||
+  //     _isOverlapsWithShip(segments) ||
+  //     _adjacencyChecker.horizontal(segments) ||
+  //     _adjacencyChecker.vertical(segments) ||
+  //     _adjacencyChecker.diagonal(segments)) {
+  //     const validSegments = segments.filter((el) => Boolean(el))
+  //     validSegments.forEach((el) => el.classList.add('wrong-placement'))
+  //   } else {
+  //     segments.forEach((el) => el.classList.add('future-ship'))
+  //   }
+  // }
+
+  const highlightFutureShip = (y, x, size, isValid) => {
+    const className = (isValid) ? 'future-ship' : 'wrong-placement'
+    const segments = _cellsFinder[plane](y, x, size)
     clearHighlights()
-    if (hasFalsyValues(segments) ||
-      _isOverlapsWithShip(segments) ||
-      _adjacencyChecker.horizontal(segments) ||
-      _adjacencyChecker.vertical(segments) ||
-      _adjacencyChecker.diagonal(segments)) {
-      const validSegments = segments.filter((el) => Boolean(el))
-      validSegments.forEach((el) => el.classList.add('wrong-placement'))
-    } else {
-      segments.forEach((el) => el.classList.add('future-ship'))
-    }
+    segments.filter((el) => Boolean(el)).forEach((el) => el.classList.add(className))
+    pipe(
+      filter((el) => Boolean(el)),
+      forEach((el) => el.classList.add(className))
+    )
   }
 
   const place = (cell) => {
     if (!shipsToPlace[0]) return
     const [y, x] = _extractCoords(cell)
     const shipSize = shipsToPlace[0]
-    const shipSegments = _segmentsFinder[plane](y, x, shipSize)
+    const shipSegments = _cellsFinder[plane](y, x, shipSize)
     if (hasFalsyValues(shipSegments) || _isOverlapsWithShip(shipSegments)) return
     shipsToPlace.shift()
     _placeShip(shipSegments)

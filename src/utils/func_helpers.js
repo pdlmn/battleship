@@ -123,4 +123,17 @@ const flatten = curry((arr) => {
   return result
 })
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten }
+const filter = curry((fn, arr) => {
+  const result = []
+  const len = arr.length
+  let i = 0
+  while (i < len) {
+    if (fn(arr[i])) {
+      result.push(arr[i])
+    }
+    i++
+  }
+  return result
+})
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter }

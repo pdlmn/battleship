@@ -10,7 +10,6 @@ import { boardHandler } from '../ui/dom_board'
   const playerName = document.querySelector('#player-name')
   const rotate = document.querySelector('#rotate')
   const nameInputed = false
-  const allShipsPlaced = false
 
   startGame.addEventListener('click', () => {
     eventsHandler.trigger(eventTypes.GAME_STARTED, playerName.value)
@@ -54,6 +53,6 @@ import { boardHandler } from '../ui/dom_board'
   eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
 })()
 
-;(function gameboardLogic () {
-
+;(function gameLogic () {
+  const shipsToPlace = [5, 4, 3, 2, 1]
 })()
