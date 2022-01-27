@@ -91,8 +91,8 @@ describe('func helpers work properly', () => {
   })
 
   test('decrementEach correctly subracts from nested arrays an objects inside an array', () => {
-    expect(decrementEach([[1, 2, 3, 'heh', true], {a: 1, b: 2, c: 3, d: 'heh', f: true}]))
-      .toEqual([[0, 1, 2, 'heh', true], {a: 0, b: 1, c: 2, d: 'heh', f: true}])
+    expect(decrementEach([[1, 2, 3, 'heh', true], { a: 1, b: 2, c: 3, d: 'heh', f: true }]))
+      .toEqual([[0, 1, 2, 'heh', true], { a: 0, b: 1, c: 2, d: 'heh', f: true }])
   })
 
   test('increment correctly subracts from an array items', () => {
@@ -104,8 +104,8 @@ describe('func helpers work properly', () => {
   })
 
   test('incrementEach correctly subracts from nested arrays an objects inside an array', () => {
-    expect(incrementEach([[1, 2, 3, 'heh', true], {a: 1, b: 2, c: 3, d: 'heh', f: true}]))
-      .toEqual([[2, 3, 4, 'heh', true], {a: 2, b: 3, c: 4, d: 'heh', f: true}])
+    expect(incrementEach([[1, 2, 3, 'heh', true], { a: 1, b: 2, c: 3, d: 'heh', f: true }]))
+      .toEqual([[2, 3, 4, 'heh', true], { a: 2, b: 3, c: 4, d: 'heh', f: true }])
   })
 
   test('repeat correctly creates an array of repeated values', () => {

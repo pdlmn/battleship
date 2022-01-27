@@ -35,12 +35,16 @@ export const boardHandler = (() => {
   const shipsToPlace = [5, 4, 3, 2, 1]
   let plane = 'horizontally'
 
-  const renderBoard = (isHidden, board) => {
+  const createBoard = (isHidden, domBoard) => {
     for (let y = 1; y < 11; y++) {
       for (let x = 1; x < 11; x++) {
-        board.append(_createCell(isHidden, y, x))
+        domBoard.append(_createCell(isHidden, y, x))
       }
     }
+  }
+
+  const renderBoard = (domBoard) => {
+
   }
 
   const clearHighlights = () => document.querySelectorAll('.cell')
@@ -64,7 +68,7 @@ export const boardHandler = (() => {
   const setPlane = (newPlane) => { plane = newPlane }
 
   return {
-    renderBoard,
+    createBoard,
     setPlane,
     extractCoords,
     highlightFutureShip,

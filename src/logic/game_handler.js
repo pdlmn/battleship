@@ -3,6 +3,7 @@ import { eventsHandler } from '../utils/events_handler'
 import { menuController } from '../ui/menu'
 import { Player } from '../factories/player'
 import { Gameboard } from '../factories/gameboard'
+import { AiGameboard } from '../factories/ai_gameboard'
 import { boardHandler } from '../ui/dom_board'
 
 ;(function menuLogic () {
@@ -12,9 +13,10 @@ import { boardHandler } from '../ui/dom_board'
   const nameInputed = false
 
   startGame.addEventListener('click', () => {
-    eventsHandler.trigger(eventTypes.GAME_STARTED, playerName.value)
     menuController.disableElement(startGame)
     menuController.disableElement(playerName)
+
+    eventsHandler.trigger(eventTypes.GAME_STARTED, playerName.value)
   })
 
   rotate.addEventListener('click', () => {
@@ -57,8 +59,8 @@ import { boardHandler } from '../ui/dom_board'
 
   playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
 
-  boardHandler.renderBoard(false, playerBoard)
-  boardHandler.renderBoard(true, computerBoard)
+  boardHandler.createBoard(false, playerBoard)
+  boardHandler.createBoard(true, computerBoard)
 
   eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
 })()
@@ -66,6 +68,7 @@ import { boardHandler } from '../ui/dom_board'
 ;(function gameLogic () {
   const shipsToPlace = [5, 4, 3, 2, 1]
   const playerBoard = Gameboard()
+  const computerBoard = AiGameboard()
 
   eventsHandler.on(eventTypes.BOARD_HOVERED, (coords) => {
     if (shipsToPlace.length === 0) return
@@ -87,4 +90,8 @@ import { boardHandler } from '../ui/dom_board'
   })
 
   eventsHandler.on(eventTypes.SHIP_ROTATED, playerBoard.setPlane)
+
+  eventsHandler.on(eventTypes.GAME_STARTED, () => {
+    computerBoard.placeShipAtRandom(5)
+  })
 })()

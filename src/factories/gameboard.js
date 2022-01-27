@@ -12,7 +12,7 @@ const _createGameboard = () => repeat(_createRow, 10)
 const _mapCoords = curry((board, value, coords) => {
   const result = [...board]
   for (let i = 0; i < coords.length; i++) {
-    let {y, x} = decrement(coords[i])
+    const { y, x } = decrement(coords[i])
     result[y][x] = value
   }
   return result
@@ -23,9 +23,9 @@ export const Gameboard = () => {
   const missed = []
   const hit = []
   let plane = 'horizontally'
-  let board = _createGameboard()
+  let state = _createGameboard()
 
-  const _mapBoard = _mapCoords(board)
+  const _mapBoard = _mapCoords(state)
   const _mapShip = _mapBoard(_SHIP)
   const _mapMissed = _mapBoard(_MISSED)
   const _mapHit = _mapBoard(_HIT)
@@ -40,7 +40,7 @@ export const Gameboard = () => {
 
   const _isOverlaps = (y, x, size) => {
     const occupiedCells = getOccupiedCells()
-    if (plane === 'horizontally' && occupiedCells.length > 0) { 
+    if (plane === 'horizontally' && occupiedCells.length > 0) {
       const tail = x + size
       for (let i = 0; i < occupiedCells.length; i++) {
         for (let j = x; j < tail; j++) {
@@ -50,7 +50,7 @@ export const Gameboard = () => {
         }
       }
     }
-    if (plane === 'vertically' && occupiedCells.length > 0) { 
+    if (plane === 'vertically' && occupiedCells.length > 0) {
       const tail = y + size
       for (let i = 0; i < occupiedCells.length; i++) {
         for (let j = y; j < tail; j++) {
@@ -78,53 +78,51 @@ export const Gameboard = () => {
       const tail = dx + size
 
       for (let i = dx; i < tail; i++) {
-        let topCell = board[dy - 1] ? board[dy - 1][i] : null
-        let bottomCell = board[dy + 1] ? board[dy + 1][i] : null
+        const topCell = state[dy - 1] ? state[dy - 1][i] : null
+        const bottomCell = state[dy + 1] ? state[dy + 1][i] : null
         if (topCell === _SHIP || bottomCell === _SHIP) {
           return true
         }
       }
 
-      const leftCell = board[dy][dx - 1]
-      const rightCell = board[dy][tail]
+      const leftCell = state[dy][dx - 1]
+      const rightCell = state[dy][tail]
       if (leftCell === _SHIP || rightCell === _SHIP) {
         return true
       }
 
-      const topLeft = board[dy - 1] ? board[dy - 1][dx - 1] : null
-      const bottomLeft = board[dy + 1] ? board[dy + 1][dx - 1] : null
-      const topRight = board[dy - 1] ? board[dy - 1][tail] : null
-      const bottomRight = board[dy + 1] ? board[dy + 1][tail] : null
+      const topLeft = state[dy - 1] ? state[dy - 1][dx - 1] : null
+      const bottomLeft = state[dy + 1] ? state[dy + 1][dx - 1] : null
+      const topRight = state[dy - 1] ? state[dy - 1][tail] : null
+      const bottomRight = state[dy + 1] ? state[dy + 1][tail] : null
       if (topLeft === _SHIP || bottomLeft === _SHIP || topRight === _SHIP || bottomRight === _SHIP) {
         return true
       }
-
     }
     if (plane === 'vertically') {
       const tail = dy + size
 
-      const topCell = board[dy - 1] ? board[dy - 1][dx] : null
-      const bottomCell = board[tail] ? board[tail][dx] : null
+      const topCell = state[dy - 1] ? state[dy - 1][dx] : null
+      const bottomCell = state[tail] ? state[tail][dx] : null
       if (topCell === _SHIP || bottomCell === _SHIP) {
         return true
       }
 
       for (let i = dy; i < tail; i++) {
-        let leftCell = board[i][dx - 1]
-        let rightCell = board[i][dx + 1]
+        const leftCell = state[i][dx - 1]
+        const rightCell = state[i][dx + 1]
         if (leftCell === _SHIP || rightCell === _SHIP) {
           return true
         }
       }
 
-      const topLeft = board[dy - 1] ? board[dy - 1][dx - 1] : null
-      const topRight = board[dy - 1] ? board[dy - 1][dx + 1] : null
-      const bottomLeft = board[tail] ? board[tail][dx - 1] : null
-      const bottomRight = board[tail] ? board[tail][dx + 1] : null
+      const topLeft = state[dy - 1] ? state[dy - 1][dx - 1] : null
+      const topRight = state[dy - 1] ? state[dy - 1][dx + 1] : null
+      const bottomLeft = state[tail] ? state[tail][dx - 1] : null
+      const bottomRight = state[tail] ? state[tail][dx + 1] : null
       if (topLeft === _SHIP || bottomLeft === _SHIP || topRight === _SHIP || bottomRight === _SHIP) {
         return true
       }
-
     }
     return false
   }
@@ -140,14 +138,14 @@ export const Gameboard = () => {
 
     const ship = Ship(y, x, size, plane)
     fleet.push(ship)
-    board = _mapShip(ship.segments)
+    state = _mapShip(ship.segments)
   }
 
   const receiveAttack = (y, x) => {
     const hitShip = _findShip(y, x)
     if (!hitShip) {
       missed.push({ y, x })
-      board = _mapMissed([{ y, x }])
+      state = _mapMissed([{ y, x }])
       return
     }
     pipe(
@@ -155,7 +153,7 @@ export const Gameboard = () => {
       hitShip.hit
     )(hitShip.segments)
     hit.push({ y, x })
-    board = _mapHit([{ y, x }])
+    state = _mapHit([{ y, x }])
   }
 
   const isFleetSunk = () => fleet.every((ship) => ship.isSunk())
@@ -163,7 +161,7 @@ export const Gameboard = () => {
   const setPlane = (newPlane) => { plane = newPlane }
 
   return {
-    get board () { return board },
+    get state () { return state },
     get fleet () { return fleet },
     get missed () { return missed },
     getOccupiedCells,

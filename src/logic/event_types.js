@@ -5,5 +5,5 @@ export const eventTypes = Object.freeze({
   SHIP_ROTATED: 'Ship rotated',
   SHIP_PLACED: 'Ship placed',
   PLAYERS_CREATED: 'Players created',
-  GAME_STARTED: 'Game started',
+  GAME_STARTED: 'Game started'
 })
