@@ -2,8 +2,16 @@ import { Ship } from '../factories/ship'
 
 describe('Ship factory is working correctly', () => {
   test('correctly defines type of a ship based on length', () => {
-    const ship = Ship(1, 1, 2, 'horizontally')
-    expect(ship.type).toBe('Patrol boat')
+    const ship1 = Ship(1, 1, 1, 'horizontally')
+    const ship2 = Ship(3, 3, 2, 'horizontally')
+    const ship3 = Ship(5, 5, 3, 'horizontally')
+    const ship4 = Ship(7, 7, 4, 'horizontally')
+    const ship5 = Ship(9, 9, 5, 'horizontally')
+    expect(ship1.type).toBe('Patrol boat')
+    expect(ship2.type).toBe('Destroyer')
+    expect(ship3.type).toBe('Cruiser')
+    expect(ship4.type).toBe('Battleship')
+    expect(ship5.type).toBe('Carrier')
   })
 
   test('segments of a ship filled with correct segment objects (1)', () => {

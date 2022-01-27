@@ -66,10 +66,9 @@ import { boardHandler } from '../ui/dom_board'
 ;(function gameLogic () {
   const shipsToPlace = [5, 4, 3, 2, 1]
   const playerBoard = Gameboard()
-  let gameStarted = false
 
   eventsHandler.on(eventTypes.BOARD_HOVERED, (coords) => {
-    if (gameStarted) return
+    if (shipsToPlace.length === 0) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValid(y, x, nextShipSize)
@@ -77,7 +76,7 @@ import { boardHandler } from '../ui/dom_board'
   })
 
   eventsHandler.on(eventTypes.BOARD_CLICKED, (coords) => {
-    if (gameStarted) return
+    if (shipsToPlace.length === 0) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValid(y, x, nextShipSize)

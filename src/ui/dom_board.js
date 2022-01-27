@@ -31,63 +31,6 @@ const _cellsFinder = {
 const extractCoords = (cell) =>
   [cell.dataset.y, cell.dataset.x].map(coord => Number(coord))
 
-const _isOverlapsWithShip = (segments) =>
-  segments.some((el) => el.classList.contains('ship'))
-
-const _adjacencyChecker = {
-  horizontal (segments) {
-    for (let i = 0; i < segments.length; i++) {
-      const [y, x] = extractCoords(segments[i])
-      const [left, right] = [
-        document.querySelector(`[data-y='${y}'][data-x='${x - 1}']`),
-        document.querySelector(`[data-y='${y}'][data-x='${x + 1}']`)
-      ]
-        .filter((el) => Boolean(el))
-        .map((el) => el.classList.contains('ship'))
-      if (left || right) {
-        return true
-      }
-    }
-    return false
-  },
-
-  vertical (segments) {
-    for (let i = 0; i < segments.length; i++) {
-      const [y, x] = extractCoords(segments[i])
-      const [top, bottom] = [
-        document.querySelector(`[data-y='${y - 1}'][data-x='${x}']`),
-        document.querySelector(`[data-y='${y + 1}'][data-x='${x}']`)
-      ]
-        .filter((el) => Boolean(el))
-        .map((el) => el.classList.contains('ship'))
-      if (top || bottom) {
-        return true
-      }
-    }
-    return false
-  },
-
-  diagonal (segments) {
-    const [head, tail] = [segments[0], segments[segments.length - 1]]
-    for (const end of [head, tail]) {
-      const [y, x] = extractCoords(end)
-      const [topLeft, topRight, bottomLeft, bottomRight] = [
-        document.querySelector(`[data-y='${y - 1}'][data-x='${x - 1}']`),
-        document.querySelector(`[data-y='${y - 1}'][data-x='${x + 1}']`),
-        document.querySelector(`[data-y='${y + 1}'][data-x='${x - 1}']`),
-        document.querySelector(`[data-y='${y + 1}'][data-x='${x + 1}']`)
-      ]
-        .filter((el) => Boolean(el))
-        .map((el) => el.classList.contains('ship'))
-      if (topLeft || topRight || bottomLeft || bottomRight) {
-        return true
-      }
-    }
-    return false
-  }
-}
-
-
 export const boardHandler = (() => {
   const shipsToPlace = [5, 4, 3, 2, 1]
   let plane = 'horizontally'

@@ -1,6 +1,7 @@
 const _types = {
-  2: 'Patrol boat',
-  3: 'Destroyer',
+  1: 'Patrol boat',
+  2: 'Destroyer',
+  3: 'Cruiser',
   4: 'Battleship',
   5: 'Carrier'
 }
@@ -22,7 +23,7 @@ const _segmentsCreator = {
   }
 }
 
-const Ship = (y, x, size, plane) => {
+export const Ship = (y, x, size, plane) => {
   const type = _types[size]
   if (type === undefined) throw new Error('Improper ship size')
 
@@ -36,5 +37,3 @@ const Ship = (y, x, size, plane) => {
     isSunk () { return segments.every((segment) => segment.intact === false) }
   }
 }
-
-export { Ship }

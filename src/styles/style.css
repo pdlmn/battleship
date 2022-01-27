@@ -49,15 +49,18 @@ main {
 
 .wrong-placement,
 .wrong-placement:hover {
-  background: rgb(250, 120, 120);
+  background: rgb(250, 140, 140);
   transition: 0.20s;
 }
 
-.ship {
-  background: rgb(200, 200, 80);
-  transition: 0.20s;
-}
-
+.ship,
 .ship:hover {
   background: rgb(200, 200, 80);
+  transition: 0.20s;
+}
+
+.enemy-ship,
+.enemy-ship:hover {
+  background: rgb(250, 20, 20);
+  transition: 0.20s;
 }
