@@ -34,9 +34,6 @@ const extractCoords = (cell) =>
 const _isOverlapsWithShip = (segments) =>
   segments.some((el) => el.classList.contains('ship'))
 
-const _placeShip = (segments) =>
-  segments.forEach((el) => el.classList.add('ship'))
-
 const _adjacencyChecker = {
   horizontal (segments) {
     for (let i = 0; i < segments.length; i++) {
@@ -116,14 +113,9 @@ export const boardHandler = (() => {
     )(segments)
   }
 
-  const place = (cell) => {
-    if (!shipsToPlace[0]) return
-    const [y, x] = extractCoords(cell)
-    const shipSize = shipsToPlace[0]
-    const shipSegments = _cellsFinder[plane](y, x, shipSize)
-    if (hasFalsyValues(shipSegments) || _isOverlapsWithShip(shipSegments)) return
-    shipsToPlace.shift()
-    _placeShip(shipSegments)
+  const place = (y, x, size) => {
+    const shipSegments = _cellsFinder[plane](y, x, size)
+    shipSegments.forEach((el) => el.classList.add('ship'))
   }
 
   const setPlane = (newPlane) => { plane = newPlane }

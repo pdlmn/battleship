@@ -51,6 +51,10 @@ import { boardHandler } from '../ui/dom_board'
     }
   })
 
+  eventsHandler.on(eventTypes.SHIP_PLACED, (data) => {
+    boardHandler.place(...data)
+  })
+
   playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
 
   boardHandler.renderBoard(false, playerBoard)
