@@ -35,6 +35,9 @@ import { boardHandler } from '../ui/dom_board'
   const playerBoard = document.querySelector('#player-board')
   const computerBoard = document.querySelector('#computer-board')
 
+  boardHandler.createBoard(false, playerBoard)
+  boardHandler.createBoard(true, computerBoard)
+
   playerBoard.addEventListener('mouseover', (e) => {
     if (e.target.classList.contains('cell')) {
       const coords = boardHandler.extractCoords(e.target)
@@ -59,8 +62,9 @@ import { boardHandler } from '../ui/dom_board'
 
   playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
 
-  boardHandler.createBoard(false, playerBoard)
-  boardHandler.createBoard(true, computerBoard)
+  eventsHandler.on(eventTypes.COMPUTER_PLACED_SHIPS, (state) => {
+    boardHandler.renderBoard(state, computerBoard)
+  })
 
   eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
 })()
@@ -93,5 +97,6 @@ import { boardHandler } from '../ui/dom_board'
 
   eventsHandler.on(eventTypes.GAME_STARTED, () => {
     computerBoard.placeShipAtRandom(5)
+    eventsHandler.trigger(eventTypes.COMPUTER_PLACED_SHIPS, computerBoard.state)
   })
 })()

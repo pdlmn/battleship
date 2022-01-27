@@ -28,6 +28,13 @@ const _cellsFinder = {
   }
 }
 
+const _cellClasses = {
+  's': 'ship',
+  'w': 'water',
+  'h': 'hit',
+  'm': 'miss'
+}
+
 const extractCoords = (cell) =>
   [cell.dataset.y, cell.dataset.x].map(coord => Number(coord))
 
@@ -43,8 +50,16 @@ export const boardHandler = (() => {
     }
   }
 
-  const renderBoard = (domBoard) => {
-
+  const renderBoard = (boardState, domBoard) => {
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        const cellState = boardState[i][j]
+        const cellView = domBoard.querySelector(`[data-y='${i + 1}'][data-x='${j + 1}']`)
+        if (!cellView.classList.contains(_cellClasses[cellState])) {
+          cellView.classList.add(_cellClasses[cellState])
+        }
+      }
+    }
   }
 
   const clearHighlights = () => document.querySelectorAll('.cell')
@@ -69,6 +84,7 @@ export const boardHandler = (() => {
 
   return {
     createBoard,
+    renderBoard,
     setPlane,
     extractCoords,
     highlightFutureShip,
