@@ -8,18 +8,32 @@ const _getRandomCoords = () => {
   return [y, x]
 }
 
+const _getRandomPlane = () => {
+  return _randomInteger(1, 2) === 1 ? 'horizontally' : 'vertically'
+}
+
 export const AiGameboard = () => {
   const gameboard = Gameboard()
 
-  const placeShipAtRandom = (size) => {
+  const _placeShipAtRandom = (size) => {
+    const plane = _getRandomPlane()
     let [y, x] = _getRandomCoords()
+    gameboard.setPlane(plane)
     while (!gameboard.isValid(y, x, size)) {
       [y, x] = _getRandomCoords()
     }
     gameboard.place(y, x, size)
   }
 
+  const placeFleet = () => {
+    let size = 5
+    while (size > 0) {
+      _placeShipAtRandom(size)
+      size--
+    }
+  }
+
   return Object.assign(gameboard, {
-    placeShipAtRandom
+    placeFleet
   })
 }

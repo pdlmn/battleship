@@ -96,7 +96,7 @@ import { boardHandler } from '../ui/dom_board'
   eventsHandler.on(eventTypes.SHIP_ROTATED, playerBoard.setPlane)
 
   eventsHandler.on(eventTypes.GAME_STARTED, () => {
-    computerBoard.placeShipAtRandom(5)
+    computerBoard.placeFleet(5)
     eventsHandler.trigger(eventTypes.COMPUTER_PLACED_SHIPS, computerBoard.state)
   })
 })()
