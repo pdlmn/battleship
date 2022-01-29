@@ -62,7 +62,10 @@ import { boardHandler } from '../ui/dom_board'
 
   playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
 
-  eventsHandler.on(eventTypes.COMPUTER_PLACED_SHIPS, (state) => {
+  eventsHandler.onEach([
+    eventTypes.COMPUTER_PLACED_SHIPS,
+    eventTypes.COMPUTER_BOARD_ATTACKED
+  ], (state) => {
     boardHandler.renderBoard(state, computerBoard)
   })
 
@@ -73,9 +76,9 @@ import { boardHandler } from '../ui/dom_board'
     }
   })
 
-  eventsHandler.on(eventTypes.COMPUTER_BOARD_ATTACKED, (state) => {
-    boardHandler.renderBoard(state, computerBoard)
-  })
+  // eventsHandler.on(eventTypes.COMPUTER_BOARD_ATTACKED, (state) => {
+  //   boardHandler.renderBoard(state, computerBoard)
+  // })
 
   eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
 })()

@@ -7,6 +7,13 @@ export const eventsHandler = (() => {
       events[eventName].push(fn)
     },
 
+    onEach (arrOfEvents, fn) {
+      arrOfEvents.forEach((event) => {
+        events[event] = events[event] || []
+        events[event].push(fn)
+      })
+    },
+
     off (eventName, removedFn) {
       if (events[eventName]) {
         events[eventName] = events[eventName].filter((fn) => fn !== removedFn)
