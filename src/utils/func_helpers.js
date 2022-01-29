@@ -136,4 +136,22 @@ const filter = curry((fn, arr) => {
   return result
 })
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter }
+const objEqual = curry((obj1, obj2) => {
+  for (let prop of Object.keys(obj1)) {
+    if (obj1[prop] !== obj2[prop]) {
+      return false
+    }
+  }
+  return true
+})
+
+const objectInArray = curry((obj, arr) => {
+  for (let currentObj of arr) {
+    if (objEqual(currentObj, obj)) {
+      return true
+    }
+  }
+  return false
+})
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray }

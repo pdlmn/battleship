@@ -1,12 +1,12 @@
 import { Player } from './player'
 import { getRandomCoords, randomInteger } from '../utils/helper_funcs'
 
-const _randomCoordMutations = {
-  1: (y, x) => [y - 1, x],
-  2: (y, x) => [y + 1, x],
-  3: (y, x) => [y, x - 1],
-  4: (y, x) => [y, x + 1],
-}
+const _coordMutations = [
+  (y, x) => [y - 1, x],
+  (y, x) => [y + 1, x],
+  (y, x) => [y, x - 1],
+  (y, x) => [y, x + 1],
+]
 
 export const AiPlayer = (name, isFirst) => {
   const player = Player(name, isFirst)
@@ -19,14 +19,18 @@ export const AiPlayer = (name, isFirst) => {
     return [y, x]
   }
 
-  const findAdjacentSpotToAttack = (board, hitCells) => {
-    hitCells.forEach(({y, x}) => {
-      let randomNumber = randomInteger(1, 4)
-      let mutatedCoords = _randomCoordMutations[randomNumber](y, x)
-      if (player.isValidAttackTarget(board, ...mutatedCoords)) {
-        return mutatedCoords
+  const findAdjacentSpotToAttack = (board) => {
+    const result = []
+    for (let coords of board.hit) {
+      let {y, x} = coords
+      for (let j = 0; j < 4; j++) {
+        let mutatedCoords = _coordMutations[j](y, x)
+        if (player.isValidAttackTarget(mutatedCoords)) {
+          result.push(mutatedCoords)
+        }
       }
-    })
+    }
+    return result
   }
 
   return Object.assign(player, {

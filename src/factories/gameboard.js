@@ -166,6 +166,7 @@ export const Gameboard = () => {
     get state () { return state },
     get fleet () { return fleet },
     get missed () { return missed },
+    get hit () { return hit },
     isValid,
     place,
     receiveAttack,

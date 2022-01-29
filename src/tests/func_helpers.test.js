@@ -1,4 +1,4 @@
-import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter } from '../utils/func_helpers'
+import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray } from '../utils/func_helpers'
 
 describe('func helpers work properly', () => {
   test('hasTruthyValues correctly determines truthiness of values in an array (1)', () => {
@@ -133,5 +133,38 @@ describe('func helpers work properly', () => {
   test('filter creates a new filtered out array with correct elements', () => {
     const predicate = (n) => n % 2 === 0
     expect(filter(predicate, [1, 2, 3, 4, 5])).toEqual([2, 4])
+  })
+
+  test('objEquals returns true if properties of two different objects are the same', () => {
+    const obj1 = {name: 'John', age: 32, married: false}
+    const obj2 = {name: 'John', age: 32, married: false}
+    expect(objEqual(obj1, obj2)).toBe(true)
+  })
+
+  test('objEquals returns false if properties of two different objects are not the same', () => {
+    const obj1 = {name: 'John', age: 32, married: true}
+    const obj2 = {name: 'John', age: 32, married: false}
+    expect(objEqual(obj1, obj2)).toBe(false)
+  })
+
+
+  test('objectInArray returns true if there is an object with the same properties in an array', () => {
+    const obj1 = {name: 'John', age: 32, married: true}
+    const arr = [
+      {name: 'Mary', age: 22, married: false},
+      {name: 'John', age: 32, married: true},
+      {name: 'Stew', age: 40, married: true},
+    ]
+    expect(objectInArray(obj1, arr)).toBe(true)
+  })
+
+  test('objectInArray returns false if there is no object with the same properties in an array', () => {
+    const obj1 = {name: 'John', age: 32, married: true}
+    const arr = [
+      {name: 'Mary', age: 22, married: false},
+      {name: 'John', age: 33, married: true},
+      {name: 'Stew', age: 40, married: true},
+    ]
+    expect(objectInArray(obj1, arr)).toBe(false)
   })
 })
