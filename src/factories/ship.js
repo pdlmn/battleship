@@ -24,7 +24,6 @@ const _segmentsCreator = {
 }
 
 export const Ship = (y, x, size, plane) => {
-  console.log(size)
   const type = _types[size]
   if (type === undefined) throw new Error('Improper ship size')
 

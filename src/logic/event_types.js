@@ -7,4 +7,6 @@ export const eventTypes = Object.freeze({
   PLAYERS_CREATED: 'Players created',
   GAME_STARTED: 'Game started',
   COMPUTER_PLACED_SHIPS: 'Computer placed ships',
+  COMPUTER_BOARD_CLICKED: 'Computer board clicked',
+  COMPUTER_BOARD_ATTACKED: 'Computer board attacked'
 })

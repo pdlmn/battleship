@@ -66,16 +66,31 @@ import { boardHandler } from '../ui/dom_board'
     boardHandler.renderBoard(state, computerBoard)
   })
 
+  computerBoard.addEventListener('click', (e) => {
+    if (e.target.classList.contains('cell')) {
+      const coords = boardHandler.extractCoords(e.target)
+      eventsHandler.trigger(eventTypes.COMPUTER_BOARD_CLICKED, coords)
+    }
+  })
+
+  eventsHandler.on(eventTypes.COMPUTER_BOARD_ATTACKED, (state) => {
+    boardHandler.renderBoard(state, computerBoard)
+  })
+
   eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
 })()
 
 ;(function gameLogic () {
   const shipsToPlace = [5, 4, 3, 2, 1]
+  const isGameStarted = () => shipsToPlace.length === 0
   const playerBoard = Gameboard()
   const computerBoard = AiGameboard()
+  // temporary
+  let player = Player('player 1', true)
+  let computer = Player('computer', false)
 
   eventsHandler.on(eventTypes.BOARD_HOVERED, (coords) => {
-    if (shipsToPlace.length === 0) return
+    if (isGameStarted()) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValid(y, x, nextShipSize)
@@ -83,7 +98,7 @@ import { boardHandler } from '../ui/dom_board'
   })
 
   eventsHandler.on(eventTypes.BOARD_CLICKED, (coords) => {
-    if (shipsToPlace.length === 0) return
+    if (isGameStarted()) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValid(y, x, nextShipSize)
@@ -98,5 +113,11 @@ import { boardHandler } from '../ui/dom_board'
   eventsHandler.on(eventTypes.GAME_STARTED, () => {
     computerBoard.placeFleet(5)
     eventsHandler.trigger(eventTypes.COMPUTER_PLACED_SHIPS, computerBoard.state)
+  })
+
+  eventsHandler.on(eventTypes.COMPUTER_BOARD_CLICKED, (coords) => {
+    if (!isGameStarted()) return
+    player.attack(computerBoard, ...coords)
+    eventsHandler.trigger(eventTypes.COMPUTER_BOARD_ATTACKED, computerBoard.state)
   })
 })()

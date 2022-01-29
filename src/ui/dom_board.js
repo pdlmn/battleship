@@ -1,10 +1,18 @@
-import { forEach, hasFalsyValues, pipe, filter } from '../utils/func_helpers'
+import { forEach, pipe, filter } from '../utils/func_helpers'
+
+const _cellClasses = {
+  's': 'ship',
+  'w': 'water',
+  'h': 'hit',
+  'm': 'miss'
+}
 
 const _createCell = (isHidden, y, x) => {
   const cell = document.createElement('div')
   cell.classList.add('cell')
   cell.dataset.y = y
   cell.dataset.x = x
+  cell.classList.add('water')
   if (isHidden) cell.classList.add('fog-of-war')
   return cell
 }
@@ -26,13 +34,6 @@ const _cellsFinder = {
     }
     return segments
   }
-}
-
-const _cellClasses = {
-  's': 'ship',
-  'w': 'water',
-  'h': 'hit',
-  'm': 'miss'
 }
 
 const extractCoords = (cell) =>

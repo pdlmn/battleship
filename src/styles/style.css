@@ -27,10 +27,13 @@ main {
 .cell {
   height: 40px;
   width: 40px;
+}
+
+.water {
   background: rgb(0, 80, 250);
 }
 
-.cell:hover {
+.water:hover {
   background: rgb(0, 80, 200);
 }
 
@@ -63,4 +66,9 @@ main {
 .enemy-ship:hover {
   background: rgb(250, 20, 20);
   transition: 0.20s;
+}
+
+.hit,
+.hit:hover {
+  background: rgb(250, 150, 50);
 }
