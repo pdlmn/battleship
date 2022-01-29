@@ -7,8 +7,7 @@ import { Gameboard } from '../factories/gameboard'
 import { AiGameboard } from '../factories/ai_gameboard'
 import { boardHandler } from '../ui/dom_board'
 
-;import { curry } from '../utils/func_helpers'
-(function menuLogic () {
+;(function menuLogic () {
   const startGame = document.querySelector('#start-game')
   const playerName = document.querySelector('#player-name')
   const rotate = document.querySelector('#rotate')
@@ -81,7 +80,7 @@ import { boardHandler } from '../ui/dom_board'
     }
   })
 
-  eventsHandler.on(eventTypes.COMPUTER_MADE_MOVE, (state) => {
+  eventsHandler.on(eventTypes.COMPUTER_FINISHED_TURN, (state) => {
     renderPlayer(state)
   })
 
@@ -127,12 +126,27 @@ import { boardHandler } from '../ui/dom_board'
     if (!isGameStarted() || !player.turn) return
     player.attack(computerBoard, ...coords)
     eventsHandler.trigger(eventTypes.COMPUTER_BOARD_ATTACKED, computerBoard.state)
-    eventsHandler.trigger(eventTypes.PLAYER_MADE_MOVE, null)
+    if (!player.turn) {
+      eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, null)
+    }
+    if (computerBoard.isFleetSunk()) {
+      alert('you won!')
+    }
   })
 
-  eventsHandler.on(eventTypes.PLAYER_MADE_MOVE, () => {
-    computer.attackRandomSpot(playerBoard)
-    eventsHandler.trigger(eventTypes.COMPUTER_MADE_MOVE, playerBoard.state)
+  eventsHandler.on(eventTypes.PLAYER_FINISHED_TURN, (hitCells) => {
+    let hit = hitCells || []
+    let randomCoords = computer.findSpotToAttack(playerBoard)
+    computer.attack(playerBoard, ...randomCoords)
+    eventsHandler.trigger(eventTypes.COMPUTER_FINISHED_TURN, playerBoard.state)
+    if (playerBoard.isAttackHit(...randomCoords)) {
+      eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, hit)
+      return
+    }
     player.changeTurn()
+
+    if (playerBoard.isFleetSunk()) {
+      alert('you lost!')
+    }
   })
 })()

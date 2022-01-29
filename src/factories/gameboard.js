@@ -33,13 +33,13 @@ export const Gameboard = () => {
   const _findShip = (y, x) =>
     fleet.find((ship) => ship.segments.find((segment) => segment.y === y && segment.x === x))
 
-  const getOccupiedCells = () => pipe(
+  const _getOccupiedCells = () => pipe(
     map((ship) => ship.segments),
     flatten
   )(fleet)
 
   const _isOverlaps = (y, x, size) => {
-    const occupiedCells = getOccupiedCells()
+    const occupiedCells = _getOccupiedCells()
     if (plane === 'horizontally' && occupiedCells.length > 0) {
       const tail = x + size
       for (let i = 0; i < occupiedCells.length; i++) {
@@ -156,6 +156,8 @@ export const Gameboard = () => {
     state = _mapHit([{ y, x }])
   }
 
+  const isAttackHit = (y, x) => Boolean(hit.find((cell) => cell.y === y && cell.x === x))
+
   const isFleetSunk = () => fleet.every((ship) => ship.isSunk())
 
   const setPlane = (newPlane) => { plane = newPlane }
@@ -164,10 +166,10 @@ export const Gameboard = () => {
     get state () { return state },
     get fleet () { return fleet },
     get missed () { return missed },
-    getOccupiedCells,
     isValid,
     place,
     receiveAttack,
+    isAttackHit,
     isFleetSunk,
     setPlane
   }
