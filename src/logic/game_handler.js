@@ -2,11 +2,13 @@ import { eventTypes } from './event_types'
 import { eventsHandler } from '../utils/events_handler'
 import { menuController } from '../ui/menu'
 import { Player } from '../factories/player'
+import { AiPlayer } from '../factories/ai_player'
 import { Gameboard } from '../factories/gameboard'
 import { AiGameboard } from '../factories/ai_gameboard'
 import { boardHandler } from '../ui/dom_board'
 
-;(function menuLogic () {
+;import { curry } from '../utils/func_helpers'
+(function menuLogic () {
   const startGame = document.querySelector('#start-game')
   const playerName = document.querySelector('#player-name')
   const rotate = document.querySelector('#rotate')
@@ -38,6 +40,9 @@ import { boardHandler } from '../ui/dom_board'
   boardHandler.createBoard(false, playerBoard)
   boardHandler.createBoard(true, computerBoard)
 
+  const renderPlayer = boardHandler.renderBoard(playerBoard)
+  const renderComputer = boardHandler.renderBoard(computerBoard)
+
   playerBoard.addEventListener('mouseover', (e) => {
     if (e.target.classList.contains('cell')) {
       const coords = boardHandler.extractCoords(e.target)
@@ -66,7 +71,7 @@ import { boardHandler } from '../ui/dom_board'
     eventTypes.COMPUTER_PLACED_SHIPS,
     eventTypes.COMPUTER_BOARD_ATTACKED
   ], (state) => {
-    boardHandler.renderBoard(state, computerBoard)
+    renderComputer(state)
   })
 
   computerBoard.addEventListener('click', (e) => {
@@ -76,9 +81,9 @@ import { boardHandler } from '../ui/dom_board'
     }
   })
 
-  // eventsHandler.on(eventTypes.COMPUTER_BOARD_ATTACKED, (state) => {
-  //   boardHandler.renderBoard(state, computerBoard)
-  // })
+  eventsHandler.on(eventTypes.COMPUTER_MADE_MOVE, (state) => {
+    renderPlayer(state)
+  })
 
   eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
 })()
@@ -90,7 +95,7 @@ import { boardHandler } from '../ui/dom_board'
   const computerBoard = AiGameboard()
   // temporary
   let player = Player('player 1', true)
-  let computer = Player('computer', false)
+  let computer = AiPlayer('computer', false)
 
   eventsHandler.on(eventTypes.BOARD_HOVERED, (coords) => {
     if (isGameStarted()) return
@@ -119,8 +124,15 @@ import { boardHandler } from '../ui/dom_board'
   })
 
   eventsHandler.on(eventTypes.COMPUTER_BOARD_CLICKED, (coords) => {
-    if (!isGameStarted()) return
+    if (!isGameStarted() || !player.turn) return
     player.attack(computerBoard, ...coords)
     eventsHandler.trigger(eventTypes.COMPUTER_BOARD_ATTACKED, computerBoard.state)
+    eventsHandler.trigger(eventTypes.PLAYER_MADE_MOVE, null)
+  })
+
+  eventsHandler.on(eventTypes.PLAYER_MADE_MOVE, () => {
+    computer.attackRandomSpot(playerBoard)
+    eventsHandler.trigger(eventTypes.COMPUTER_MADE_MOVE, playerBoard.state)
+    player.changeTurn()
   })
 })()

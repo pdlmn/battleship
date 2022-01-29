@@ -1,15 +1,8 @@
 import { Gameboard } from './gameboard'
-
-const _randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
-
-const _getRandomCoords = () => {
-  const y = _randomInteger(1, 10)
-  const x = _randomInteger(1, 10)
-  return [y, x]
-}
+import { randomInteger, getRandomCoords } from '../utils/helper_funcs'
 
 const _getRandomPlane = () => {
-  return _randomInteger(1, 2) === 1 ? 'horizontally' : 'vertically'
+  return randomInteger(1, 2) === 1 ? 'horizontally' : 'vertically'
 }
 
 export const AiGameboard = () => {
@@ -17,10 +10,10 @@ export const AiGameboard = () => {
 
   const _placeShipAtRandom = (size) => {
     const plane = _getRandomPlane()
-    let [y, x] = _getRandomCoords()
+    let [y, x] = getRandomCoords()
     gameboard.setPlane(plane)
     while (!gameboard.isValid(y, x, size)) {
-      [y, x] = _getRandomCoords()
+      [y, x] = getRandomCoords()
     }
     gameboard.place(y, x, size)
   }

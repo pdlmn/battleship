@@ -72,3 +72,8 @@ main {
 .hit:hover {
   background: rgb(250, 150, 50);
 }
+
+.miss,
+.miss:hover {
+  background: rgb(250, 150, 200);
+}

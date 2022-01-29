@@ -1,4 +1,4 @@
-import { forEach, pipe, filter } from '../utils/func_helpers'
+import { forEach, pipe, filter, curry } from '../utils/func_helpers'
 
 const _cellClasses = {
   's': 'ship',
@@ -40,7 +40,6 @@ const extractCoords = (cell) =>
   [cell.dataset.y, cell.dataset.x].map(coord => Number(coord))
 
 export const boardHandler = (() => {
-  const shipsToPlace = [5, 4, 3, 2, 1]
   let plane = 'horizontally'
 
   const createBoard = (isHidden, domBoard) => {
@@ -51,7 +50,7 @@ export const boardHandler = (() => {
     }
   }
 
-  const renderBoard = (boardState, domBoard) => {
+  const renderBoard = curry((domBoard, boardState) => {
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
         const cellState = boardState[i][j]
@@ -61,7 +60,7 @@ export const boardHandler = (() => {
         }
       }
     }
-  }
+  })
 
   const clearHighlights = () => document.querySelectorAll('.cell')
     .forEach((el) => el.classList.remove('future-ship', 'wrong-placement'))
