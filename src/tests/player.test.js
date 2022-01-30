@@ -18,5 +18,7 @@ describe('Player factory & methods work correctly', () => {
     expect(player.isValidAttackTarget(gameboard, 2, 2)).toBe(true)
     player.attack(gameboard, 2, 2)
     expect(player.isValidAttackTarget(gameboard, 2, 2)).toBe(false)
+    expect(player.isValidAttackTarget(gameboard, 11, 10)).toBe(false)
+    expect(player.isValidAttackTarget(gameboard, 10, 11)).toBe(false)
   })
 })

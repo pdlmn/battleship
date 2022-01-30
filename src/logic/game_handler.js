@@ -20,7 +20,7 @@ import { wrapInDiv } from '../ui/dom_funcs'
   startBtn.addEventListener('click', () => {
     [startBtn, nameInp, rotateBtn].forEach((el) => { el.disabled = true })
     eventsHandler.trigger(eventTypes.GAME_STARTED, nameInp.value)
-    hintsDiv.innerText = `Good luck, Admiral!`
+    hintsDiv.innerText = 'Good luck, Admiral!'
   })
 
   rotateBtn.addEventListener('click', () => {
@@ -43,7 +43,7 @@ import { wrapInDiv } from '../ui/dom_funcs'
       : startBtn.disabled = true
   })
 
-  eventsHandler.on(eventTypes.SHIP_PLACED, ({areShipsPlaced, shipType}) => {
+  eventsHandler.on(eventTypes.SHIP_PLACED, ({ areShipsPlaced, shipType }) => {
     ;(areShipsPlaced())
       ? shipsPlaced = true
       : shipsPlaced = false
@@ -108,7 +108,7 @@ import { wrapInDiv } from '../ui/dom_funcs'
     }
   })
 
-  eventsHandler.on(eventTypes.SHIP_PLACED, ({ship}) => {
+  eventsHandler.on(eventTypes.SHIP_PLACED, ({ ship }) => {
     boardHandler.place(...ship)
   })
 
@@ -152,7 +152,7 @@ import { wrapInDiv } from '../ui/dom_funcs'
     if (gameStarted) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
-    const isValid = playerBoard.isValid(y, x, nextShipSize)
+    const isValid = playerBoard.isValidForPlace(y, x, nextShipSize)
     eventsHandler.trigger(eventTypes.SHIP_VALIDATED, [y, x, nextShipSize, isValid])
   })
 
@@ -160,11 +160,11 @@ import { wrapInDiv } from '../ui/dom_funcs'
     if (gameStarted) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
-    const isValid = playerBoard.isValid(y, x, nextShipSize)
+    const isValid = playerBoard.isValidForPlace(y, x, nextShipSize)
     if (!isValid) return
     const ship = playerBoard.place(y, x, nextShipSize)
     shipsToPlace.shift()
-    eventsHandler.trigger(eventTypes.SHIP_PLACED, { 
+    eventsHandler.trigger(eventTypes.SHIP_PLACED, {
       ship: [y, x, nextShipSize],
       shipType: ship.type,
       areShipsPlaced () { return shipsToPlace.length === 0 }
@@ -182,7 +182,7 @@ import { wrapInDiv } from '../ui/dom_funcs'
   })
 
   eventsHandler.on(eventTypes.COMPUTER_BOARD_CLICKED, (coords) => {
-    if (!gameStarted || !player.turn || !player.isValidAttackTarget(computerBoard, ...coords)) return
+    if (!gameStarted || !player.turn || !computerBoard.isValidAttackTarget(...coords)) return
     player.attack(computerBoard, ...coords)
     const status = computerBoard.getAttackStatus(...coords)
     eventsHandler.trigger(eventTypes.COMPUTER_BOARD_ATTACKED, { state: computerBoard.state, status, name: player.name })
@@ -195,7 +195,7 @@ import { wrapInDiv } from '../ui/dom_funcs'
   })
 
   const delay = async (ms) => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(resolve, ms)
     })
   }

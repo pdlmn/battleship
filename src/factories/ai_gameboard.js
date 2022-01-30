@@ -2,7 +2,7 @@ import { Gameboard } from './gameboard'
 import { getRandomInteger, getRandomCoords } from '../utils/helper_funcs'
 
 const _getRandomPlane = () => {
-  return randomInteger(1, 2) === 1 ? 'horizontally' : 'vertically'
+  return getRandomInteger(1, 2) === 1 ? 'horizontally' : 'vertically'
 }
 
 export const AiGameboard = () => {
@@ -12,7 +12,7 @@ export const AiGameboard = () => {
     const plane = _getRandomPlane()
     let [y, x] = getRandomCoords()
     gameboard.setPlane(plane)
-    while (!gameboard.isValid(y, x, size)) {
+    while (!gameboard.isValidForPlace(y, x, size)) {
       [y, x] = getRandomCoords()
     }
     gameboard.place(y, x, size)

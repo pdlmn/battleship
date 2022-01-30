@@ -127,19 +127,35 @@ export const Gameboard = () => {
     return false
   }
 
-  const isValid = (y, x, size) => (
+  const isValidForPlace = (y, x, size) => (
     !_isOverlaps(y, x, size) &&
     !_isOverflows(y, x, size) &&
     !_isAdjacentToShips(y, x, size)
   )
 
   const place = (y, x, size) => {
-    if (!isValid(y, x, size)) return
+    if (!isValidForPlace(y, x, size)) return
 
     const ship = Ship(y, x, size, plane)
     fleet.push(ship)
     state = _mapShip(ship.segments)
     return ship
+  }
+
+  const isValidAttackTarget = (y, x) => {
+    const [dy, dx] = decrement([y, x])
+    const row = state[dy]
+    if (row) {
+      switch (state[dy][dx]) {
+        case 's':
+        case 'w':
+          return true
+        case 'm':
+        case 'h':
+          return false
+      }
+    }
+    return false
   }
 
   const receiveAttack = (y, x) => {
@@ -181,8 +197,9 @@ export const Gameboard = () => {
     get fleet () { return fleet },
     get missed () { return missed },
     get hit () { return hit },
-    isValid,
+    isValidForPlace,
     place,
+    isValidAttackTarget,
     receiveAttack,
     getAttackStatus,
     isFleetSunk,
