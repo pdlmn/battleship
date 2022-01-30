@@ -10,7 +10,7 @@ import { boardHandler } from '../ui/dom_board'
   const startBtn = document.querySelector('#start-game')
   const nameInp = document.querySelector('#player-name')
   const rotateBtn = document.querySelector('#rotate')
-  const statusDiv = document.querySelector('#status')
+  const logDiv = document.querySelector('#log')
   const hintsDiv = document.querySelector('#hints')
 
   let nameInputed = false
@@ -52,8 +52,17 @@ import { boardHandler } from '../ui/dom_board'
       : startBtn.disabled = true
   })
 
+  eventsHandler.on(eventTypes.COMPUTER_FINISHED_TURN, ({status}) => {
+    if (status.value === 'missed') {
+      logDiv.innerText = 'Computer missed...\n' + logDiv.innerText
+    }
+    if (status.value === 'hit') {
+      logDiv.innerText = `Computer ${status.shipStatus} your ${status.ship}!\n` + logDiv.innerText
+    }
+  })
+
   eventsHandler.on(eventTypes.GAME_ENDED, (name) => {
-    statusDiv.innerText = `${name} won!`
+    logDiv.innerText = `${name} won!`
   })
 
 })()
@@ -110,7 +119,7 @@ import { boardHandler } from '../ui/dom_board'
     }
   })
 
-  eventsHandler.on(eventTypes.COMPUTER_FINISHED_TURN, (state) => {
+  eventsHandler.on(eventTypes.COMPUTER_FINISHED_TURN, ({state}) => {
     renderPlayer(state)
   })
 
@@ -171,9 +180,9 @@ import { boardHandler } from '../ui/dom_board'
   eventsHandler.on(eventTypes.PLAYER_FINISHED_TURN, () => {
     const { y, x } = computer.findSpotToAttack(playerBoard)
     computer.attack(playerBoard, y, x)
-    eventsHandler.trigger(eventTypes.COMPUTER_FINISHED_TURN, playerBoard.state)
-    console.log(playerBoard.getAttackStatus(y, x).status)
-    if (playerBoard.getAttackStatus(y, x).status === 'hit') {
+    const status = playerBoard.getAttackStatus(y, x)
+    eventsHandler.trigger(eventTypes.COMPUTER_FINISHED_TURN, { state: playerBoard.state, status })
+    if (status.value === 'hit') {
       eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, null)
       return
     }

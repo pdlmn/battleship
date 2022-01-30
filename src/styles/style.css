@@ -77,3 +77,8 @@ main {
 .miss:hover {
   background: rgb(250, 150, 200);
 }
+
+#log {
+  height: 100px;
+  overflow-y: scroll;
+}

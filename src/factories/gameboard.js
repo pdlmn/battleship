@@ -160,15 +160,15 @@ export const Gameboard = () => {
     const attackedCell = state[y - 1][x - 1]
     switch (attackedCell) {
       case _MISSED:
-        return { status: 'missed' }
+        return { value: 'missed' }
       case _HIT:
         const ship = _findShip(y, x) 
-        const status = { status: 'hit', ship: ship.type }
+        const status = { value: 'hit', ship: ship.type }
         return ship.isSunk() 
-          ? Object.assign(status, { shipStatus: 'destoyed' }) 
+          ? Object.assign(status, { shipStatus: 'destroyed' }) 
           : Object.assign(status, { shipStatus: 'damaged' }) 
     }
-    return { status: attackedCell }
+    return { value: attackedCell }
   }
   
   const isFleetSunk = () => fleet.every((ship) => ship.isSunk())

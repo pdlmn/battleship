@@ -24,7 +24,8 @@ export const Player = (name, isFirst) => {
 
   const attack = (enemyBoard, y, x) => {
     enemyBoard.receiveAttack(y, x)
-    if (!enemyBoard.isAttackHit(y, x)) {
+    const status = enemyBoard.getAttackStatus(y, x)
+    if (status.value !== 'hit') {
       changeTurn()
     }
   }
