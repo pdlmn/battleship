@@ -8,27 +8,44 @@ import { AiGameboard } from '../factories/ai_gameboard'
 import { boardHandler } from '../ui/dom_board'
 
 ;(function menuLogic () {
-  const startGame = document.querySelector('#start-game')
-  const playerName = document.querySelector('#player-name')
-  const rotate = document.querySelector('#rotate')
-  const nameInputed = false
+  menuController.nameInputed = Boolean(menuController.nameInp.value)
 
-  startGame.addEventListener('click', () => {
-    menuController.disableElement(startGame)
-    menuController.disableElement(playerName)
-
-    eventsHandler.trigger(eventTypes.GAME_STARTED, playerName.value)
+  menuController.startBtn.addEventListener('click', () => {
+    menuController.disabled = true
+    eventsHandler.trigger(eventTypes.GAME_STARTED, menuController.nameInp.value)
   })
 
-  rotate.addEventListener('click', () => {
-    if (rotate.dataset.plane === 'vertically') {
-      rotate.dataset.plane = 'horizontally'
-      rotate.innerText = 'Horizontal'
-    } else if (rotate.dataset.plane === 'horizontally') {
-      rotate.dataset.plane = 'vertically'
-      rotate.innerText = 'Vertical'
+  menuController.rotateBtn.addEventListener('click', () => {
+    if (menuController.rotateBtn.dataset.plane === 'vertically') {
+      menuController.rotateBtn.dataset.plane = 'horizontally'
+      menuController.rotateBtn.innerText = 'Horizontal'
+    } else if (menuController.rotateBtn.dataset.plane === 'horizontally') {
+      menuController.rotateBtn.dataset.plane = 'vertically'
+      menuController.rotateBtn.innerText = 'Vertical'
     }
-    eventsHandler.trigger(eventTypes.SHIP_ROTATED, rotate.dataset.plane)
+    eventsHandler.trigger(eventTypes.SHIP_ROTATED, menuController.rotateBtn.dataset.plane)
+  })
+
+  menuController.nameInp.addEventListener('input', (e) => {
+    (e.currentTarget.value.length > 0)
+      ? menuController.nameInputed = true
+      : menuController.nameInputed = false
+    ;(menuController.canStart)
+      ? menuController.startDisabled = false
+      : menuController.startDisabled = true
+  })
+
+  eventsHandler.on(eventTypes.SHIP_PLACED, (data) => {
+    ;(data.areShipsPlaced())
+      ? menuController.shipsPlaced = true
+      : menuController.shipsPlaced = false
+    ;(menuController.canStart)
+      ? menuController.startDisabled = false
+      : menuController.startDisabled = true
+  })
+
+  eventsHandler.on(eventTypes.GAME_ENDED, (name) => {
+    alert(`${name} won!`)
   })
 })()
 
@@ -61,7 +78,7 @@ import { boardHandler } from '../ui/dom_board'
   })
 
   eventsHandler.on(eventTypes.SHIP_PLACED, (data) => {
-    boardHandler.place(...data)
+    boardHandler.place(...data.ship)
   })
 
   playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
@@ -89,15 +106,15 @@ import { boardHandler } from '../ui/dom_board'
 
 ;(function gameLogic () {
   const shipsToPlace = [5, 4, 3, 2, 1]
-  const isGameStarted = () => shipsToPlace.length === 0
   const playerBoard = Gameboard()
   const computerBoard = AiGameboard()
   // temporary
-  let player = Player('player 1', true)
-  let computer = AiPlayer('computer', false)
+  const player = Player('player 1', true)
+  const computer = AiPlayer('computer', false)
+  let gameStarted = false
 
   eventsHandler.on(eventTypes.BOARD_HOVERED, (coords) => {
-    if (isGameStarted()) return
+    if (gameStarted) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValid(y, x, nextShipSize)
@@ -105,48 +122,48 @@ import { boardHandler } from '../ui/dom_board'
   })
 
   eventsHandler.on(eventTypes.BOARD_CLICKED, (coords) => {
-    if (isGameStarted()) return
+    if (gameStarted) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValid(y, x, nextShipSize)
     if (!isValid) return
     playerBoard.place(y, x, nextShipSize)
     shipsToPlace.shift()
-    eventsHandler.trigger(eventTypes.SHIP_PLACED, [y, x, nextShipSize])
+    eventsHandler.trigger(eventTypes.SHIP_PLACED, { ship: [y, x, nextShipSize], areShipsPlaced () { return shipsToPlace.length === 0 } })
   })
 
   eventsHandler.on(eventTypes.SHIP_ROTATED, playerBoard.setPlane)
 
-  eventsHandler.on(eventTypes.GAME_STARTED, () => {
+  eventsHandler.on(eventTypes.GAME_STARTED, (bool) => {
+    gameStarted = bool
     computerBoard.placeFleet(5)
     eventsHandler.trigger(eventTypes.COMPUTER_PLACED_SHIPS, computerBoard.state)
   })
 
   eventsHandler.on(eventTypes.COMPUTER_BOARD_CLICKED, (coords) => {
-    if (!isGameStarted() || !player.turn) return
+    if (!gameStarted || !player.turn || !player.isValidAttackTarget(computerBoard, ...coords)) return
     player.attack(computerBoard, ...coords)
     eventsHandler.trigger(eventTypes.COMPUTER_BOARD_ATTACKED, computerBoard.state)
     if (!player.turn) {
       eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, null)
     }
     if (computerBoard.isFleetSunk()) {
-      alert('you won!')
+      eventsHandler.trigger(eventTypes.GAME_ENDED, player.name)
     }
   })
 
-  eventsHandler.on(eventTypes.PLAYER_FINISHED_TURN, (hitCells) => {
-    let hit = hitCells || []
-    let randomCoords = computer.findSpotToAttack(playerBoard)
-    computer.attack(playerBoard, ...randomCoords)
+  eventsHandler.on(eventTypes.PLAYER_FINISHED_TURN, () => {
+    const { y, x } = computer.findSpotToAttack(playerBoard)
+    computer.attack(playerBoard, y, x)
     eventsHandler.trigger(eventTypes.COMPUTER_FINISHED_TURN, playerBoard.state)
-    if (playerBoard.isAttackHit(...randomCoords)) {
-      eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, hit)
+    if (playerBoard.isAttackHit(y, x)) {
+      eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, null)
       return
     }
     player.changeTurn()
 
     if (playerBoard.isFleetSunk()) {
-      alert('you lost!')
+      eventsHandler.trigger(eventTypes.GAME_ENDED, computer.name)
     }
   })
 })()

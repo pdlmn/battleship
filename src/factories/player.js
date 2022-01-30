@@ -1,4 +1,4 @@
-import { decrement } from "../utils/func_helpers"
+import { decrement } from '../utils/func_helpers'
 
 export const Player = (name, isFirst) => {
   let turn = isFirst
@@ -22,8 +22,8 @@ export const Player = (name, isFirst) => {
     return false
   }
 
-  const attack = (enemyBoard, y, x) => { 
-    enemyBoard.receiveAttack(y, x) 
+  const attack = (enemyBoard, y, x) => {
+    enemyBoard.receiveAttack(y, x)
     if (!enemyBoard.isAttackHit(y, x)) {
       changeTurn()
     }

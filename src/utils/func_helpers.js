@@ -137,7 +137,7 @@ const filter = curry((fn, arr) => {
 })
 
 const objEqual = curry((obj1, obj2) => {
-  for (let prop of Object.keys(obj1)) {
+  for (const prop of Object.keys(obj1)) {
     if (obj1[prop] !== obj2[prop]) {
       return false
     }
@@ -146,7 +146,7 @@ const objEqual = curry((obj1, obj2) => {
 })
 
 const objectInArray = curry((obj, arr) => {
-  for (let currentObj of arr) {
+  for (const currentObj of arr) {
     if (objEqual(currentObj, obj)) {
       return true
     }

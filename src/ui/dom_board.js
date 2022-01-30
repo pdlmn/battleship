@@ -1,10 +1,10 @@
 import { forEach, pipe, filter, curry } from '../utils/func_helpers'
 
 const _cellClasses = {
-  's': 'ship',
-  'w': 'water',
-  'h': 'hit',
-  'm': 'miss'
+  s: 'ship',
+  w: 'water',
+  h: 'hit',
+  m: 'miss'
 }
 
 const _createCell = (isHidden, y, x) => {

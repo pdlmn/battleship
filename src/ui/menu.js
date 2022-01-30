@@ -1,14 +1,18 @@
 export const menuController = (() => {
-  let canStart = false
-
-  const disableElement = (el) => { el.disabled = true }
-  const enableElement = (el) => { el.disabled = false }
-
-  const setStart = (val) => { canStart = val }
+  const startBtn = document.querySelector('#start-game')
+  const nameInp = document.querySelector('#player-name')
+  const rotateBtn = document.querySelector('#rotate')
+  let nameInputed = false
+  let shipsPlaced = false
 
   return {
-    disableElement,
-    enableElement,
-    setStart
+    set nameInputed (val) { nameInputed = val },
+    set shipsPlaced (val) { shipsPlaced = val },
+    set disabled (val) { [startBtn, nameInp, rotateBtn].forEach((el) => { el.disabled = val }) },
+    set startDisabled (val) { startBtn.disabled = val },
+    get canStart () { return nameInputed && shipsPlaced },
+    startBtn,
+    nameInp,
+    rotateBtn
   }
 })()
