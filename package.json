@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.5",
+    "@babel/plugin-transform-runtime": "^7.16.10",
     "@babel/preset-env": "^7.16.5",
     "babel-loader": "^8.2.3",
     "copy-webpack-plugin": "^10.0.0",
@@ -27,6 +28,10 @@
     "webpack-dev-server": "^4.6.0"
   },
   "standard": {
-    "globals": ["describe", "test", "expect"]
+    "globals": [
+      "describe",
+      "test",
+      "expect"
+    ]
   }
 }

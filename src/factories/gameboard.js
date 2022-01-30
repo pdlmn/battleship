@@ -139,6 +139,7 @@ export const Gameboard = () => {
     const ship = Ship(y, x, size, plane)
     fleet.push(ship)
     state = _mapShip(ship.segments)
+    return ship
   }
 
   const receiveAttack = (y, x) => {
@@ -156,21 +157,21 @@ export const Gameboard = () => {
     state = _mapHit([{ y, x }])
   }
 
-  const getAttackStatus = (y, x) => { 
+  const getAttackStatus = (y, x) => {
     const attackedCell = state[y - 1][x - 1]
     switch (attackedCell) {
       case _MISSED:
         return { value: 'missed' }
       case _HIT:
-        const ship = _findShip(y, x) 
+        const ship = _findShip(y, x)
         const status = { value: 'hit', ship: ship.type }
-        return ship.isSunk() 
-          ? Object.assign(status, { shipStatus: 'destroyed' }) 
-          : Object.assign(status, { shipStatus: 'damaged' }) 
+        return ship.isSunk()
+          ? Object.assign(status, { shipStatus: 'destroyed' })
+          : Object.assign(status, { shipStatus: 'damaged' })
     }
     return { value: attackedCell }
   }
-  
+
   const isFleetSunk = () => fleet.every((ship) => ship.isSunk())
 
   const setPlane = (newPlane) => { plane = newPlane }

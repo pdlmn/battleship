@@ -5,22 +5,22 @@ import { AiPlayer } from '../factories/ai_player'
 import { Gameboard } from '../factories/gameboard'
 import { AiGameboard } from '../factories/ai_gameboard'
 import { boardHandler } from '../ui/dom_board'
+import { wrapInDiv } from '../ui/dom_funcs'
 
-;(function menuLogic () {
+;(function uiLogic () {
   const startBtn = document.querySelector('#start-game')
   const nameInp = document.querySelector('#player-name')
   const rotateBtn = document.querySelector('#rotate')
   const logDiv = document.querySelector('#log')
   const hintsDiv = document.querySelector('#hints')
 
-  let nameInputed = false
+  let nameInputed = Boolean(nameInp.value)
   let shipsPlaced = false
-
-  nameInputed = Boolean(nameInp.value)
 
   startBtn.addEventListener('click', () => {
     [startBtn, nameInp, rotateBtn].forEach((el) => { el.disabled = true })
     eventsHandler.trigger(eventTypes.GAME_STARTED, nameInp.value)
+    hintsDiv.innerText = `Good luck, Admiral!`
   })
 
   rotateBtn.addEventListener('click', () => {
@@ -43,28 +43,41 @@ import { boardHandler } from '../ui/dom_board'
       : startBtn.disabled = true
   })
 
-  eventsHandler.on(eventTypes.SHIP_PLACED, (data) => {
-    ;(data.areShipsPlaced())
+  eventsHandler.on(eventTypes.SHIP_PLACED, ({areShipsPlaced, shipType}) => {
+    ;(areShipsPlaced())
       ? shipsPlaced = true
       : shipsPlaced = false
     ;(nameInputed && shipsPlaced)
       ? startBtn.disabled = false
       : startBtn.disabled = true
+    hintsDiv.innerText = `${shipType} has been placed.`
   })
 
-  eventsHandler.on(eventTypes.COMPUTER_FINISHED_TURN, ({status}) => {
+  eventsHandler.on(eventTypes.COMPUTER_FINISHED_TURN, ({ status }) => {
     if (status.value === 'missed') {
-      logDiv.innerText = 'Computer missed...\n' + logDiv.innerText
+      const div = wrapInDiv('Computer missed...', 'log-computer-missed')
+      logDiv.prepend(div)
     }
     if (status.value === 'hit') {
-      logDiv.innerText = `Computer ${status.shipStatus} your ${status.ship}!\n` + logDiv.innerText
+      const div = wrapInDiv(`Computer ${status.shipStatus} your ${status.ship}!`, 'log-computer-hit')
+      logDiv.prepend(div)
+    }
+  })
+
+  eventsHandler.on(eventTypes.COMPUTER_BOARD_ATTACKED, ({ status, name }) => {
+    if (status.value === 'missed') {
+      const div = wrapInDiv(`${name} missed...`, 'log-player-missed')
+      logDiv.prepend(div)
+    }
+    if (status.value === 'hit') {
+      const div = wrapInDiv(`${name} ${status.shipStatus} ${status.ship}!`, 'log-player-hit')
+      logDiv.prepend(div)
     }
   })
 
   eventsHandler.on(eventTypes.GAME_ENDED, (name) => {
-    logDiv.innerText = `${name} won!`
+    hintsDiv.innerText = `${name} won!`
   })
-
 })()
 
 ;(function boardViewLogic () {
@@ -95,12 +108,12 @@ import { boardHandler } from '../ui/dom_board'
     }
   })
 
-  eventsHandler.on(eventTypes.SHIP_PLACED, (data) => {
-    boardHandler.place(...data.ship)
+  eventsHandler.on(eventTypes.SHIP_PLACED, ({ship}) => {
+    boardHandler.place(...ship)
   })
 
   eventsHandler.on(eventTypes.GAME_STARTED, () => {
-    
+
   })
 
   playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
@@ -108,7 +121,7 @@ import { boardHandler } from '../ui/dom_board'
   eventsHandler.onEach([
     eventTypes.COMPUTER_PLACED_SHIPS,
     eventTypes.COMPUTER_BOARD_ATTACKED
-  ], (state) => {
+  ], ({ state }) => {
     renderComputer(state)
   })
 
@@ -119,12 +132,11 @@ import { boardHandler } from '../ui/dom_board'
     }
   })
 
-  eventsHandler.on(eventTypes.COMPUTER_FINISHED_TURN, ({state}) => {
+  eventsHandler.on(eventTypes.COMPUTER_FINISHED_TURN, ({ state }) => {
     renderPlayer(state)
   })
 
   eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
-
 })()
 
 ;(function gameLogic () {
@@ -150,9 +162,13 @@ import { boardHandler } from '../ui/dom_board'
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValid(y, x, nextShipSize)
     if (!isValid) return
-    playerBoard.place(y, x, nextShipSize)
+    const ship = playerBoard.place(y, x, nextShipSize)
     shipsToPlace.shift()
-    eventsHandler.trigger(eventTypes.SHIP_PLACED, { ship: [y, x, nextShipSize], areShipsPlaced () { return shipsToPlace.length === 0 } })
+    eventsHandler.trigger(eventTypes.SHIP_PLACED, { 
+      ship: [y, x, nextShipSize],
+      shipType: ship.type,
+      areShipsPlaced () { return shipsToPlace.length === 0 }
+    })
   })
 
   eventsHandler.on(eventTypes.SHIP_ROTATED, playerBoard.setPlane)
@@ -162,13 +178,14 @@ import { boardHandler } from '../ui/dom_board'
     player = Player(name, true)
     computer = AiPlayer('Computer', false)
     computerBoard.placeFleet(5)
-    eventsHandler.trigger(eventTypes.COMPUTER_PLACED_SHIPS, computerBoard.state)
+    eventsHandler.trigger(eventTypes.COMPUTER_PLACED_SHIPS, { state: computerBoard.state })
   })
 
   eventsHandler.on(eventTypes.COMPUTER_BOARD_CLICKED, (coords) => {
     if (!gameStarted || !player.turn || !player.isValidAttackTarget(computerBoard, ...coords)) return
     player.attack(computerBoard, ...coords)
-    eventsHandler.trigger(eventTypes.COMPUTER_BOARD_ATTACKED, computerBoard.state)
+    const status = computerBoard.getAttackStatus(...coords)
+    eventsHandler.trigger(eventTypes.COMPUTER_BOARD_ATTACKED, { state: computerBoard.state, status, name: player.name })
     if (!player.turn) {
       eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, null)
     }
@@ -177,7 +194,14 @@ import { boardHandler } from '../ui/dom_board'
     }
   })
 
-  eventsHandler.on(eventTypes.PLAYER_FINISHED_TURN, () => {
+  const delay = async (ms) => {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms)
+    })
+  }
+
+  eventsHandler.on(eventTypes.PLAYER_FINISHED_TURN, async () => {
+    await delay(250)
     const { y, x } = computer.findSpotToAttack(playerBoard)
     computer.attack(playerBoard, y, x)
     const status = playerBoard.getAttackStatus(y, x)

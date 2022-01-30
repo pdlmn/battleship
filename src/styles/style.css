@@ -79,6 +79,23 @@ main {
 }
 
 #log {
-  height: 100px;
+  height: 17ch;
+  width: 40ch;
   overflow-y: scroll;
+}
+
+.log-player-missed {
+  color: rgb(120, 120, 220);
+}
+
+.log-player-hit {
+  color: rgb(150, 250, 100);
+}
+
+.log-computer-missed {
+  color: rgb(250, 120, 20);
+}
+
+.log-computer-hit {
+  color: rgb(250, 20, 20);
 }
