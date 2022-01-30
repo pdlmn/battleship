@@ -240,6 +240,15 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.state).toEqual(expected)
   })
 
+  test('getAttackStatus() returns the correct status object of an attack', () => {
+    const gameboard = Gameboard()
+    gameboard.place(1, 1, 2)
+    gameboard.receiveAttack(1, 1)
+    expect(gameboard.getAttackStatus(1, 1)).toEqual({ status: 'hit', ship: 'Destroyer', shipStatus: 'damaged' })
+    gameboard.receiveAttack(2, 2)
+    expect(gameboard.getAttackStatus(2, 2)).toEqual({ status: 'missed' })
+  })
+
   test('isAttackHit() correctly determines status of an attack (1)', () => {
     const gameboard = Gameboard()
     gameboard.place(1, 1, 2)

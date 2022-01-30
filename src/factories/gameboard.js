@@ -156,8 +156,21 @@ export const Gameboard = () => {
     state = _mapHit([{ y, x }])
   }
 
-  const isAttackHit = (y, x) => Boolean(hit.find((cell) => cell.y === y && cell.x === x))
-
+  const getAttackStatus = (y, x) => { 
+    const attackedCell = state[y - 1][x - 1]
+    switch (attackedCell) {
+      case _MISSED:
+        return { status: 'missed' }
+      case _HIT:
+        const ship = _findShip(y, x) 
+        const status = { status: 'hit', ship: ship.type }
+        return ship.isSunk() 
+          ? Object.assign(status, { shipStatus: 'destoyed' }) 
+          : Object.assign(status, { shipStatus: 'damaged' }) 
+    }
+    return { status: attackedCell }
+  }
+  
   const isFleetSunk = () => fleet.every((ship) => ship.isSunk())
 
   const setPlane = (newPlane) => { plane = newPlane }
@@ -170,7 +183,7 @@ export const Gameboard = () => {
     isValid,
     place,
     receiveAttack,
-    isAttackHit,
+    getAttackStatus,
     isFleetSunk,
     setPlane
   }

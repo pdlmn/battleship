@@ -53,7 +53,7 @@ import { boardHandler } from '../ui/dom_board'
   })
 
   eventsHandler.on(eventTypes.GAME_ENDED, (name) => {
-    alert(`${name} won!`)
+    statusDiv.innerText = `${name} won!`
   })
 
 })()
@@ -115,6 +115,7 @@ import { boardHandler } from '../ui/dom_board'
   })
 
   eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
+
 })()
 
 ;(function gameLogic () {
@@ -171,7 +172,8 @@ import { boardHandler } from '../ui/dom_board'
     const { y, x } = computer.findSpotToAttack(playerBoard)
     computer.attack(playerBoard, y, x)
     eventsHandler.trigger(eventTypes.COMPUTER_FINISHED_TURN, playerBoard.state)
-    if (playerBoard.isAttackHit(y, x)) {
+    console.log(playerBoard.getAttackStatus(y, x).status)
+    if (playerBoard.getAttackStatus(y, x).status === 'hit') {
       eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, null)
       return
     }
