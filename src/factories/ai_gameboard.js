@@ -1,5 +1,5 @@
 import { Gameboard } from './gameboard'
-import { randomInteger, getRandomCoords } from '../utils/helper_funcs'
+import { getRandomInteger, getRandomCoords } from '../utils/helper_funcs'
 
 const _getRandomPlane = () => {
   return randomInteger(1, 2) === 1 ? 'horizontally' : 'vertically'

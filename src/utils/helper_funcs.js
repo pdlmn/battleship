@@ -1,4 +1,4 @@
-const randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
+const getRandomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
 
 const getRandomCoords = () => {
   const y = randomInteger(1, 10)

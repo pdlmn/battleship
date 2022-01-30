@@ -1,9 +1,9 @@
 import { Player } from './player'
-import { getRandomCoords } from '../utils/helper_funcs'
-import { objectInArray, objEqual } from '../utils/func_helpers'
+import { getRandomCoords,  } from '../utils/helper_funcs'
 
 export const AiPlayer = (name, isFirst) => {
   const player = Player(name, isFirst)
+  let direction = 'left'
 
   const findSpotToAttack = (board) => {
     let [y, x] = getRandomCoords()
