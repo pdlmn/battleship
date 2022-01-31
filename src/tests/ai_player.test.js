@@ -3,7 +3,7 @@ import { Gameboard, _createGameboard } from '../factories/gameboard'
 
 describe('ai player works correctly', () => {
 
-  test('attackPlayer chooses valid random direction for attack (1)', () => {
+  test('attackPlayer() pushes towards same attack direction after hitting ship twice (1)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
     gameboard.setPlane('vertically')
@@ -16,7 +16,7 @@ describe('ai player works correctly', () => {
     expect(gameboard.state[3][2]).toBe('h')
   })
 
-  test('attackPlayer chooses valid random direction for attack (2)', () => {
+  test('attackPlayer() pushes towards same attack direction after hitting ship twice (2)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
     gameboard.setPlane('vertically')
@@ -34,7 +34,7 @@ describe('ai player works correctly', () => {
     expect(gameboard.state[7][4]).toBe('h')
   })
 
-  test('attackPlayer chooses valid random direction for attack (3)', () => {
+  test('attackPlayer() pushes towards same attack direction after hitting ship twice (3)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
     gameboard.place(5, 5, 5)
@@ -55,7 +55,7 @@ describe('ai player works correctly', () => {
     expect(gameboard.state[4][9]).not.toBe('h')
   })
 
-  test('attackPlayer chooses valid random direction for attack (4)', () => {
+  test('attackPlayer() after hitting a ship tries cells around the ship (1)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
     const possibleResults = ['h', 'm']
@@ -68,7 +68,7 @@ describe('ai player works correctly', () => {
     ).toBeTruthy()
   })
 
-  test('attackPlayer chooses valid random direction for attack (5)', () => {
+  test('attackPlayer() after hitting a ship tries cells around the ship (2)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
     const possibleResults = ['h', 'm']
@@ -83,23 +83,39 @@ describe('ai player works correctly', () => {
     ).toBeTruthy()
   })
 
-  test.only('attackPlayer() changes direction for the attack ', () => {
+  test.only('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (1)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
     const possibleResults = ['h', 'm']
     gameboard.place(3, 3, 3)
     computer.setDirection('left')
-    console.log(computer.direction)
     computer.attackPlayer(gameboard, 3, 4)
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
-    // computer.attackPlayer(gameboard)
-    // computer.attackPlayer(gameboard)
+    computer.attackPlayer(gameboard)
     console.table(gameboard.state)
     expect(gameboard.state[2][1]).toBe('m')
     expect(gameboard.state[2][2]).toBe('h')
-    // expect(gameboard.state[2][3]).toBe('h')
-    // expect(gameboard.state[2][4]).toBe('h')
+    expect(gameboard.state[2][3]).toBe('h')
+    expect(gameboard.state[2][4]).toBe('h')
+  })
+
+  test.only('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (2)', () => {
+    const gameboard = Gameboard()
+    const computer = AiPlayer()
+    const possibleResults = ['h', 'm']
+    gameboard.setPlane('vertically')
+    gameboard.place(3, 3, 3)
+    computer.setDirection('top')
+    computer.attackPlayer(gameboard, 4, 3)
+    computer.attackPlayer(gameboard)
+    computer.attackPlayer(gameboard)
+    computer.attackPlayer(gameboard)
+    console.table(gameboard.state)
+    expect(gameboard.state[1][2]).toBe('m')
+    expect(gameboard.state[2][2]).toBe('h')
+    expect(gameboard.state[3][2]).toBe('h')
+    expect(gameboard.state[4][2]).toBe('h')
   })
 
 })
