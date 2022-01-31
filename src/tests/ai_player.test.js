@@ -1,5 +1,5 @@
 import { AiPlayer } from '../factories/ai_player'
-import { Gameboard } from '../factories/gameboard'
+import { Gameboard, _createGameboard } from '../factories/gameboard'
 
 describe('ai player works correctly', () => {
 
@@ -82,4 +82,24 @@ describe('ai player works correctly', () => {
       possibleResults.includes(gameboard.state[2][1])
     ).toBeTruthy()
   })
+
+  test.only('attackPlayer() changes direction for the attack ', () => {
+    const gameboard = Gameboard()
+    const computer = AiPlayer()
+    const possibleResults = ['h', 'm']
+    gameboard.place(3, 3, 3)
+    computer.setDirection('left')
+    console.log(computer.direction)
+    computer.attackPlayer(gameboard, 3, 4)
+    computer.attackPlayer(gameboard)
+    computer.attackPlayer(gameboard)
+    // computer.attackPlayer(gameboard)
+    // computer.attackPlayer(gameboard)
+    console.table(gameboard.state)
+    expect(gameboard.state[2][1]).toBe('m')
+    expect(gameboard.state[2][2]).toBe('h')
+    // expect(gameboard.state[2][3]).toBe('h')
+    // expect(gameboard.state[2][4]).toBe('h')
+  })
+
 })
