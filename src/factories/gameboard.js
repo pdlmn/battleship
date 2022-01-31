@@ -188,6 +188,11 @@ export const Gameboard = () => {
     return { value: attackedCell }
   }
 
+  const isShipSunk = (y, x) => {
+    const ship = _findShip(y, x)
+    return ship ? ship.isSunk() : false
+  }
+
   const isFleetSunk = () => fleet.every((ship) => ship.isSunk())
 
   const setPlane = (newPlane) => { plane = newPlane }
@@ -202,6 +207,7 @@ export const Gameboard = () => {
     isValidAttackTarget,
     receiveAttack,
     getAttackStatus,
+    isShipSunk,
     isFleetSunk,
     setPlane
   }

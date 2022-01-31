@@ -5,9 +5,9 @@ export const Player = (name, isFirst) => {
 
   const changeTurn = () => { turn = !turn }
 
-  const attack = (enemyBoard, y, x) => {
-    enemyBoard.receiveAttack(y, x)
-    const status = enemyBoard.getAttackStatus(y, x)
+  const attack = (board, y, x) => {
+    board.receiveAttack(y, x)
+    const status = board.getAttackStatus(y, x)
     if (status.value !== 'hit') {
       changeTurn()
     }

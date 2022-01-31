@@ -1,4 +1,4 @@
-import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray } from '../utils/func_helpers'
+import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray, remove } from '../utils/func_helpers'
 
 describe('func helpers work properly', () => {
   test('hasTruthyValues correctly determines truthiness of values in an array (1)', () => {
@@ -165,5 +165,14 @@ describe('func helpers work properly', () => {
       { name: 'Stew', age: 40, married: true }
     ]
     expect(objectInArray(obj1, arr)).toBe(false)
+  })
+
+  test('remove returns an array without specified item', () => {
+    const arr = [1, 'heh', false, null]
+    expect(remove(1, arr)).toEqual(['heh', false, null])
+    expect(remove('heh', arr)).toEqual([1, false, null])
+    expect(remove(false, arr)).toEqual([1, 'heh', null])
+    expect(remove(null, arr)).toEqual([1, 'heh', false])
+    expect(remove('anything', [])).toEqual([])
   })
 })

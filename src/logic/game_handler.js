@@ -176,7 +176,7 @@ import { wrapInDiv } from '../ui/dom_funcs'
   eventsHandler.on(eventTypes.GAME_STARTED, (name) => {
     gameStarted = true
     player = Player(name, true)
-    computer = AiPlayer('Computer', false)
+    computer = AiPlayer()
     computerBoard.placeFleet(5)
     eventsHandler.trigger(eventTypes.COMPUTER_PLACED_SHIPS, { state: computerBoard.state })
   })

@@ -154,4 +154,16 @@ const objectInArray = curry((obj, arr) => {
   return false
 })
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray }
+const remove = curry((item, arr) => {
+  const result = [...arr]
+  const len = arr.length
+  for (let i = 0; i < len; i++) {
+    if (arr[i] === item) {
+      result.splice(i, 1)
+      return result
+    }
+  }
+  return result
+})
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray, remove }

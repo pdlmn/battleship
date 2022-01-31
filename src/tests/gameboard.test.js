@@ -148,6 +148,19 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.isValidForPlace(9, 7, 2)).toBe(false)
   })
 
+  
+  test('isValidAttackTarget() correctly determines if the attack target is valid', () => {
+    const gameboard = Gameboard()
+    gameboard.receiveAttack(1, 1)
+    expect(gameboard.isValidAttackTarget(1, 1)).toBe(false)
+    expect(gameboard.isValidAttackTarget(1, 2)).toBe(true)
+    expect(gameboard.isValidAttackTarget(2, 2)).toBe(true)
+    expect(gameboard.isValidAttackTarget(11, 10)).toBe(false)
+    expect(gameboard.isValidAttackTarget(10, 11)).toBe(false)
+    expect(gameboard.isValidAttackTarget(0, 1)).toBe(false)
+    expect(gameboard.isValidAttackTarget(1, 0)).toBe(false)
+  })
+
   test('receiveAttack() correctly determines whether ship was hit or not (1)', () => {
     const gameboard = Gameboard()
     gameboard.place(1, 1, 2)
@@ -254,9 +267,19 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.getAttackStatus(3, 3)).toEqual({ value: 'hit', ship: 'Cruiser', shipStatus: 'destroyed' })
   })
 
+  test('isShipSunk() correctly determines status of a ship', () => {
+    const gameboard = Gameboard()
+    gameboard.place(1, 1, 2)
+    gameboard.receiveAttack(1, 1)
+    gameboard.receiveAttack(1, 2)
+    expect(gameboard.isShipSunk(1, 1)).toBe(true)
+    expect(gameboard.isShipSunk(1, 2)).toBe(true)
+    expect(gameboard.isShipSunk(2, 2)).toBe(false)
+  })
+
   test('isFleetSunk() correctly determines status of the ships (1)', () => {
     const gameboard = Gameboard()
-    gameboard.place(1, 1, 2, 'horizontally')
+    gameboard.place(1, 1, 2)
     gameboard.receiveAttack(1, 1)
     gameboard.receiveAttack(1, 2)
     expect(gameboard.isFleetSunk()).toBe(true)
@@ -264,7 +287,7 @@ describe('Gameboard methods work correctly', () => {
 
   test('isFleetSunk() correctly determines status of the ships (2)', () => {
     const gameboard = Gameboard()
-    gameboard.place(1, 1, 2, 'horizontally')
+    gameboard.place(1, 1, 2)
     gameboard.receiveAttack(1, 1)
     gameboard.receiveAttack(2, 2)
     expect(gameboard.isFleetSunk()).toBe(false)
@@ -272,8 +295,8 @@ describe('Gameboard methods work correctly', () => {
 
   test('isFleetSunk() correctly determines status of the ships (3)', () => {
     const gameboard = Gameboard()
-    gameboard.place(1, 1, 2, 'horizontally')
-    gameboard.place(4, 4, 2, 'horizontally')
+    gameboard.place(1, 1, 2)
+    gameboard.place(4, 4, 2)
     gameboard.receiveAttack(1, 1)
     gameboard.receiveAttack(1, 2)
     expect(gameboard.isFleetSunk()).toBe(false)
