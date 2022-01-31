@@ -83,7 +83,7 @@ describe('ai player works correctly', () => {
     ).toBeTruthy()
   })
 
-  test.only('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (1)', () => {
+  test('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (1)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
     const possibleResults = ['h', 'm']
@@ -100,7 +100,7 @@ describe('ai player works correctly', () => {
     expect(gameboard.state[2][4]).toBe('h')
   })
 
-  test.only('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (2)', () => {
+  test('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (2)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
     const possibleResults = ['h', 'm']

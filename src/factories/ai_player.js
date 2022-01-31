@@ -9,9 +9,26 @@ const _potentialAttackDirections = {
   bottom: (y, x) => ({ y: y + 1, x })
 }
 
+const _getOppositeDirection = (direction) => {
+  switch (direction) {
+    case 'left':
+      return right
+    case 'right':
+      return 'left'
+    case 'top':
+      return 'bottom'
+    case 'bottom':
+      return 'top'
+    default:
+      return ''
+  }
+}
+
 export const AiPlayer = () => {
   const computer = Player('Computer', false)
   const hit = []
+  let hitCells = []
+  let lastHit = {}
   let direction = ''
 
   const findSpotToAttack = (board) => {
@@ -47,11 +64,13 @@ export const AiPlayer = () => {
       const status = board.getAttackStatus(y, x)
       if (status.shipStatus === 'damaged') {
         hit.push({ y, x })
+        lastHit = { y, x }
+        hitCells.push(lastHit)
       }
       return status
-    } else if (hit[0] && direction !== '') {
+    } else if (lastHit.y && lastHit.x && direction !== '') {
       console.log(`Attack in ${direction}`)
-      const { y: hy, x: hx } = hit[0]
+      const { y: hy, x: hx } = lastHit
       const coordsForAttack = _potentialAttackDirections[direction](hy, hx)
       const { y: ay, x: ax } = coordsForAttack
       if (!board.isValidAttackTarget(ay, ax)) {
@@ -66,18 +85,23 @@ export const AiPlayer = () => {
       if (status.shipStatus === 'destroyed') {
         direction = ''
         hit.pop()
+        lastHit = {}
+        hitCells = []
       }
       if (status.shipStatus === 'damaged') {
-        hit[0] = { y: ay, x: ax }
+        lastHit = { y: ay, x: ax }
+        hitCells.push(lastHit)
       }
       return status
-    } else if (hit[0]) {
+    } else if (lastHit.y && lastHit.x) {
       console.log(`guessed attack`)
       console.log(direction)
-      const { y: hy, x: hx } = hit[0]
+      const { y: hy, x: hx } = lastHit
       const coords = findSpotAfterHit(board, hy, hx)
       if (!coords.validity) {
         hit.pop()
+        lastHit = {}
+        hitCells = []
         return attackPlayer(board)
       }
       const { y: ay, x: ax } = coords
@@ -87,16 +111,18 @@ export const AiPlayer = () => {
       if (status.value !== 'hit') {
         return status
       }
-      hit[0] = { y: ay, x: ax }
+      lastHit = { y: ay, x: ax }
+      hitCells.push(lastHit)
       return status
-    } else if (!hit[0]) {
+    } else if (!(lastHit.y && lastHit.x)) {
       console.log('random attack')
       const randomCoords = findSpotToAttack(board)
       const { y, x } = randomCoords
       computer.attack(board, y, x)
       const status = board.getAttackStatus(y, x)
       if (status.value === 'hit' && status.shipStatus === 'damaged') {
-        hit.push({ y, x })
+        lastHit = { y, x }
+        hitCells.push(lastHit)
       }
       return status
     }
