@@ -148,7 +148,6 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.isValidForPlace(9, 7, 2)).toBe(false)
   })
 
-  
   test('isValidAttackTarget() correctly determines if the attack target is valid', () => {
     const gameboard = Gameboard()
     gameboard.receiveAttack(1, 1)
