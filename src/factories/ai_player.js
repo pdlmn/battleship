@@ -27,7 +27,7 @@ export const AiPlayer = () => {
     let randomDirection = directions[getRandomInteger(0, 3)]
     let { y: ry, x: rx } = _potentialDirections[randomDirection](y, x)
 
-    while (!board.isValidAttackTarget(ry, rx) && directions.length > 0) {
+    while (!board.isValidAttackTarget(ry, rx) && directions.length > 1) {
       directions = remove(randomDirection, directions)
       randomDirection = directions[getRandomInteger(0, directions.length - 1)]
       const randomCoords = _potentialDirections[randomDirection](y, x)
@@ -52,6 +52,10 @@ export const AiPlayer = () => {
       const { y: hy, x: hx } = hit[0]
       const coordsForAttack = _potentialDirections[direction](hy, hx)
       const { y: ay, x: ax } = coordsForAttack
+      if (!board.isValidAttackTarget(ay, ax)) {
+        direction = ''
+        return attackPlayer(board)
+      }
       computer.attack(board, ay, ax)
       const status = board.getAttackStatus(ay, ax)
       if (status.value !== 'hit') {
@@ -70,13 +74,15 @@ export const AiPlayer = () => {
       const coords = findSpotAfterHit(board, hy, hx)
       if (!coords.validity) {
         hit.pop()
-        attackPlayer(board)
-        return
+        return attackPlayer(board)
       }
       const { y: ay, x: ax } = coords
-      const status = board.getAttackStatus(ay, ax)
       direction = coords.direction
       computer.attack(board, ay, ax)
+      const status = board.getAttackStatus(ay, ax)
+      if (status.value !== 'hit') {
+        return status
+      }
       hit[0] = { y: ay, x: ax }
       return status
     } else if (!hit[0]) {

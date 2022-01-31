@@ -202,9 +202,7 @@ import { wrapInDiv } from '../ui/dom_funcs'
 
   eventsHandler.on(eventTypes.PLAYER_FINISHED_TURN, async () => {
     await delay(250)
-    const { y, x } = computer.findSpotToAttack(playerBoard)
-    computer.attackPlayer(playerBoard)
-    const status = playerBoard.getAttackStatus(y, x)
+    const status = computer.attackPlayer(playerBoard)
     eventsHandler.trigger(eventTypes.COMPUTER_FINISHED_TURN, { state: playerBoard.state, status })
     if (status.value === 'hit') {
       eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, null)
