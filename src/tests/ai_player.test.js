@@ -73,12 +73,39 @@ describe('ai player works correctly', () => {
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
-    console.table(gameboard.state)
     expect(gameboard.state[4][4]).toBe('h')
     expect(gameboard.state[4][5]).toBe('h')
     expect(gameboard.state[4][6]).toBe('h')
     expect(gameboard.state[4][7]).toBe('h')
     expect(gameboard.state[4][8]).toBe('h')
     expect(gameboard.state[4][9]).not.toBe('h')
+  })
+
+  test('attackPlayer chooses valid random direction for attack (4)', () => {
+    const gameboard = Gameboard()
+    const computer = AiPlayer()
+    const possibleResults = ['h', 'm']
+    gameboard.place(1, 1, 2)
+    computer.attackPlayer(gameboard, 1, 1)
+    computer.attackPlayer(gameboard)
+    expect(
+      possibleResults.includes(gameboard.state[0][1]) || 
+      possibleResults.includes(gameboard.state[1][0])
+    ).toBeTruthy()
+  })
+
+  test('attackPlayer chooses valid random direction for attack (5)', () => {
+    const gameboard = Gameboard()
+    const computer = AiPlayer()
+    const possibleResults = ['h', 'm']
+    gameboard.place(3, 3, 2)
+    computer.attackPlayer(gameboard, 3, 3)
+    computer.attackPlayer(gameboard)
+    expect(
+      possibleResults.includes(gameboard.state[1][2]) || 
+      possibleResults.includes(gameboard.state[3][2]) || 
+      possibleResults.includes(gameboard.state[2][3]) || 
+      possibleResults.includes(gameboard.state[2][1])
+    ).toBeTruthy()
   })
 })
