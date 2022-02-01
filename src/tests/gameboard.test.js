@@ -148,16 +148,16 @@ describe('Gameboard methods work correctly', () => {
     expect(gameboard.isValidForPlace(9, 7, 2)).toBe(false)
   })
 
-  test('isValidAttackTarget() correctly determines if the attack target is valid', () => {
+  test('isValidTarget() correctly determines if the attack target is valid', () => {
     const gameboard = Gameboard()
     gameboard.receiveAttack(1, 1)
-    expect(gameboard.isValidAttackTarget(1, 1)).toBe(false)
-    expect(gameboard.isValidAttackTarget(1, 2)).toBe(true)
-    expect(gameboard.isValidAttackTarget(2, 2)).toBe(true)
-    expect(gameboard.isValidAttackTarget(11, 10)).toBe(false)
-    expect(gameboard.isValidAttackTarget(10, 11)).toBe(false)
-    expect(gameboard.isValidAttackTarget(0, 1)).toBe(false)
-    expect(gameboard.isValidAttackTarget(1, 0)).toBe(false)
+    expect(gameboard.isValidTarget(1, 1)).toBe(false)
+    expect(gameboard.isValidTarget(1, 2)).toBe(true)
+    expect(gameboard.isValidTarget(2, 2)).toBe(true)
+    expect(gameboard.isValidTarget(11, 10)).toBe(false)
+    expect(gameboard.isValidTarget(10, 11)).toBe(false)
+    expect(gameboard.isValidTarget(0, 1)).toBe(false)
+    expect(gameboard.isValidTarget(1, 0)).toBe(false)
   })
 
   test('receiveAttack() correctly determines whether ship was hit or not (1)', () => {

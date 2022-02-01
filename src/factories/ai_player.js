@@ -2,7 +2,7 @@ import { Player } from './player'
 import { getRandomInteger, getRandomCoords } from '../utils/helper_funcs'
 import { curry, remove } from '../utils/func_helpers'
 
-const _potentialAttackDirections = {
+const _attackDirections = {
   left: (y, x) => ({ y, x: x - 1 }),
   right: (y, x) => ({ y, x: x + 1 }),
   top: (y, x) => ({ y: y - 1, x }),
@@ -52,7 +52,7 @@ export const AiPlayer = () => {
   let lastHit = {}
   let direction = ''
 
-  const findRandomSpotToAttack = (board) => {
+  const _findRandomSpotToAttack = (board) => {
     let [y, x] = getRandomCoords()
     while (board.state[y - 1][x - 1] === 'h' || board.state[y - 1][x - 1] === 'm') {
       [y, x] = getRandomCoords()
@@ -61,18 +61,18 @@ export const AiPlayer = () => {
   }
 
   const _findSpotAfterHit = (board, y, x) => {
-    let directions = Object.keys(_potentialAttackDirections)
+    let directions = Object.keys(_attackDirections)
     let randomDirection = directions[getRandomInteger(0, 3)]
-    let { y: ry, x: rx } = _potentialAttackDirections[randomDirection](y, x)
+    let { y: ry, x: rx } = _attackDirections[randomDirection](y, x)
 
-    while (!board.isValidAttackTarget(ry, rx) && directions.length > 1) {
+    while (!board.isValidTarget(ry, rx) && directions.length > 1) {
       directions = remove(randomDirection, directions)
       randomDirection = directions[getRandomInteger(0, directions.length - 1)]
-      const randomCoords = _potentialAttackDirections[randomDirection](y, x)
+      const randomCoords = _attackDirections[randomDirection](y, x)
       ry = randomCoords.y
       rx = randomCoords.x
     }
-    if (!board.isValidAttackTarget(ry, rx)) {
+    if (!board.isValidTarget(ry, rx)) {
       return { validity: false }
     }
     return { validity: true, direction: randomDirection, y: ry, x: rx }
@@ -101,78 +101,88 @@ export const AiPlayer = () => {
     }
   }
 
+  const _attackSpecificSpot = (board, y, x) => {
+    computer.attack(board, y, x)
+    const status = board.getAttackStatus(y, x)
+    if (status.shipStatus === 'damaged') {
+      lastHit = { y, x }
+      hitCells.push(lastHit)
+    }
+    return status
+  }
+
+  const _attackInDirection = (board) => {
+    const coords = _attackDirections[direction](lastHit.y, lastHit.x)
+    if (!board.isValidTarget(coords.y, coords.x)) {
+      direction = _getOppositeDirection(direction)
+      lastHit = _gainOppositeEnd()
+      if (!board.isValidTarget(_attackDirections[direction](lastHit.y, lastHit.x))) {
+        direction = ''
+      }
+      return attackPlayer(board)
+    }
+    computer.attack(board, coords.y, coords.x)
+    const status = board.getAttackStatus(coords.y, coords.x)
+    if (status.value !== 'hit') {
+      direction = _getOppositeDirection(direction)
+      lastHit = _gainOppositeEnd()
+    }
+    if (status.shipStatus === 'destroyed') {
+      direction = ''
+      lastHit = {}
+      hitCells = []
+    }
+    if (status.shipStatus === 'damaged') {
+      lastHit = { y: coords.y, x: coords.x }
+      hitCells.push(lastHit)
+    }
+    return status
+  }
+
+  const _attackAfterHit = (board) => {
+    const coords = _findSpotAfterHit(board, lastHit.y, lastHit.x)
+    if (!coords.validity) {
+      lastHit = {}
+      hitCells = []
+      return attackPlayer(board)
+    }
+    direction = coords.direction
+    computer.attack(board, coords.y, coords.x)
+    const status = board.getAttackStatus(coords.y, coords.x)
+    if (status.value !== 'hit') {
+      return status
+    }
+    lastHit = { y: coords.y, x: coords.x }
+    hitCells.push(lastHit)
+    return status
+  }
+
+  const _attackRandomCell = (board) => {
+    const randomCoords = _findRandomSpotToAttack(board)
+    computer.attack(board, randomCoords.y, randomCoords.x)
+    const status = board.getAttackStatus(randomCoords.y, randomCoords.x)
+    if (status.value === 'hit' && status.shipStatus === 'damaged') {
+      lastHit = { y: randomCoords.y, x: randomCoords.x }
+      hitCells.push(lastHit)
+    }
+    return status
+  }
+
   const attackPlayer = (board, y, x) => {
     if (y && x) {
-      computer.attack(board, y, x)
-      const status = board.getAttackStatus(y, x)
-      if (status.shipStatus === 'damaged') {
-        lastHit = { y, x }
-        hitCells.push(lastHit)
-      }
-      return status
+      return _attackSpecificSpot(board, y, x)
     } else if (lastHit.y && lastHit.x && direction !== '') {
-      const { y: hy, x: hx } = lastHit
-      const coordsForAttack = _potentialAttackDirections[direction](hy, hx)
-      const { y: ay, x: ax } = coordsForAttack
-      if (!board.isValidAttackTarget(ay, ax)) {
-        direction = _getOppositeDirection(direction)
-        lastHit = _gainOppositeEnd()
-        if (!board.isValidAttackTarget(_potentialAttackDirections[direction](lastHit.y, lastHit.x))) {
-          direction = ''
-        }
-        return attackPlayer(board)
-      }
-      computer.attack(board, ay, ax)
-      const status = board.getAttackStatus(ay, ax)
-      if (status.value !== 'hit') {
-        direction = _getOppositeDirection(direction)
-        lastHit = _gainOppositeEnd()
-      }
-      if (status.shipStatus === 'destroyed') {
-        direction = ''
-        lastHit = {}
-        hitCells = []
-      }
-      if (status.shipStatus === 'damaged') {
-        lastHit = { y: ay, x: ax }
-        hitCells.push(lastHit)
-      }
-      return status
+      return _attackInDirection(board)
     } else if (lastHit.y && lastHit.x) {
-      const { y: hy, x: hx } = lastHit
-      const coords = _findSpotAfterHit(board, hy, hx)
-      if (!coords.validity) {
-        lastHit = {}
-        hitCells = []
-        return attackPlayer(board)
-      }
-      const { y: ay, x: ax } = coords
-      direction = coords.direction
-      computer.attack(board, ay, ax)
-      const status = board.getAttackStatus(ay, ax)
-      if (status.value !== 'hit') {
-        return status
-      }
-      lastHit = { y: ay, x: ax }
-      hitCells.push(lastHit)
-      return status
+      return _attackAfterHit(board)
     } else if (!(lastHit.y && lastHit.x)) {
-      const randomCoords = findRandomSpotToAttack(board)
-      const { y, x } = randomCoords
-      computer.attack(board, y, x)
-      const status = board.getAttackStatus(y, x)
-      if (status.value === 'hit' && status.shipStatus === 'damaged') {
-        lastHit = { y, x }
-        hitCells.push(lastHit)
-      }
-      return status
+      return _attackRandomCell(board)
     }
   }
 
   const setDirection = (val) => { direction = val }
 
   return {
-    findRandomSpotToAttack,
     attackPlayer,
     setDirection,
     get direction () { return direction },

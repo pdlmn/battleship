@@ -182,7 +182,7 @@ import { delay } from '../utils/helper_funcs'
   })
 
   eventsHandler.on(eventTypes.COMPUTER_BOARD_CLICKED, (coords) => {
-    if (!gameStarted || !player.turn || !computerBoard.isValidAttackTarget(...coords)) return
+    if (!gameStarted || !player.turn || !computerBoard.isValidTarget(...coords)) return
     player.attack(computerBoard, ...coords)
     const status = computerBoard.getAttackStatus(...coords)
     eventsHandler.trigger(

@@ -142,7 +142,7 @@ export const Gameboard = () => {
     return ship
   }
 
-  const isValidAttackTarget = (y, x) => {
+  const isValidTarget = (y, x) => {
     const [dy, dx] = decrement([y, x])
     const row = state[dy]
     if (row) {
@@ -207,7 +207,7 @@ export const Gameboard = () => {
     get hit () { return hit },
     isValidForPlace,
     place,
-    isValidAttackTarget,
+    isValidTarget,
     receiveAttack,
     getAttackStatus,
     isShipSunk,
