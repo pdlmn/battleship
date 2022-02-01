@@ -300,4 +300,13 @@ describe('Gameboard methods work correctly', () => {
     gameboard.receiveAttack(1, 2)
     expect(gameboard.isFleetSunk()).toBe(false)
   })
+
+  test('getAreaAroundSunk() gets cells around sunk ships (1)', () => {
+    const gameboard = Gameboard()
+    gameboard.place(1, 1, 2)
+    gameboard.receiveAttack(1, 1)
+    gameboard.receiveAttack(1, 2)
+    expect(gameboard.g()).toBe(false)
+  })
+
 })

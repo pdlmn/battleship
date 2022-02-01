@@ -198,7 +198,7 @@ import { delay } from '../utils/helper_funcs'
   })
 
   eventsHandler.on(eventTypes.PLAYER_FINISHED_TURN, async () => {
-    await delay(450)
+    await delay(250)
     const status = computer.attackPlayer(playerBoard)
     eventsHandler.trigger(
       eventTypes.COMPUTER_FINISHED_TURN,

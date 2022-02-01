@@ -1,6 +1,6 @@
 import { Player } from './player'
 import { getRandomInteger, getRandomCoords } from '../utils/helper_funcs'
-import { curry, remove } from '../utils/func_helpers'
+import { curry, gt, lt, remove } from '../utils/func_helpers'
 
 const _attackDirections = {
   left: (y, x) => ({ y, x: x - 1 }),
@@ -29,22 +29,19 @@ const _isShipHorizontal = (hitCells) =>
     ? hitCells[0].y === hitCells[1].y
     : false
 
-const _firstOnAxis = curry((axis, hitCells) => hitCells.reduce((prev, next) =>
-  prev[axis] < next[axis]
+const _getEndOnAxis = curry((axis, getLast, hitCells) => {
+  const comparisonOp = getLast ? gt : lt 
+  return hitCells.reduce((prev, next) =>
+    comparisonOp(prev[axis], next[axis])
     ? prev
     : next
-))
+  )}
+)
 
-const _lastOnAxis = curry((axis, hitCells) => hitCells.reduce((prev, next) =>
-  prev[axis] < next[axis]
-    ? next
-    : prev
-))
-
-const _leftmostCell = _firstOnAxis('x')
-const _rightmostCell = _lastOnAxis('x')
-const _topmostCell = _firstOnAxis('y')
-const _bottommostCell = _lastOnAxis('y')
+const _getLeftmost = _getEndOnAxis('x', false)
+const _getRightmost = _getEndOnAxis('x', true)
+const _getTopmost = _getEndOnAxis('y', false)
+const _getBottommost = _getEndOnAxis('y', true)
 
 export const AiPlayer = () => {
   const computer = Player('Computer', false)
@@ -85,14 +82,14 @@ export const AiPlayer = () => {
     let bottommost
     switch (_isShipHorizontal(hitCells)) {
       case true:
-        leftmost = _leftmostCell(hitCells)
-        rightmost = _rightmostCell(hitCells)
+        leftmost = _getLeftmost(hitCells)
+        rightmost = _getRightmost(hitCells)
         return lastHit.x === leftmost.x
           ? rightmost
           : leftmost
       case false:
-        topmost = _topmostCell(hitCells)
-        bottommost = _bottommostCell(hitCells)
+        topmost = _getTopmost(hitCells)
+        bottommost = _getBottommost(hitCells)
         return lastHit.y === topmost.y
           ? bottommost
           : topmost

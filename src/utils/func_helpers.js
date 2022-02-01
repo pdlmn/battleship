@@ -166,4 +166,9 @@ const remove = curry((item, arr) => {
   return result
 })
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray, remove }
+const gt = (a, b) => a > b
+const lt = (a, b) => a < b
+const gte = (a, b) => a >= b
+const lte = (a, b) => a <= b
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray, remove, gt, lt, gte, lte }

@@ -127,6 +127,14 @@ export const Gameboard = () => {
     return false
   }
 
+  const getAreaAroundSunk = () => {
+    
+  }
+
+  const isAdjcentToSunkShip = () => {
+
+  }
+
   const isValidForPlace = (y, x, size) => (
     !_isOverlaps(y, x, size) &&
     !_isOverflows(y, x, size) &&
@@ -165,10 +173,8 @@ export const Gameboard = () => {
       state = _mapMissed([{ y, x }])
       return
     }
-    pipe(
-      findIndex(segment => segment.y === y && segment.x === x),
-      hitShip.hit
-    )(hitShip.segments)
+    const hitShipIndex = findIndex(segment => segment.y === y && segment.x === x, hitShip.segments)
+    hitShip.hit(hitShipIndex)
     hit.push({ y, x })
     state = _mapHit([{ y, x }])
   }
@@ -211,6 +217,8 @@ export const Gameboard = () => {
     receiveAttack,
     getAttackStatus,
     isShipSunk,
+    getAreaAroundSunk,
+    isAdjcentToSunkShip,
     isFleetSunk,
     setPlane
   }
