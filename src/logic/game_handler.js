@@ -1,4 +1,4 @@
-import { eventTypes } from './event_types'
+import { events } from '../constants/event_types'
 import { eventsHandler } from '../utils/events_handler'
 import { Player } from '../factories/player'
 import { AiPlayer } from '../factories/ai_player'
@@ -20,7 +20,7 @@ import { delay } from '../utils/helper_funcs'
 
   startBtn.addEventListener('click', () => {
     [startBtn, nameInp, rotateBtn].forEach((el) => { el.disabled = true })
-    eventsHandler.trigger(eventTypes.GAME_STARTED, nameInp.value)
+    eventsHandler.trigger(events.GAME_STARTED, nameInp.value)
     hintsDiv.innerText = 'Good luck, Admiral!'
   })
 
@@ -32,7 +32,7 @@ import { delay } from '../utils/helper_funcs'
       rotateBtn.dataset.plane = 'vertically'
       rotateBtn.innerText = 'Vertical'
     }
-    eventsHandler.trigger(eventTypes.SHIP_ROTATED, rotateBtn.dataset.plane)
+    eventsHandler.trigger(events.SHIP_ROTATED, rotateBtn.dataset.plane)
   })
 
   nameInp.addEventListener('input', (e) => {
@@ -44,7 +44,7 @@ import { delay } from '../utils/helper_funcs'
       : startBtn.disabled = true
   })
 
-  eventsHandler.on(eventTypes.SHIP_PLACED, ({ areShipsPlaced, shipType }) => {
+  eventsHandler.on(events.SHIP_PLACED, ({ areShipsPlaced, shipType }) => {
     ;(areShipsPlaced())
       ? shipsPlaced = true
       : shipsPlaced = false
@@ -55,8 +55,8 @@ import { delay } from '../utils/helper_funcs'
   })
 
   eventsHandler.onEach([
-    eventTypes.COMPUTER_BOARD_ATTACKED,
-    eventTypes.COMPUTER_FINISHED_TURN
+    events.COMPUTER_BOARD_ATTACKED,
+    events.COMPUTER_FINISHED_TURN
   ], ({ status, player }) => {
     const logClass = `log-${player.type}-${status.shipStatus || status.value}`
     let msg
@@ -70,7 +70,7 @@ import { delay } from '../utils/helper_funcs'
     logDiv.prepend(div)
   })
 
-  eventsHandler.on(eventTypes.GAME_ENDED, (name) => {
+  eventsHandler.on(events.GAME_ENDED, (name) => {
     hintsDiv.innerText = `${name} won!`
   })
 })()
@@ -88,34 +88,34 @@ import { delay } from '../utils/helper_funcs'
   playerBoard.addEventListener('mouseover', (e) => {
     if (e.target.classList.contains('cell')) {
       const coords = boardHandler.extractCoords(e.target)
-      eventsHandler.trigger(eventTypes.BOARD_HOVERED, coords)
+      eventsHandler.trigger(events.BOARD_HOVERED, coords)
     }
   })
 
-  eventsHandler.on(eventTypes.SHIP_VALIDATED, (data) => {
+  eventsHandler.on(events.SHIP_VALIDATED, (data) => {
     boardHandler.highlightFutureShip(...data)
   })
 
   playerBoard.addEventListener('click', (e) => {
     if (e.target.classList.contains('cell')) {
       const coords = boardHandler.extractCoords(e.target)
-      eventsHandler.trigger(eventTypes.BOARD_CLICKED, coords)
+      eventsHandler.trigger(events.BOARD_CLICKED, coords)
     }
   })
 
-  eventsHandler.on(eventTypes.SHIP_PLACED, ({ ship }) => {
+  eventsHandler.on(events.SHIP_PLACED, ({ ship }) => {
     boardHandler.place(...ship)
   })
 
-  eventsHandler.on(eventTypes.GAME_STARTED, () => {
+  eventsHandler.on(events.GAME_STARTED, () => {
 
   })
 
   playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
 
   eventsHandler.onEach([
-    eventTypes.COMPUTER_PLACED_SHIPS,
-    eventTypes.COMPUTER_BOARD_ATTACKED
+    events.COMPUTER_PLACED_SHIPS,
+    events.COMPUTER_BOARD_ATTACKED
   ], ({ state }) => {
     renderComputer(state)
   })
@@ -123,15 +123,15 @@ import { delay } from '../utils/helper_funcs'
   computerBoard.addEventListener('click', (e) => {
     if (e.target.classList.contains('cell')) {
       const coords = boardHandler.extractCoords(e.target)
-      eventsHandler.trigger(eventTypes.COMPUTER_BOARD_CLICKED, coords)
+      eventsHandler.trigger(events.COMPUTER_BOARD_CLICKED, coords)
     }
   })
 
-  eventsHandler.on(eventTypes.COMPUTER_FINISHED_TURN, ({ state }) => {
+  eventsHandler.on(events.COMPUTER_FINISHED_TURN, ({ state }) => {
     renderPlayer(state)
   })
 
-  eventsHandler.on(eventTypes.SHIP_ROTATED, boardHandler.setPlane)
+  eventsHandler.on(events.SHIP_ROTATED, boardHandler.setPlane)
 })()
 
 ;(function gameLogic () {
@@ -143,15 +143,15 @@ import { delay } from '../utils/helper_funcs'
   let computer
   let gameStarted = false
 
-  eventsHandler.on(eventTypes.BOARD_HOVERED, (coords) => {
+  eventsHandler.on(events.BOARD_HOVERED, (coords) => {
     if (gameStarted) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValidForPlace(y, x, nextShipSize)
-    eventsHandler.trigger(eventTypes.SHIP_VALIDATED, [y, x, nextShipSize, isValid])
+    eventsHandler.trigger(events.SHIP_VALIDATED, [y, x, nextShipSize, isValid])
   })
 
-  eventsHandler.on(eventTypes.BOARD_CLICKED, (coords) => {
+  eventsHandler.on(events.BOARD_CLICKED, (coords) => {
     if (gameStarted) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
@@ -160,7 +160,7 @@ import { delay } from '../utils/helper_funcs'
     const ship = playerBoard.place(y, x, nextShipSize)
     shipsToPlace.shift()
     eventsHandler.trigger(
-      eventTypes.SHIP_PLACED,
+      events.SHIP_PLACED,
       {
         ship: [y, x, nextShipSize],
         shipType: ship.type,
@@ -168,50 +168,50 @@ import { delay } from '../utils/helper_funcs'
       })
   })
 
-  eventsHandler.on(eventTypes.SHIP_ROTATED, playerBoard.setPlane)
+  eventsHandler.on(events.SHIP_ROTATED, playerBoard.setPlane)
 
-  eventsHandler.on(eventTypes.GAME_STARTED, (name) => {
+  eventsHandler.on(events.GAME_STARTED, (name) => {
     gameStarted = true
     player = Player(name, true)
     computer = AiPlayer()
     computerBoard.placeFleet(5)
     eventsHandler.trigger(
-      eventTypes.COMPUTER_PLACED_SHIPS,
+      events.COMPUTER_PLACED_SHIPS,
       { state: computerBoard.state }
     )
   })
 
-  eventsHandler.on(eventTypes.COMPUTER_BOARD_CLICKED, (coords) => {
+  eventsHandler.on(events.COMPUTER_BOARD_CLICKED, (coords) => {
     if (!gameStarted || !player.turn || !computerBoard.isValidTarget(...coords)) return
     player.attack(computerBoard, ...coords)
     const status = computerBoard.getAttackStatus(...coords)
     eventsHandler.trigger(
-      eventTypes.COMPUTER_BOARD_ATTACKED,
+      events.COMPUTER_BOARD_ATTACKED,
       { state: computerBoard.state, status, player }
     )
     if (!player.turn) {
-      eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, null)
+      eventsHandler.trigger(events.PLAYER_FINISHED_TURN, null)
     }
     if (computerBoard.isFleetSunk()) {
-      eventsHandler.trigger(eventTypes.GAME_ENDED, player.name)
+      eventsHandler.trigger(events.GAME_ENDED, player.name)
     }
   })
 
-  eventsHandler.on(eventTypes.PLAYER_FINISHED_TURN, async () => {
+  eventsHandler.on(events.PLAYER_FINISHED_TURN, async () => {
     await delay(250)
     const status = computer.attackPlayer(playerBoard)
     eventsHandler.trigger(
-      eventTypes.COMPUTER_FINISHED_TURN,
+      events.COMPUTER_FINISHED_TURN,
       { state: playerBoard.state, status, player: computer }
     )
     if (status.value === 'hit') {
-      eventsHandler.trigger(eventTypes.PLAYER_FINISHED_TURN, null)
+      eventsHandler.trigger(events.PLAYER_FINISHED_TURN, null)
       return
     }
     player.changeTurn()
 
     if (playerBoard.isFleetSunk()) {
-      eventsHandler.trigger(eventTypes.GAME_ENDED, computer.name)
+      eventsHandler.trigger(events.GAME_ENDED, computer.name)
     }
   })
 })()
