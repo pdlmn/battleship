@@ -1,6 +1,5 @@
-import { decrement } from '../utils/func_helpers'
-
 export const Player = (name, isFirst) => {
+  const type = isFirst ? 'player' : 'computer'
   let turn = isFirst
 
   const changeTurn = () => { turn = !turn }
@@ -15,6 +14,7 @@ export const Player = (name, isFirst) => {
 
   return {
     get name () { return name },
+    get type () { return type },
     get turn () { return turn },
     attack,
     changeTurn

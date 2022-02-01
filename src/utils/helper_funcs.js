@@ -6,4 +6,10 @@ const getRandomCoords = () => {
   return [y, x]
 }
 
-export { getRandomInteger, getRandomCoords }
+const delay = async (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
+export { getRandomInteger, getRandomCoords, delay }

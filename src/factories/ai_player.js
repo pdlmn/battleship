@@ -168,10 +168,12 @@ export const AiPlayer = () => {
 
   const setDirection = (val) => { direction = val }
 
-  return Object.assign({
+  return {
     findRandomSpotToAttack,
     attackPlayer,
     setDirection,
     get direction () { return direction },
-  }, computer)
+    get name () { return computer.name },
+    get type () { return computer.type }
+  }
 }

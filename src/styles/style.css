@@ -85,17 +85,25 @@ main {
 }
 
 .log-player-missed {
+  color: rgb(80, 100, 100);
+}
+
+.log-player-damaged {
   color: rgb(120, 120, 220);
 }
 
-.log-player-hit {
-  color: rgb(150, 250, 100);
+.log-player-destroyed {
+  color: rgb(20, 150, 20);
 }
 
 .log-computer-missed {
-  color: rgb(250, 120, 20);
+  color: rgb(130, 130, 20);
 }
 
-.log-computer-hit {
+.log-computer-damaged {
+  color: rgb(180, 130, 20);
+}
+
+.log-computer-destroyed {
   color: rgb(250, 20, 20);
 }

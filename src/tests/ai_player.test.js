@@ -122,9 +122,8 @@ describe('ai player works correctly', () => {
     computer.attackPlayer(gameboard, 10, 9)
     computer.setDirection('top')
     computer.attackPlayer(gameboard)
-    computer.attackPlayer(gameboard)
-    console.table(gameboard.state)
-    expect().toBe()
+    expect(gameboard.state[9][8]).toBe('h')
+    expect(gameboard.state[8][8]).toBe('m')
   })
   
 })
