@@ -1,12 +1,8 @@
 import { repeat, findIndex, pipe, map, flatten, decrement, curry } from '../utils/func_helpers'
 import { Ship } from './ship'
+import { states } from '../constants/cell_states'
 
-const _WATER = 'w'
-const _SHIP = 's'
-const _MISSED = 'm'
-const _HIT = 'h'
-
-const _createRow = () => repeat(() => _WATER, 10)
+const _createRow = () => repeat(() => states.WATER, 10)
 const _createGameboard = () => repeat(_createRow, 10)
 
 const _mapCoords = curry((board, value, coords) => {
@@ -21,14 +17,14 @@ const _mapCoords = curry((board, value, coords) => {
 export const Gameboard = () => {
   const fleet = []
   const missed = []
-  const hit = []
   let plane = 'horizontally'
   let state = _createGameboard()
 
   const _mapBoard = _mapCoords(state)
-  const _mapShip = _mapBoard(_SHIP)
-  const _mapMissed = _mapBoard(_MISSED)
-  const _mapHit = _mapBoard(_HIT)
+  const _mapShip = _mapBoard(states.SHIP)
+  const _mapMissed = _mapBoard(states.MISSED)
+  const _mapHit = _mapBoard(states.HIT)
+  const _mapSunk = _mapBoard(states.SUNK)
 
   const _findShip = (y, x) =>
     fleet.find((ship) => ship.segments.find((segment) => segment.y === y && segment.x === x))
@@ -80,14 +76,14 @@ export const Gameboard = () => {
       for (let i = dx; i < tail; i++) {
         const topCell = state[dy - 1] ? state[dy - 1][i] : null
         const bottomCell = state[dy + 1] ? state[dy + 1][i] : null
-        if (topCell === _SHIP || bottomCell === _SHIP) {
+        if (topCell === states.SHIP || bottomCell === states.SHIP) {
           return true
         }
       }
 
       const leftCell = state[dy][dx - 1]
       const rightCell = state[dy][tail]
-      if (leftCell === _SHIP || rightCell === _SHIP) {
+      if (leftCell === states.SHIP || rightCell === states.SHIP) {
         return true
       }
 
@@ -95,7 +91,7 @@ export const Gameboard = () => {
       const bottomLeft = state[dy + 1] ? state[dy + 1][dx - 1] : null
       const topRight = state[dy - 1] ? state[dy - 1][tail] : null
       const bottomRight = state[dy + 1] ? state[dy + 1][tail] : null
-      if (topLeft === _SHIP || bottomLeft === _SHIP || topRight === _SHIP || bottomRight === _SHIP) {
+      if (topLeft === states.SHIP || bottomLeft === states.SHIP || topRight === states.SHIP || bottomRight === states.SHIP) {
         return true
       }
     }
@@ -104,14 +100,14 @@ export const Gameboard = () => {
 
       const topCell = state[dy - 1] ? state[dy - 1][dx] : null
       const bottomCell = state[tail] ? state[tail][dx] : null
-      if (topCell === _SHIP || bottomCell === _SHIP) {
+      if (topCell === states.SHIP || bottomCell === states.SHIP) {
         return true
       }
 
       for (let i = dy; i < tail; i++) {
         const leftCell = state[i][dx - 1]
         const rightCell = state[i][dx + 1]
-        if (leftCell === _SHIP || rightCell === _SHIP) {
+        if (leftCell === states.SHIP || rightCell === states.SHIP) {
           return true
         }
       }
@@ -120,7 +116,7 @@ export const Gameboard = () => {
       const topRight = state[dy - 1] ? state[dy - 1][dx + 1] : null
       const bottomLeft = state[tail] ? state[tail][dx - 1] : null
       const bottomRight = state[tail] ? state[tail][dx + 1] : null
-      if (topLeft === _SHIP || bottomLeft === _SHIP || topRight === _SHIP || bottomRight === _SHIP) {
+      if (topLeft === states.SHIP || bottomLeft === states.SHIP || topRight === states.SHIP || bottomRight === states.SHIP) {
         return true
       }
     }
@@ -155,11 +151,12 @@ export const Gameboard = () => {
     const row = state[dy]
     if (row) {
       switch (state[dy][dx]) {
-        case 's':
-        case 'w':
+        case states.SHIP:
+        case states.WATER:
           return true
-        case 'm':
-        case 'h':
+        case states.MISSED:
+        case states.HIT:
+        case states.SUNK:
           return false
       }
     }
@@ -173,10 +170,11 @@ export const Gameboard = () => {
       state = _mapMissed([{ y, x }])
       return
     }
-    const hitShipIndex = findIndex(segment => segment.y === y && segment.x === x, hitShip.segments)
-    hitShip.hit(hitShipIndex)
-    hit.push({ y, x })
-    state = _mapHit([{ y, x }])
+    const hitSegmentIndex = findIndex(segment => segment.y === y && segment.x === x, hitShip.segments)
+    hitShip.hit(hitSegmentIndex)
+    state = hitShip.isSunk()
+    ? _mapSunk(hitShip.segments)
+    : _mapHit([{ y, x }])
   }
 
   const getAttackStatus = (y, x) => {
@@ -185,16 +183,18 @@ export const Gameboard = () => {
     let ship
     let status
     switch (attackedCell) {
-      case _MISSED:
+      case states.MISSED:
         return Object.assign({ value: 'missed' }, coords)
-      case _HIT:
+      case states.HIT:
+      case states.SUNK:
         ship = _findShip(y, x)
         status = { value: 'hit', ship: ship.type }
         return ship.isSunk()
           ? Object.assign(status, coords, { shipStatus: 'destroyed' })
           : Object.assign(status, coords, { shipStatus: 'damaged' })
+      default:
+        return Object.assign({ value: attackedCell }, coords)
     }
-    return Object.assign({ value: attackedCell }, coords)
   }
 
   const isShipSunk = (y, x) => {
@@ -210,7 +210,6 @@ export const Gameboard = () => {
     get state () { return state },
     get fleet () { return fleet },
     get missed () { return missed },
-    get hit () { return hit },
     isValidForPlace,
     place,
     isValidTarget,

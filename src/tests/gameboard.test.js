@@ -1,11 +1,12 @@
 import { Gameboard, _createGameboard } from '../factories/gameboard'
+import { states } from '../constants/cell_states'
 
 describe('Gameboard methods work correctly', () => {
   test('place() correctly changes virtual board after placing ship horizontally (1)', () => {
     const gameboard = Gameboard()
     const expected = _createGameboard()
-    expected[0][0] = 's'
-    expected[0][1] = 's'
+    expected[0][0] = states.SHIP
+    expected[0][1] = states.SHIP
     gameboard.place(1, 1, 2, 'horizontally')
     expect(gameboard.state).toEqual(expected)
   })
@@ -13,9 +14,9 @@ describe('Gameboard methods work correctly', () => {
   test('place() correctly changes virtual board after placing ship horizontally (2)', () => {
     const gameboard = Gameboard()
     const expected = _createGameboard()
-    expected[6][6] = 's'
-    expected[6][7] = 's'
-    expected[6][8] = 's'
+    expected[6][6] = states.SHIP
+    expected[6][7] = states.SHIP
+    expected[6][8] = states.SHIP
     gameboard.place(7, 7, 3, 'horizontally')
     expect(gameboard.state).toEqual(expected)
   })
@@ -24,8 +25,8 @@ describe('Gameboard methods work correctly', () => {
     const gameboard = Gameboard()
     const expected = _createGameboard()
     gameboard.setPlane('vertically')
-    expected[0][0] = 's'
-    expected[1][0] = 's'
+    expected[0][0] = states.SHIP
+    expected[1][0] = states.SHIP
     gameboard.place(1, 1, 2)
     expect(gameboard.state).toEqual(expected)
   })
@@ -34,9 +35,9 @@ describe('Gameboard methods work correctly', () => {
     const gameboard = Gameboard()
     const expected = _createGameboard()
     gameboard.setPlane('vertically')
-    expected[6][6] = 's'
-    expected[7][6] = 's'
-    expected[8][6] = 's'
+    expected[6][6] = states.SHIP
+    expected[7][6] = states.SHIP
+    expected[8][6] = states.SHIP
     gameboard.place(7, 7, 3)
     expect(gameboard.state).toEqual(expected)
   })
@@ -215,7 +216,7 @@ describe('Gameboard methods work correctly', () => {
     const gameboard = Gameboard()
     const expected = _createGameboard()
     gameboard.receiveAttack(1, 1)
-    expected[0][0] = 'm'
+    expected[0][0] = states.MISSED
     expect(gameboard.state).toEqual(expected)
   })
 
@@ -224,8 +225,8 @@ describe('Gameboard methods work correctly', () => {
     const expected = _createGameboard()
     gameboard.receiveAttack(2, 1)
     gameboard.receiveAttack(7, 7)
-    expected[1][0] = 'm'
-    expected[6][6] = 'm'
+    expected[1][0] = states.MISSED
+    expected[6][6] = states.MISSED
     expect(gameboard.state).toEqual(expected)
   })
 
@@ -235,8 +236,8 @@ describe('Gameboard methods work correctly', () => {
     gameboard.setPlane('vertically')
     gameboard.place(1, 1, 2)
     gameboard.receiveAttack(1, 1)
-    expected[0][0] = 'h'
-    expected[1][0] = 's'
+    expected[0][0] = states.HIT
+    expected[1][0] = states.SHIP
     expect(gameboard.state).toEqual(expected)
   })
 
@@ -246,9 +247,9 @@ describe('Gameboard methods work correctly', () => {
     gameboard.place(7, 7, 3, 'horizontally')
     gameboard.receiveAttack(7, 7)
     gameboard.receiveAttack(7, 8)
-    expected[6][6] = 'h'
-    expected[6][7] = 'h'
-    expected[6][8] = 's'
+    expected[6][6] = states.HIT
+    expected[6][7] = states.HIT
+    expected[6][8] = states.SHIP
     expect(gameboard.state).toEqual(expected)
   })
 
@@ -257,6 +258,7 @@ describe('Gameboard methods work correctly', () => {
     gameboard.place(1, 1, 2)
     gameboard.place(3, 3, 3)
     gameboard.receiveAttack(1, 1)
+    console.table(gameboard.state)
     expect(gameboard.getAttackStatus(1, 1)).toEqual({ value: 'hit', ship: 'Destroyer', shipStatus: 'damaged', y: 1, x: 1 })
     gameboard.receiveAttack(2, 2)
     expect(gameboard.getAttackStatus(2, 2)).toEqual({ value: 'missed', y: 2, x: 2 })
@@ -306,7 +308,7 @@ describe('Gameboard methods work correctly', () => {
     gameboard.place(1, 1, 2)
     gameboard.receiveAttack(1, 1)
     gameboard.receiveAttack(1, 2)
-    expect(gameboard.g()).toBe(false)
+    expect(gameboard.getAreaAroundSunk()).toBe()
   })
 
 })

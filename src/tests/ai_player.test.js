@@ -1,5 +1,6 @@
 import { AiPlayer } from '../factories/ai_player'
 import { Gameboard } from '../factories/gameboard'
+import { states } from '../constants/cell_states'
 
 describe('ai player works correctly', () => {
   test('attackPlayer() pushes towards same attack direction after hitting ship twice (1)', () => {
@@ -12,7 +13,7 @@ describe('ai player works correctly', () => {
     gameboard.receiveAttack(3, 4)
     computer.attackPlayer(gameboard, 3, 3)
     computer.attackPlayer(gameboard)
-    expect(gameboard.state[3][2]).toBe('h')
+    expect(gameboard.state[3][2]).toBe(states.SUNK)
   })
 
   test('attackPlayer() pushes towards same attack direction after hitting ship twice (2)', () => {
@@ -27,10 +28,10 @@ describe('ai player works correctly', () => {
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
-    expect(gameboard.state[4][4]).toBe('h')
-    expect(gameboard.state[5][4]).toBe('h')
-    expect(gameboard.state[6][4]).toBe('h')
-    expect(gameboard.state[7][4]).toBe('h')
+    expect(gameboard.state[4][4]).toBe(states.HIT)
+    expect(gameboard.state[5][4]).toBe(states.HIT)
+    expect(gameboard.state[6][4]).toBe(states.HIT)
+    expect(gameboard.state[7][4]).toBe(states.HIT)
   })
 
   test('attackPlayer() pushes towards same attack direction after hitting ship twice (3)', () => {
@@ -46,18 +47,17 @@ describe('ai player works correctly', () => {
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
-    expect(gameboard.state[4][4]).toBe('h')
-    expect(gameboard.state[4][5]).toBe('h')
-    expect(gameboard.state[4][6]).toBe('h')
-    expect(gameboard.state[4][7]).toBe('h')
-    expect(gameboard.state[4][8]).toBe('h')
-    expect(gameboard.state[4][9]).not.toBe('h')
+    expect(gameboard.state[4][4]).toBe(states.SUNK)
+    expect(gameboard.state[4][5]).toBe(states.SUNK)
+    expect(gameboard.state[4][6]).toBe(states.SUNK)
+    expect(gameboard.state[4][7]).toBe(states.SUNK)
+    expect(gameboard.state[4][8]).toBe(states.SUNK)
   })
 
   test('attackPlayer() after hitting a ship tries cells around the ship (1)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
-    const possibleResults = ['h', 'm']
+    const possibleResults = [states.SUNK, states.MISSED]
     gameboard.place(1, 1, 2)
     computer.attackPlayer(gameboard, 1, 1)
     computer.attackPlayer(gameboard)
@@ -70,7 +70,7 @@ describe('ai player works correctly', () => {
   test('attackPlayer() after hitting a ship tries cells around the ship (2)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
-    const possibleResults = ['h', 'm']
+    const possibleResults = [states.HIT, states.MISSED, states.SUNK]
     gameboard.place(3, 3, 2)
     computer.attackPlayer(gameboard, 3, 3)
     computer.attackPlayer(gameboard)
@@ -91,10 +91,10 @@ describe('ai player works correctly', () => {
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
-    expect(gameboard.state[2][1]).toBe('m')
-    expect(gameboard.state[2][2]).toBe('h')
-    expect(gameboard.state[2][3]).toBe('h')
-    expect(gameboard.state[2][4]).toBe('h')
+    expect(gameboard.state[2][1]).toBe(states.MISSED)
+    expect(gameboard.state[2][2]).toBe(states.SUNK)
+    expect(gameboard.state[2][3]).toBe(states.SUNK)
+    expect(gameboard.state[2][4]).toBe(states.SUNK)
   })
 
   test('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (2)', () => {
@@ -107,10 +107,10 @@ describe('ai player works correctly', () => {
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
-    expect(gameboard.state[1][2]).toBe('m')
-    expect(gameboard.state[2][2]).toBe('h')
-    expect(gameboard.state[3][2]).toBe('h')
-    expect(gameboard.state[4][2]).toBe('h')
+    expect(gameboard.state[1][2]).toBe(states.MISSED)
+    expect(gameboard.state[2][2]).toBe(states.SUNK)
+    expect(gameboard.state[3][2]).toBe(states.SUNK)
+    expect(gameboard.state[4][2]).toBe(states.SUNK)
   })
 
   test('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (3)', () => {
@@ -120,7 +120,7 @@ describe('ai player works correctly', () => {
     computer.attackPlayer(gameboard, 10, 9)
     computer.setDirection('top')
     computer.attackPlayer(gameboard)
-    expect(gameboard.state[9][8]).toBe('h')
-    expect(gameboard.state[8][8]).toBe('m')
+    expect(gameboard.state[9][8]).toBe(states.HIT)
+    expect(gameboard.state[8][8]).toBe(states.MISSED)
   })
 })

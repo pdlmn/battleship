@@ -1,4 +1,4 @@
-export const eventTypes = Object.freeze({
+export const events = Object.freeze({
   BOARD_HOVERED: 'Board hovered',
   BOARD_CLICKED: 'Board clicked',
   SHIP_VALIDATED: 'Ship validated',
