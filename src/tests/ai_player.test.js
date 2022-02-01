@@ -93,7 +93,6 @@ describe('ai player works correctly', () => {
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
-    console.table(gameboard.state)
     expect(gameboard.state[2][1]).toBe('m')
     expect(gameboard.state[2][2]).toBe('h')
     expect(gameboard.state[2][3]).toBe('h')
@@ -103,7 +102,6 @@ describe('ai player works correctly', () => {
   test('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (2)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
-    const possibleResults = ['h', 'm']
     gameboard.setPlane('vertically')
     gameboard.place(3, 3, 3)
     computer.setDirection('top')
@@ -111,11 +109,22 @@ describe('ai player works correctly', () => {
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
     computer.attackPlayer(gameboard)
-    console.table(gameboard.state)
     expect(gameboard.state[1][2]).toBe('m')
     expect(gameboard.state[2][2]).toBe('h')
     expect(gameboard.state[3][2]).toBe('h')
     expect(gameboard.state[4][2]).toBe('h')
   })
 
+  test('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (3)', () => {
+    const gameboard = Gameboard()
+    const computer = AiPlayer()
+    gameboard.place(10, 7, 4)
+    computer.attackPlayer(gameboard, 10, 9)
+    computer.setDirection('top')
+    computer.attackPlayer(gameboard)
+    computer.attackPlayer(gameboard)
+    console.table(gameboard.state)
+    expect().toBe()
+  })
+  
 })

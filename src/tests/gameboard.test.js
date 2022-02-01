@@ -257,13 +257,13 @@ describe('Gameboard methods work correctly', () => {
     gameboard.place(1, 1, 2)
     gameboard.place(3, 3, 3)
     gameboard.receiveAttack(1, 1)
-    expect(gameboard.getAttackStatus(1, 1)).toEqual({ value: 'hit', ship: 'Destroyer', shipStatus: 'damaged' })
+    expect(gameboard.getAttackStatus(1, 1)).toEqual({ value: 'hit', ship: 'Destroyer', shipStatus: 'damaged', y: 1, x: 1 })
     gameboard.receiveAttack(2, 2)
-    expect(gameboard.getAttackStatus(2, 2)).toEqual({ value: 'missed' })
+    expect(gameboard.getAttackStatus(2, 2)).toEqual({ value: 'missed', y: 2, x: 2 })
     gameboard.receiveAttack(3, 3)
     gameboard.receiveAttack(3, 4)
     gameboard.receiveAttack(3, 5)
-    expect(gameboard.getAttackStatus(3, 3)).toEqual({ value: 'hit', ship: 'Cruiser', shipStatus: 'destroyed' })
+    expect(gameboard.getAttackStatus(3, 3)).toEqual({ value: 'hit', ship: 'Cruiser', shipStatus: 'destroyed', y: 3, x: 3 })
   })
 
   test('isShipSunk() correctly determines status of a ship', () => {

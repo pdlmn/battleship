@@ -174,18 +174,19 @@ export const Gameboard = () => {
   }
 
   const getAttackStatus = (y, x) => {
+    const coords = { y, x }
     const attackedCell = state[y - 1][x - 1]
     switch (attackedCell) {
       case _MISSED:
-        return { value: 'missed' }
+        return Object.assign({ value: 'missed' }, coords)
       case _HIT:
         const ship = _findShip(y, x)
         const status = { value: 'hit', ship: ship.type }
         return ship.isSunk()
-          ? Object.assign(status, { shipStatus: 'destroyed' })
-          : Object.assign(status, { shipStatus: 'damaged' })
+          ? Object.assign(status, coords, { shipStatus: 'destroyed' })
+          : Object.assign(status, coords, { shipStatus: 'damaged' })
     }
-    return { value: attackedCell }
+    return Object.assign({ value: attackedCell }, coords)
   }
 
   const isShipSunk = (y, x) => {

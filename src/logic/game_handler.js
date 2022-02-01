@@ -55,22 +55,22 @@ import { wrapInDiv } from '../ui/dom_funcs'
 
   eventsHandler.on(eventTypes.COMPUTER_FINISHED_TURN, ({ status }) => {
     if (status.value === 'missed') {
-      const div = wrapInDiv('Computer missed...', 'log-computer-missed')
+      const div = wrapInDiv(`${status.y} ${status.x}. Computer missed...`, 'log-computer-missed')
       logDiv.prepend(div)
     }
     if (status.value === 'hit') {
-      const div = wrapInDiv(`Computer ${status.shipStatus} your ${status.ship}!`, 'log-computer-hit')
+      const div = wrapInDiv(`${status.y} ${status.x}. Computer ${status.shipStatus} your ${status.ship}!`, `log-computer-${status.shipStatus}`)
       logDiv.prepend(div)
     }
   })
 
   eventsHandler.on(eventTypes.COMPUTER_BOARD_ATTACKED, ({ status, name }) => {
     if (status.value === 'missed') {
-      const div = wrapInDiv(`${name} missed...`, 'log-player-missed')
+      const div = wrapInDiv(`${status.y} ${status.x}. ${name} missed...`, 'log-player-missed')
       logDiv.prepend(div)
     }
     if (status.value === 'hit') {
-      const div = wrapInDiv(`${name} ${status.shipStatus} ${status.ship}!`, 'log-player-hit')
+      const div = wrapInDiv(`${status.y} ${status.x}. ${name} ${status.shipStatus} ${status.ship}!`, `log-player-${status.shipStatus}`)
       logDiv.prepend(div)
     }
   })
