@@ -1,4 +1,4 @@
-import { repeat, findIndex, pipe, map, flatten, decrement, increment, curry } from '../utils/func_helpers'
+import { repeat, findIndex, pipe, map, flatten, decrement, curry } from '../utils/func_helpers'
 import { Ship } from './ship'
 
 const _WATER = 'w'
@@ -176,12 +176,14 @@ export const Gameboard = () => {
   const getAttackStatus = (y, x) => {
     const coords = { y, x }
     const attackedCell = state[y - 1][x - 1]
+    let ship
+    let status
     switch (attackedCell) {
       case _MISSED:
         return Object.assign({ value: 'missed' }, coords)
       case _HIT:
-        const ship = _findShip(y, x)
-        const status = { value: 'hit', ship: ship.type }
+        ship = _findShip(y, x)
+        status = { value: 'hit', ship: ship.type }
         return ship.isSunk()
           ? Object.assign(status, coords, { shipStatus: 'destroyed' })
           : Object.assign(status, coords, { shipStatus: 'damaged' })

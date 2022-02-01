@@ -1,8 +1,7 @@
 import { AiPlayer } from '../factories/ai_player'
-import { Gameboard, _createGameboard } from '../factories/gameboard'
+import { Gameboard } from '../factories/gameboard'
 
 describe('ai player works correctly', () => {
-
   test('attackPlayer() pushes towards same attack direction after hitting ship twice (1)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
@@ -86,7 +85,6 @@ describe('ai player works correctly', () => {
   test('attackPlayer() correctly attacks towards the opposite end of a ship if manages to find one end (1)', () => {
     const gameboard = Gameboard()
     const computer = AiPlayer()
-    const possibleResults = ['h', 'm']
     gameboard.place(3, 3, 3)
     computer.setDirection('left')
     computer.attackPlayer(gameboard, 3, 4)
@@ -125,5 +123,4 @@ describe('ai player works correctly', () => {
     expect(gameboard.state[9][8]).toBe('h')
     expect(gameboard.state[8][8]).toBe('m')
   })
-  
 })

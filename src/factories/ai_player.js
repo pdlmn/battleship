@@ -24,22 +24,22 @@ const _getOppositeDirection = (direction) => {
   }
 }
 
-const _isShipHorizontal = (hitCells) => 
+const _isShipHorizontal = (hitCells) =>
   hitCells.length > 1
-  ? hitCells[0].y === hitCells[1].y
-  : false
+    ? hitCells[0].y === hitCells[1].y
+    : false
 
 const _firstOnAxis = curry((axis, hitCells) => hitCells.reduce((prev, next) =>
-        prev[axis] < next[axis]
-        ? prev
-        : next
-      ))
+  prev[axis] < next[axis]
+    ? prev
+    : next
+))
 
 const _lastOnAxis = curry((axis, hitCells) => hitCells.reduce((prev, next) =>
-        prev[axis] < next[axis]
-        ? next
-        : prev
-      ))
+  prev[axis] < next[axis]
+    ? next
+    : prev
+))
 
 const _leftmostCell = _firstOnAxis('x')
 const _rightmostCell = _lastOnAxis('x')
@@ -48,7 +48,6 @@ const _bottommostCell = _lastOnAxis('y')
 
 export const AiPlayer = () => {
   const computer = Player('Computer', false)
-  const hit = []
   let hitCells = []
   let lastHit = {}
   let direction = ''
@@ -80,16 +79,20 @@ export const AiPlayer = () => {
   }
 
   const _gainOppositeEnd = () => {
+    let leftmost
+    let rightmost
+    let topmost
+    let bottommost
     switch (_isShipHorizontal(hitCells)) {
       case true:
-        const leftmost = _leftmostCell(hitCells)
-        const rightmost = _rightmostCell(hitCells)
+        leftmost = _leftmostCell(hitCells)
+        rightmost = _rightmostCell(hitCells)
         return lastHit.x === leftmost.x
           ? rightmost
           : leftmost
       case false:
-        const topmost = _topmostCell(hitCells)
-        const bottommost = _bottommostCell(hitCells)
+        topmost = _topmostCell(hitCells)
+        bottommost = _bottommostCell(hitCells)
         return lastHit.y === topmost.y
           ? bottommost
           : topmost

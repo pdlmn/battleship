@@ -1,5 +1,4 @@
 import { Player } from '../factories/player'
-import { Gameboard } from '../factories/gameboard'
 
 describe('Player factory & methods work correctly', () => {
   test('player factory correctly determines turn precedence of players', () => {
