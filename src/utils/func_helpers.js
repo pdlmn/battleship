@@ -49,14 +49,27 @@ const map = curry((fn, functor) => {
   }
 })
 
+const isArray = curry((val) => (
+  val !== null &&
+  Object.prototype.toString.call(val) === '[object Array]'
+))
+
+const isObject = curry((val) => Object.prototype.toString.call(val) === '[object Object]')
+
 const pipe = (...functions) =>
   (value) => functions.reduce((acc, fn) => fn(acc), value)
 
-const decrement = map((n) => (typeof n === 'number') ? n - 1 : n)
+const decrement = curry((val) => (isArray(val) || isObject(val))
+  ? map((n) => (typeof n === 'number') ? n - 1 : n, val)
+  : val - 1
+)
 
 const decrementEach = map(decrement)
 
-const increment = map((n) => (typeof n === 'number') ? n + 1 : n)
+const increment = curry((val) => (isArray(val) || isObject(val))
+  ? map((n) => (typeof n === 'number') ? n + 1 : n, val)
+  : val + 1
+)
 
 const incrementEach = map(increment)
 
@@ -154,6 +167,19 @@ const objectInArray = curry((obj, arr) => {
   return false
 })
 
+const removeDuplicateObj = curry((arr) => {
+  const len = arr.length
+  if (len <= 1) return arr
+  const result = []
+  let occurances = 0
+  for (let i = 0; i < len; i++) {
+    if (!objectInArray(arr[i], result)) {
+      result.push(arr[i])
+    }
+  }
+  return result
+})
+
 const remove = curry((item, arr) => {
   const result = [...arr]
   const len = arr.length
@@ -166,9 +192,37 @@ const remove = curry((item, arr) => {
   return result
 })
 
-const gt = (a, b) => a > b
-const lt = (a, b) => a < b
-const gte = (a, b) => a >= b
-const lte = (a, b) => a <= b
+const gt = curry((a, b) => a > b)
+const lt = curry((a, b) => a < b)
+const gte = curry((a, b) => a >= b)
+const lte = curry((a, b) => a <= b)
+const eq = curry((a, b) => a === b)
 
-export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray, remove, gt, lt, gte, lte }
+const all = curry((pred, arr) => {
+  const len = arr.length
+  for (let i = 0; i < len; i++) {
+    if (!pred(arr[i])) {
+      return false
+    }
+  }
+  return true
+})
+
+const any = curry((pred, arr) => {
+  const len = arr.length
+  for (let i = 0; i < len; i++) {
+    if (pred(arr[i])) {
+      return true
+    }
+  }
+  return false
+})
+
+const modify = curry((prop, fn, obj) => 
+  Object.assign(
+    {},
+    obj,
+    { [prop]: fn(obj[prop]) }
+  ))
+
+export { hasTruthyValues, replaceEveryNth, replaceAt, pipe, map, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray, removeDuplicateObj, remove, gt, lt, gte, lte, eq, all, any, isArray, isObject, modify }

@@ -1,4 +1,4 @@
-import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray, remove } from '../utils/func_helpers'
+import { hasTruthyValues, replaceAt, replaceEveryNth, map, pipe, curry, decrement, decrementEach, increment, incrementEach, repeat, find, findIndex, forEach, hasFalsyValues, flatten, filter, objEqual, objectInArray, remove, all, any, modify, removeDuplicateObj } from '../utils/func_helpers'
 
 describe('func helpers work properly', () => {
   test('hasTruthyValues correctly determines truthiness of values in an array (1)', () => {
@@ -82,28 +82,36 @@ describe('func helpers work properly', () => {
     expect(curriedFunc(1, 2)).toBe(3)
   })
 
-  test('decrement correctly subracts from an array items', () => {
+  test('decrement correctly subtracts from a number', () => {
+    expect(decrement(1)).toBe(0)
+  })
+
+  test('decrement correctly subracts from array items', () => {
     expect(decrement([1, 2, 3, 'heh', true])).toEqual([0, 1, 2, 'heh', true])
   })
 
-  test('decrement correctly subracts from an object properties', () => {
+  test('decrement correctly subracts from object properties', () => {
     expect(decrement({ a: 1, b: 2, c: 3, d: 'heh', f: true })).toEqual({ a: 0, b: 1, c: 2, d: 'heh', f: true })
   })
 
-  test('decrementEach correctly subracts from nested arrays an objects inside an array', () => {
+  test('decrementEach correctly subracts from nested arrays and objects inside an array', () => {
     expect(decrementEach([[1, 2, 3, 'heh', true], { a: 1, b: 2, c: 3, d: 'heh', f: true }]))
       .toEqual([[0, 1, 2, 'heh', true], { a: 0, b: 1, c: 2, d: 'heh', f: true }])
   })
 
-  test('increment correctly subracts from an array items', () => {
+  test('increment correctly adds to a number', () => {
+    expect(increment(1)).toBe(2)
+  })
+
+  test('increment correctly adds to array items', () => {
     expect(increment([1, 2, 3, 'heh', true])).toEqual([2, 3, 4, 'heh', true])
   })
 
-  test('increment correctly subracts from an object properties', () => {
+  test('increment correctly subracts from object properties', () => {
     expect(increment({ a: 1, b: 2, c: 3, d: 'heh', f: true })).toEqual({ a: 2, b: 3, c: 4, d: 'heh', f: true })
   })
 
-  test('incrementEach correctly subracts from nested arrays an objects inside an array', () => {
+  test('incrementEach correctly subracts from nested arrays and objects inside an array', () => {
     expect(incrementEach([[1, 2, 3, 'heh', true], { a: 1, b: 2, c: 3, d: 'heh', f: true }]))
       .toEqual([[2, 3, 4, 'heh', true], { a: 2, b: 3, c: 4, d: 'heh', f: true }])
   })
@@ -174,5 +182,53 @@ describe('func helpers work properly', () => {
     expect(remove(false, arr)).toEqual([1, 'heh', null])
     expect(remove(null, arr)).toEqual([1, 'heh', false])
     expect(remove('anything', [])).toEqual([])
+  })
+
+  test('all returns true if all items in array matches the predicate', () => {
+    const arr1 = [2, 4, 6]
+    const arr2 = [1, 4, 6]
+    const arr3 = [1, 3, 5]
+    const arr4 = [3, 3, 3]
+    const pred1 = (n) => n % 2 === 0
+    const pred2 = (n) => n === 3
+    expect(all(pred1, arr1)).toBe(true)
+    expect(all(pred1, arr2)).toBe(false)
+    expect(all(pred1, arr3)).toBe(false)
+    expect(all(pred2, arr4)).toBe(true)
+  })
+
+  test('any returns true if one of items in array matches the predicate', () => {
+    const arr1 = [2, 4, 6]
+    const arr2 = [1, 4, 6]
+    const arr3 = [1, 3, 5]
+    const arr4 = [3, 3, 3]
+    const pred1 = (n) => n % 2 === 0
+    const pred2 = (n) => n === 3
+    expect(any(pred1, arr1)).toBe(true)
+    expect(any(pred1, arr2)).toBe(true)
+    expect(any(pred1, arr3)).toBe(false)
+    expect(any(pred2, arr4)).toBe(true)
+  })
+
+  test('modify returns an object with modified property', () => {
+    const obj = { id: 12 }
+    expect(modify('id', increment, obj)).toEqual({ id: 13 })
+  })
+
+  test('removeDuplicateObj removes a duplicate object from an array', () => {
+    const arr = [
+      { name: 'John', age: 20 },
+      { name: 'Bob', age: 32 },
+      { name: 'Alice', age: 40 },
+      { name: 'John', age: 22 },
+      { name: 'John', age: 20 }
+    ]
+    const expected = [
+      { name: 'John', age: 20 },
+      { name: 'Bob', age: 32 },
+      { name: 'Alice', age: 40 },
+      { name: 'John', age: 22 }
+    ]
+    expect(removeDuplicateObj(arr)).toMatchObject(expected)
   })
 })

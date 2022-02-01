@@ -1,4 +1,4 @@
-import { repeat, findIndex, pipe, map, flatten, decrement, curry } from '../utils/func_helpers'
+import { repeat, findIndex, pipe, map, flatten, decrement, curry, eq, all, any, filter, increment, modify, objectInArray, gt, lt, removeDuplicateObj } from '../utils/func_helpers'
 import { Ship } from './ship'
 import { states } from '../constants/cell_states'
 
@@ -13,6 +13,10 @@ const _mapCoords = curry((board, value, coords) => {
   }
   return result
 })
+
+const _coordsToIndexes = (y, x) => {
+  return decrement([y, x])
+}
 
 export const Gameboard = () => {
   const fleet = []
@@ -29,13 +33,28 @@ export const Gameboard = () => {
   const _findShip = (y, x) =>
     fleet.find((ship) => ship.segments.find((segment) => segment.y === y && segment.x === x))
 
-  const _getOccupiedCells = () => pipe(
-    map((ship) => ship.segments),
+  const _getSegments = (ship) => ship.segments
+
+  const _isShipSunk = (ship) => ship.isSunk()
+
+  const _getShipCells = () => pipe(
+    map(_getSegments),
     flatten
   )(fleet)
 
+  const _getSunkCells = () => pipe(
+    filter(_isShipSunk),
+    map(_getSegments),
+    flatten,
+    map((cell) => ({ y: cell.y, x: cell.x }))
+  )(fleet)
+
+  const _anyShip = any(eq(states.SHIP))
+
+  const isFleetSunk = () => fleet.every(_isShipSunk)
+
   const _isOverlaps = (y, x, size) => {
-    const occupiedCells = _getOccupiedCells()
+    const occupiedCells = _getShipCells()
     if (plane === 'horizontally' && occupiedCells.length > 0) {
       const tail = x + size
       for (let i = 0; i < occupiedCells.length; i++) {
@@ -67,64 +86,95 @@ export const Gameboard = () => {
     return false
   }
 
+  const _getCellState = (y, x) => {
+    const [iy, ix] = _coordsToIndexes(y, x)
+    const row = state[iy]
+    return row
+    ? state[iy][ix]
+    : null
+  }
+
   const _isAdjacentToShips = (y, x, size) => {
-    const [dy, dx] = decrement([y, x])
 
     if (plane === 'horizontally') {
-      const tail = dx + size
+      const tail = x + size
 
-      for (let i = dx; i < tail; i++) {
-        const topCell = state[dy - 1] ? state[dy - 1][i] : null
-        const bottomCell = state[dy + 1] ? state[dy + 1][i] : null
-        if (topCell === states.SHIP || bottomCell === states.SHIP) {
+      for (let i = x; i < tail; i++) {
+        const topCell = _getCellState(y - 1, i)
+        const bottomCell = _getCellState(y + 1, i)
+        if (_anyShip([topCell, bottomCell])) {
           return true
         }
       }
 
-      const leftCell = state[dy][dx - 1]
-      const rightCell = state[dy][tail]
-      if (leftCell === states.SHIP || rightCell === states.SHIP) {
+      const leftCell = _getCellState(y, x - 1)
+      const rightCell = _getCellState(y, tail)
+      if (_anyShip([leftCell, rightCell])) {
         return true
       }
 
-      const topLeft = state[dy - 1] ? state[dy - 1][dx - 1] : null
-      const bottomLeft = state[dy + 1] ? state[dy + 1][dx - 1] : null
-      const topRight = state[dy - 1] ? state[dy - 1][tail] : null
-      const bottomRight = state[dy + 1] ? state[dy + 1][tail] : null
-      if (topLeft === states.SHIP || bottomLeft === states.SHIP || topRight === states.SHIP || bottomRight === states.SHIP) {
+      const topLeft = _getCellState(y - 1, x - 1)
+      const bottomLeft = _getCellState(y + 1, x - 1)
+      const topRight = _getCellState(y - 1, tail)
+      const bottomRight = _getCellState(y + 1, tail)
+      if (_anyShip([topLeft, bottomLeft, topRight, bottomRight])) {
         return true
       }
     }
-    if (plane === 'vertically') {
-      const tail = dy + size
 
-      const topCell = state[dy - 1] ? state[dy - 1][dx] : null
-      const bottomCell = state[tail] ? state[tail][dx] : null
-      if (topCell === states.SHIP || bottomCell === states.SHIP) {
+    if (plane === 'vertically') {
+      const tail = y + size
+
+      const topCell = _getCellState(y - 1, x)
+      const bottomCell = _getCellState(tail, x)
+      if (_anyShip([topCell, bottomCell])) {
         return true
       }
 
-      for (let i = dy; i < tail; i++) {
-        const leftCell = state[i][dx - 1]
-        const rightCell = state[i][dx + 1]
-        if (leftCell === states.SHIP || rightCell === states.SHIP) {
+      for (let i = y; i < tail; i++) {
+        const leftCell = _getCellState(i, x - 1)
+        const rightCell = _getCellState(i, x + 1)
+        if (_anyShip([leftCell, rightCell])) {
           return true
         }
       }
 
-      const topLeft = state[dy - 1] ? state[dy - 1][dx - 1] : null
-      const topRight = state[dy - 1] ? state[dy - 1][dx + 1] : null
-      const bottomLeft = state[tail] ? state[tail][dx - 1] : null
-      const bottomRight = state[tail] ? state[tail][dx + 1] : null
-      if (topLeft === states.SHIP || bottomLeft === states.SHIP || topRight === states.SHIP || bottomRight === states.SHIP) {
+      const topLeft = _getCellState(y - 1, x - 1)
+      const topRight = _getCellState(y - 1, x + 1)
+      const bottomLeft = _getCellState(tail, x - 1)
+      const bottomRight = _getCellState(tail, x + 1)
+      if (_anyShip([topLeft, bottomLeft, topRight, bottomRight])) {
         return true
       }
     }
     return false
   }
 
+  const _getSurroundingCells = ({ y, x }) => {
+    return [
+      { y: y - 1, x},
+      { y: y + 1, x},
+      { y, x: x - 1},
+      { y, x: x + 1},
+      { y: y - 1, x: x - 1},
+      { y: y + 1, x: x + 1},
+      { y: y - 1, x: x + 1},
+      { y: y + 1, x: x - 1},
+    ]
+  }
+
+  const _isCellValid = ({ y, x }) => 
+    !any((axis) => (gt(axis, 10) || lt(axis, 1)), [x, y])
+
   const getAreaAroundSunk = () => {
-    
+    const sunkCells = _getSunkCells()
+    return pipe(
+      map(_getSurroundingCells),
+      flatten,
+      filter((cell) => !objectInArray(cell, sunkCells)),
+      filter(_isCellValid),
+      removeDuplicateObj
+    )(sunkCells).sort((cell1, cell2) => cell1.x - cell2.x).sort((cell1, cell2) => cell1.y - cell2.y)
   }
 
   const isAdjcentToSunkShip = () => {
@@ -147,10 +197,10 @@ export const Gameboard = () => {
   }
 
   const isValidTarget = (y, x) => {
-    const [dy, dx] = decrement([y, x])
-    const row = state[dy]
+    const [iy, ix] = _coordsToIndexes(y, x)
+    const row = state[iy]
     if (row) {
-      switch (state[dy][dx]) {
+      switch (state[iy][ix]) {
         case states.SHIP:
         case states.WATER:
           return true
@@ -197,13 +247,6 @@ export const Gameboard = () => {
     }
   }
 
-  const isShipSunk = (y, x) => {
-    const ship = _findShip(y, x)
-    return ship ? ship.isSunk() : false
-  }
-
-  const isFleetSunk = () => fleet.every((ship) => ship.isSunk())
-
   const setPlane = (newPlane) => { plane = newPlane }
 
   return {
@@ -215,7 +258,6 @@ export const Gameboard = () => {
     isValidTarget,
     receiveAttack,
     getAttackStatus,
-    isShipSunk,
     getAreaAroundSunk,
     isAdjcentToSunkShip,
     isFleetSunk,

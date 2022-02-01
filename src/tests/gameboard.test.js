@@ -258,7 +258,6 @@ describe('Gameboard methods work correctly', () => {
     gameboard.place(1, 1, 2)
     gameboard.place(3, 3, 3)
     gameboard.receiveAttack(1, 1)
-    console.table(gameboard.state)
     expect(gameboard.getAttackStatus(1, 1)).toEqual({ value: 'hit', ship: 'Destroyer', shipStatus: 'damaged', y: 1, x: 1 })
     gameboard.receiveAttack(2, 2)
     expect(gameboard.getAttackStatus(2, 2)).toEqual({ value: 'missed', y: 2, x: 2 })
@@ -266,16 +265,6 @@ describe('Gameboard methods work correctly', () => {
     gameboard.receiveAttack(3, 4)
     gameboard.receiveAttack(3, 5)
     expect(gameboard.getAttackStatus(3, 3)).toEqual({ value: 'hit', ship: 'Cruiser', shipStatus: 'destroyed', y: 3, x: 3 })
-  })
-
-  test('isShipSunk() correctly determines status of a ship', () => {
-    const gameboard = Gameboard()
-    gameboard.place(1, 1, 2)
-    gameboard.receiveAttack(1, 1)
-    gameboard.receiveAttack(1, 2)
-    expect(gameboard.isShipSunk(1, 1)).toBe(true)
-    expect(gameboard.isShipSunk(1, 2)).toBe(true)
-    expect(gameboard.isShipSunk(2, 2)).toBe(false)
   })
 
   test('isFleetSunk() correctly determines status of the ships (1)', () => {
@@ -304,11 +293,24 @@ describe('Gameboard methods work correctly', () => {
   })
 
   test('getAreaAroundSunk() gets cells around sunk ships (1)', () => {
+    const expected = [
+      { y: 2, x: 1 },
+      { y: 2, x: 2 },
+      { y: 2, x: 3 },
+      { y: 2, x: 4 },
+      { y: 3, x: 1 },
+      { y: 3, x: 4 },
+      { y: 4, x: 1 },
+      { y: 4, x: 2 },
+      { y: 4, x: 3 },
+      { y: 4, x: 4 },
+    ]
     const gameboard = Gameboard()
-    gameboard.place(1, 1, 2)
-    gameboard.receiveAttack(1, 1)
-    gameboard.receiveAttack(1, 2)
-    expect(gameboard.getAreaAroundSunk()).toBe()
+    gameboard.place(3, 2, 2)
+    gameboard.receiveAttack(3, 2)
+    gameboard.receiveAttack(3, 3)
+    const result = gameboard.getAreaAroundSunk()
+    expect(result).toMatchObject(expected)
   })
 
 })
