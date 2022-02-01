@@ -201,7 +201,7 @@ var AiPlayer = function AiPlayer() {
         ry = _potentialAttackDirec.y,
         rx = _potentialAttackDirec.x;
 
-    while (!board.isValidAttackTarget(ry, rx) && directions.length > 1) {
+    while (!board.isValidTarget(ry, rx) && directions.length > 1) {
       directions = (0,_utils_func_helpers__WEBPACK_IMPORTED_MODULE_3__.remove)(randomDirection, directions);
       randomDirection = directions[(0,_utils_helper_funcs__WEBPACK_IMPORTED_MODULE_2__.getRandomInteger)(0, directions.length - 1)];
 
@@ -211,7 +211,7 @@ var AiPlayer = function AiPlayer() {
       rx = randomCoords.x;
     }
 
-    if (!board.isValidAttackTarget(ry, rx)) {
+    if (!board.isValidTarget(ry, rx)) {
       return {
         validity: false
       };
@@ -270,11 +270,11 @@ var AiPlayer = function AiPlayer() {
       var ay = coordsForAttack.y,
           ax = coordsForAttack.x;
 
-      if (!board.isValidAttackTarget(ay, ax)) {
+      if (!board.isValidTarget(ay, ax)) {
         direction = _getOppositeDirection(direction);
         lastHit = _gainOppositeEnd();
 
-        if (!board.isValidAttackTarget(_potentialAttackDirections[direction](lastHit))) {
+        if (!board.isValidTarget(_potentialAttackDirections[direction](lastHit))) {
           direction = '';
           lastHit = {};
           hitCells = [];
@@ -575,7 +575,7 @@ var Gameboard = function Gameboard() {
     return ship;
   };
 
-  var isValidAttackTarget = function isValidAttackTarget(y, x) {
+  var isValidTarget = function isValidAttackTarget(y, x) {
     var _decrement4 = (0,_utils_func_helpers__WEBPACK_IMPORTED_MODULE_2__.decrement)([y, x]),
         _decrement5 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_decrement4, 2),
         dy = _decrement5[0],
@@ -693,7 +693,7 @@ var Gameboard = function Gameboard() {
 
     isValidForPlace: isValidForPlace,
     place: place,
-    isValidAttackTarget: isValidAttackTarget,
+    isValidTarget: isValidAttackTarget,
     receiveAttack: receiveAttack,
     getAttackStatus: getAttackStatus,
     isShipSunk: isShipSunk,
@@ -1060,7 +1060,7 @@ __webpack_require__.r(__webpack_exports__);
   _utils_events_handler__WEBPACK_IMPORTED_MODULE_5__.eventsHandler.on(_event_types__WEBPACK_IMPORTED_MODULE_4__.eventTypes.COMPUTER_BOARD_CLICKED, function (coords) {
     var _player;
 
-    if (!gameStarted || !player.turn || !computerBoard.isValidAttackTarget.apply(computerBoard, (0,_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_2__["default"])(coords))) return;
+    if (!gameStarted || !player.turn || !computerBoard.isValidTarget.apply(computerBoard, (0,_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_2__["default"])(coords))) return;
 
     (_player = player).attack.apply(_player, [computerBoard].concat((0,_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_2__["default"])(coords)));
 
