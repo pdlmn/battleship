@@ -174,11 +174,7 @@ export const Gameboard = () => {
       filter((cell) => !objectInArray(cell, sunkCells)),
       filter(_isCellValid),
       removeDuplicateObj
-    )(sunkCells).sort((cell1, cell2) => cell1.x - cell2.x).sort((cell1, cell2) => cell1.y - cell2.y)
-  }
-
-  const isAdjcentToSunkShip = () => {
-
+    )(sunkCells)
   }
 
   const isValidForPlace = (y, x, size) => (
@@ -259,7 +255,6 @@ export const Gameboard = () => {
     receiveAttack,
     getAttackStatus,
     getAreaAroundSunk,
-    isAdjcentToSunkShip,
     isFleetSunk,
     setPlane
   }

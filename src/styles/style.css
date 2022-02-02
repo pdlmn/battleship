@@ -78,6 +78,11 @@ main {
   background: rgb(250, 150, 200);
 }
 
+.sunk,
+.sunk:hover {
+  background: rgb(250, 100, 0);
+}
+
 #log {
   height: 17ch;
   width: 40ch;

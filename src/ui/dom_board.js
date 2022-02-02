@@ -4,7 +4,8 @@ const _cellClasses = {
   s: 'ship',
   w: 'water',
   h: 'hit',
-  m: 'miss'
+  m: 'miss',
+  x: 'sunk'
 }
 
 const _createCell = (isHidden, y, x) => {

@@ -10,12 +10,12 @@ export const AiGameboard = () => {
 
   const _placeShipAtRandom = (size) => {
     const plane = _getRandomPlane()
-    let [y, x] = getRandomCoords()
+    let coords = getRandomCoords()
     gameboard.setPlane(plane)
-    while (!gameboard.isValidForPlace(y, x, size)) {
-      [y, x] = getRandomCoords()
+    while (!gameboard.isValidForPlace(coords.y, coords.x, size)) {
+      coords = getRandomCoords()
     }
-    gameboard.place(y, x, size)
+    gameboard.place(coords.y, coords.x, size)
   }
 
   const placeFleet = () => {
