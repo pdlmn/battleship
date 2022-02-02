@@ -5,21 +5,25 @@ import { AiPlayer } from '../factories/ai_player'
 import { Gameboard } from '../factories/gameboard'
 import { AiGameboard } from '../factories/ai_gameboard'
 import { boardHandler } from '../ui/dom_board'
-import { wrapInDiv } from '../ui/dom_funcs'
+import { wrapInDiv, queryDocument, addClass, removeClass } from '../ui/dom_funcs'
 import { delay } from '../utils/helper_funcs'
 
 ;(function uiLogic () {
-  const startBtn = document.querySelector('#start-game')
-  const nameInp = document.querySelector('#player-name')
-  const rotateBtn = document.querySelector('#rotate')
-  const logDiv = document.querySelector('#log')
-  const hintsDiv = document.querySelector('#hints')
+  const startBtn = queryDocument('#start-game')
+  const restartBtn = queryDocument('#restart-game')
+  const nameInp = queryDocument('#player-name')
+  const nameInpDiv = queryDocument('#input-name')
+  const rotateBtn = queryDocument('#rotate')
+  const logDiv = queryDocument('#log')
+  const hintsDiv = queryDocument('#hints')
 
   let nameInputed = Boolean(nameInp.value)
   let shipsPlaced = false
 
   startBtn.addEventListener('click', () => {
-    [startBtn, nameInp, rotateBtn].forEach((el) => { el.disabled = true })
+    ;[startBtn, nameInp, nameInpDiv, rotateBtn].forEach((el) => { 
+      addClass('display-none', el)
+    })
     eventsHandler.trigger(events.GAME_STARTED, nameInp.value)
     hintsDiv.innerText = 'Good luck, Admiral!'
   })
@@ -45,7 +49,7 @@ import { delay } from '../utils/helper_funcs'
   })
 
   eventsHandler.on(events.SHIP_PLACED, ({ areShipsPlaced, shipType }) => {
-    ;(areShipsPlaced())
+    ;(areShipsPlaced)
       ? shipsPlaced = true
       : shipsPlaced = false
     ;(nameInputed && shipsPlaced)
@@ -66,18 +70,20 @@ import { delay } from '../utils/helper_funcs'
     if (status.value === 'hit') {
       msg = `${status.y} ${status.x}. ${player.name} ${status.shipStatus} ${status.ship}!`
     }
-    const div = wrapInDiv(msg, logClass)
+    const div = wrapInDiv(msg, [logClass])
     logDiv.prepend(div)
   })
 
   eventsHandler.on(events.GAME_ENDED, (name) => {
     hintsDiv.innerText = `${name} won!`
+    removeClass('display-none', restartBtn)
   })
+
 })()
 
 ;(function boardViewLogic () {
-  const playerBoard = document.querySelector('#player-board')
-  const computerBoard = document.querySelector('#computer-board')
+  const playerBoard = queryDocument('#player-board')
+  const computerBoard = queryDocument('#computer-board')
 
   boardHandler.createBoard(false, playerBoard)
   boardHandler.createBoard(true, computerBoard)
@@ -108,7 +114,7 @@ import { delay } from '../utils/helper_funcs'
   })
 
   eventsHandler.on(events.GAME_STARTED, () => {
-
+    boardHandler.displayBoard(computerBoard)
   })
 
   playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
@@ -142,9 +148,10 @@ import { delay } from '../utils/helper_funcs'
   let player
   let computer
   let gameStarted = false
+  let gameEnded = false
 
   eventsHandler.on(events.BOARD_HOVERED, (coords) => {
-    if (gameStarted) return
+    if (shipsToPlace.length === 0) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValidForPlace(y, x, nextShipSize)
@@ -152,7 +159,7 @@ import { delay } from '../utils/helper_funcs'
   })
 
   eventsHandler.on(events.BOARD_CLICKED, (coords) => {
-    if (gameStarted) return
+    if (shipsToPlace.length === 0) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValidForPlace(y, x, nextShipSize)
@@ -164,8 +171,9 @@ import { delay } from '../utils/helper_funcs'
       {
         ship: [y, x, nextShipSize],
         shipType: ship.type,
-        areShipsPlaced () { return shipsToPlace.length === 0 }
-      })
+        areShipsPlaced: shipsToPlace.length === 0
+      }
+    )
   })
 
   eventsHandler.on(events.SHIP_ROTATED, playerBoard.setPlane)
@@ -182,7 +190,7 @@ import { delay } from '../utils/helper_funcs'
   })
 
   eventsHandler.on(events.COMPUTER_BOARD_CLICKED, (coords) => {
-    if (!gameStarted || !player.turn || !computerBoard.isValidTarget(...coords)) return
+    if (!gameStarted || gameEnded || !player.turn || !computerBoard.isValidTarget(...coords)) return
     player.attack(computerBoard, ...coords)
     const status = computerBoard.getAttackStatus(...coords)
     eventsHandler.trigger(
@@ -193,6 +201,7 @@ import { delay } from '../utils/helper_funcs'
       eventsHandler.trigger(events.PLAYER_FINISHED_TURN, null)
     }
     if (computerBoard.isFleetSunk()) {
+      gameEnded = true
       eventsHandler.trigger(events.GAME_ENDED, player.name)
     }
   })
@@ -211,6 +220,7 @@ import { delay } from '../utils/helper_funcs'
     player.changeTurn()
 
     if (playerBoard.isFleetSunk()) {
+      gameEnded = true
       eventsHandler.trigger(events.GAME_ENDED, computer.name)
     }
   })

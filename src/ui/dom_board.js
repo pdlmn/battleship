@@ -1,12 +1,16 @@
 import { forEach, pipe, filter, curry } from '../utils/func_helpers'
+import { removeClass } from './dom_funcs'
 
-const _cellClasses = {
+const _cellTable = {
   s: 'ship',
   w: 'water',
   h: 'hit',
   m: 'miss',
-  x: 'sunk'
+  x: 'sunk',
+  a: 'around-sunk'
 }
+
+const _cellClasses = Object.values(_cellTable)
 
 const _createCell = (isHidden, y, x) => {
   const cell = document.createElement('div')
@@ -37,11 +41,11 @@ const _cellsFinder = {
   }
 }
 
-const extractCoords = (cell) =>
-  [cell.dataset.y, cell.dataset.x].map(coord => Number(coord))
-
 export const boardHandler = (() => {
   let plane = 'horizontally'
+
+  const extractCoords = (cell) =>
+    [cell.dataset.y, cell.dataset.x].map(coord => Number(coord))
 
   const createBoard = (isHidden, domBoard) => {
     for (let y = 1; y < 11; y++) {
@@ -56,8 +60,9 @@ export const boardHandler = (() => {
       for (let j = 0; j < 10; j++) {
         const cellState = boardState[i][j]
         const cellView = domBoard.querySelector(`[data-y='${i + 1}'][data-x='${j + 1}']`)
-        if (!cellView.classList.contains(_cellClasses[cellState])) {
-          cellView.classList.add(_cellClasses[cellState])
+        if (!cellView.classList.contains(_cellTable[cellState])) {
+          cellView.classList.remove(..._cellClasses)
+          cellView.classList.add(_cellTable[cellState])
         }
       }
     }
@@ -76,6 +81,10 @@ export const boardHandler = (() => {
     )(segments)
   }
 
+  const displayBoard = (board) => {
+    removeClass('display-none', board)
+  }
+
   const place = (y, x, size) => {
     const shipSegments = _cellsFinder[plane](y, x, size)
     shipSegments.forEach((el) => el.classList.add('ship'))
@@ -90,6 +99,7 @@ export const boardHandler = (() => {
     extractCoords,
     highlightFutureShip,
     clearHighlights,
+    displayBoard,
     place
   }
 })()

@@ -6,7 +6,25 @@ body {
 }
 
 main {
-  margin-bottom: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
+}
+
+.log-window h2 {
+  text-align: center;
+}
+
+#hints {
+  text-align: center;
+  margin: .5rem;
 }
 
 .boards {
@@ -83,6 +101,11 @@ main {
   background: rgb(250, 100, 0);
 }
 
+.around-sunk,
+.around-sunk:hover {
+  background: rgb(120, 80, 250);
+}
+
 #log {
   height: 17ch;
   width: 40ch;
@@ -111,4 +134,8 @@ main {
 
 .log-computer-destroyed {
   color: rgb(250, 20, 20);
+}
+
+.display-none {
+  display: none;
 }

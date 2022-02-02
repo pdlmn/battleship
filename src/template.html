@@ -14,31 +14,39 @@
 
     <div class="menu">
 
-      <div>
+      <div id="input-name">
         <label for="player-name">Enter your name</label>
         <input type="text" placeholder="Player 1" id="player-name">
       </div>
 
-      <button id="rotate" data-plane="horizontally">
-        Horizontal
-      </button>
-
-      <button id="start-game" disabled>
-        Start game
-      </button>
-
       <div>
+        <button id="rotate" data-plane="horizontally">
+          Horizontal
+        </button>
+
+        <button id="start-game" disabled>
+          Start game
+        </button>
+
+        <button class="display-none" id="restart-game">
+          Restart
+        </button>
+      </div>
+
+      <div class="log-window display-none">
         <h2>Battleship log</h2>
         <div id="log"></div>
       </div>
-      <div id="hints">Welcome to Battleship!</div>
+
 
     </div>
+
+    <div id="hints">Welcome to Battleship!</div>
 
     <div class="boards">
 
       <div class="board" id="player-board"></div>
-      <div class="board" id="computer-board"></div>
+      <div class="board display-none" id="computer-board"></div>
 
     </div>
 

@@ -52,7 +52,7 @@ export const AiPlayer = () => {
 
   const _findRandomSpotToAttack = (board) => {
     let coords = getRandomCoords()
-    while ([states.HIT, states.MISSED, states.SUNK].includes(board.state[coords.y - 1][coords.x - 1])) {
+    while ([states.HIT, states.MISSED, states.SUNK, states.AROUND_SUNK].includes(board.state[coords.y - 1][coords.x - 1])) {
       coords = getRandomCoords()
     }
     return { y: coords.y, x: coords.x }

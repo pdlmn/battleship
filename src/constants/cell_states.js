@@ -3,5 +3,6 @@ export const states = Object.freeze({
   SHIP: 's',
   MISSED: 'm',
   HIT: 'h',
-  SUNK: 'x'
+  SUNK: 'x',
+  AROUND_SUNK: 'a'
 })

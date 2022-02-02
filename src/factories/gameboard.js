@@ -1,4 +1,4 @@
-import { repeat, findIndex, pipe, map, flatten, decrement, curry, eq, all, any, filter, increment, modify, objectInArray, gt, lt, removeDuplicateObj } from '../utils/func_helpers'
+import { repeat, findIndex, pipe, map, flatten, decrement, curry, eq, any, filter, objectInArray, gt, lt, removeDuplicateObj } from '../utils/func_helpers'
 import { Ship } from './ship'
 import { states } from '../constants/cell_states'
 
@@ -29,6 +29,7 @@ export const Gameboard = () => {
   const _mapMissed = _mapBoard(states.MISSED)
   const _mapHit = _mapBoard(states.HIT)
   const _mapSunk = _mapBoard(states.SUNK)
+  const _mapAround = _mapBoard(states.AROUND_SUNK)
 
   const _findShip = (y, x) =>
     fleet.find((ship) => ship.segments.find((segment) => segment.y === y && segment.x === x))
@@ -203,6 +204,7 @@ export const Gameboard = () => {
         case states.MISSED:
         case states.HIT:
         case states.SUNK:
+        case states.AROUND_SUNK:
           return false
       }
     }
@@ -218,14 +220,18 @@ export const Gameboard = () => {
     }
     const hitSegmentIndex = findIndex(segment => segment.y === y && segment.x === x, hitShip.segments)
     hitShip.hit(hitSegmentIndex)
-    state = hitShip.isSunk()
-    ? _mapSunk(hitShip.segments)
-    : _mapHit([{ y, x }])
+    if (hitShip.isSunk()) {
+      state = _mapSunk(hitShip.segments)
+      state = _mapAround(getAreaAroundSunk())
+    }
+    else {
+      state = _mapHit([{ y, x }])
+    }
   }
 
   const getAttackStatus = (y, x) => {
     const coords = { y, x }
-    const attackedCell = state[y - 1][x - 1]
+    const attackedCell = _getCellState(y, x)
     let ship
     let status
     switch (attackedCell) {
