@@ -5,25 +5,28 @@ import { AiPlayer } from '../factories/ai_player'
 import { Gameboard } from '../factories/gameboard'
 import { AiGameboard } from '../factories/ai_gameboard'
 import { boardHandler } from '../ui/dom_board'
-import { wrapInDiv, queryDocument, addClass, removeClass } from '../ui/dom_funcs'
 import { delay } from '../utils/helper_funcs'
+import { wrapInDiv, queryDocument, addClass, removeClass, replaceClass, toggleClass, createEl, replaceEl, cloneEl } from '../ui/dom_funcs'
 
 ;(function uiLogic () {
   const startBtn = queryDocument('#start-game')
   const restartBtn = queryDocument('#restart-game')
   const nameInp = queryDocument('#player-name')
-  const nameInpDiv = queryDocument('#input-name')
+  const nameInpDiv = queryDocument('#input-area')
   const rotateBtn = queryDocument('#rotate')
   const logDiv = queryDocument('#log')
-  const hintsDiv = queryDocument('#hints')
+  const logWindow = queryDocument('#log-area')
+  const logBtn = queryDocument('#log-button')
+  let hintsDiv = queryDocument('#hints')
 
   let nameInputed = Boolean(nameInp.value)
   let shipsPlaced = false
+  startBtn.disabled = true
 
   startBtn.addEventListener('click', () => {
-    ;[startBtn, nameInp, nameInpDiv, rotateBtn].forEach((el) => { 
-      addClass('display-none', el)
-    })
+    ;[nameInp, nameInpDiv].forEach((el) => addClass('hidden', el))
+    ;[startBtn, rotateBtn].forEach((el) => addClass('display-none', el))
+    removeClass('display-none', logBtn)
     eventsHandler.trigger(events.GAME_STARTED, nameInp.value)
     hintsDiv.innerText = 'Good luck, Admiral!'
   })
@@ -37,6 +40,10 @@ import { delay } from '../utils/helper_funcs'
       rotateBtn.innerText = 'Vertical'
     }
     eventsHandler.trigger(events.SHIP_ROTATED, rotateBtn.dataset.plane)
+  })
+
+  logBtn.addEventListener('click', () => {
+    toggleClass('display-none', logWindow)
   })
 
   nameInp.addEventListener('input', (e) => {
@@ -70,15 +77,17 @@ import { delay } from '../utils/helper_funcs'
     if (status.value === 'hit') {
       msg = `${status.y} ${status.x}. ${player.name} ${status.shipStatus} ${status.ship}!`
     }
-    const div = wrapInDiv(msg, [logClass])
-    logDiv.prepend(div)
+    const log = wrapInDiv(msg, [logClass])
+    const hint = cloneEl(log)
+    hint.id = 'hints'
+    logDiv.prepend(log)
+    hintsDiv = replaceEl(hintsDiv, hint)
   })
 
   eventsHandler.on(events.GAME_ENDED, (name) => {
     hintsDiv.innerText = `${name} won!`
-    removeClass('display-none', restartBtn)
+    removeClass('hidden', restartBtn)
   })
-
 })()
 
 ;(function boardViewLogic () {
@@ -144,7 +153,6 @@ import { delay } from '../utils/helper_funcs'
   const shipsToPlace = [5, 4, 3, 2, 1]
   const playerBoard = Gameboard()
   const computerBoard = AiGameboard()
-  // temporary
   let player
   let computer
   let gameStarted = false
@@ -207,6 +215,11 @@ import { delay } from '../utils/helper_funcs'
   })
 
   eventsHandler.on(events.PLAYER_FINISHED_TURN, async () => {
+    if (playerBoard.isFleetSunk()) {
+      gameEnded = true
+      eventsHandler.trigger(events.GAME_ENDED, computer.name)
+      return
+    }
     await delay(250)
     const status = computer.attackPlayer(playerBoard)
     eventsHandler.trigger(
@@ -218,10 +231,5 @@ import { delay } from '../utils/helper_funcs'
       return
     }
     player.changeTurn()
-
-    if (playerBoard.isFleetSunk()) {
-      gameEnded = true
-      eventsHandler.trigger(events.GAME_ENDED, computer.name)
-    }
   })
 })()

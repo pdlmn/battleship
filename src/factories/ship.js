@@ -29,7 +29,7 @@ export const Ship = (y, x, size, plane) => {
 
   const segments = _segmentsCreator[plane](y, x, size)
 
-  const hit = (segment) => { segments[segment].intact = false } 
+  const hit = (segment) => { segments[segment].intact = false }
 
   const isSunk = () => segments.every((segment) => segment.intact === false)
 

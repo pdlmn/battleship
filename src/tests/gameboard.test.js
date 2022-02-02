@@ -303,7 +303,7 @@ describe('Gameboard methods work correctly', () => {
       { y: 4, x: 1 },
       { y: 4, x: 2 },
       { y: 4, x: 3 },
-      { y: 4, x: 4 },
+      { y: 4, x: 4 }
     ]
     const gameboard = Gameboard()
     gameboard.place(3, 2, 2)
@@ -318,7 +318,7 @@ describe('Gameboard methods work correctly', () => {
       { y: 1, x: 3 },
       { y: 2, x: 1 },
       { y: 2, x: 2 },
-      { y: 2, x: 3 },
+      { y: 2, x: 3 }
     ]
     const gameboard = Gameboard()
     gameboard.place(1, 1, 2)

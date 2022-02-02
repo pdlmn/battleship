@@ -91,12 +91,11 @@ export const Gameboard = () => {
     const [iy, ix] = _coordsToIndexes(y, x)
     const row = state[iy]
     return row
-    ? state[iy][ix]
-    : null
+      ? state[iy][ix]
+      : null
   }
 
   const _isAdjacentToShips = (y, x, size) => {
-
     if (plane === 'horizontally') {
       const tail = x + size
 
@@ -153,18 +152,18 @@ export const Gameboard = () => {
 
   const _getSurroundingCells = ({ y, x }) => {
     return [
-      { y: y - 1, x},
-      { y: y + 1, x},
-      { y, x: x - 1},
-      { y, x: x + 1},
-      { y: y - 1, x: x - 1},
-      { y: y + 1, x: x + 1},
-      { y: y - 1, x: x + 1},
-      { y: y + 1, x: x - 1},
+      { y: y - 1, x },
+      { y: y + 1, x },
+      { y, x: x - 1 },
+      { y, x: x + 1 },
+      { y: y - 1, x: x - 1 },
+      { y: y + 1, x: x + 1 },
+      { y: y - 1, x: x + 1 },
+      { y: y + 1, x: x - 1 }
     ]
   }
 
-  const _isCellValid = ({ y, x }) => 
+  const _isCellValid = ({ y, x }) =>
     !any((axis) => (gt(axis, 10) || lt(axis, 1)), [x, y])
 
   const getAreaAroundSunk = () => {
@@ -223,8 +222,7 @@ export const Gameboard = () => {
     if (hitShip.isSunk()) {
       state = _mapSunk(hitShip.segments)
       state = _mapAround(getAreaAroundSunk())
-    }
-    else {
+    } else {
       state = _mapHit([{ y, x }])
     }
   }

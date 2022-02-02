@@ -31,12 +31,13 @@ const _isShipHorizontal = (hitCells) =>
     : false
 
 const _getEndOnAxis = curry((axis, getLast, hitCells) => {
-  const comparisonOp = getLast ? gt : lt 
+  const comparisonOp = getLast ? gt : lt
   return hitCells.reduce((prev, next) =>
     comparisonOp(prev[axis], next[axis])
-    ? prev
-    : next
-  )}
+      ? prev
+      : next
+  )
+}
 )
 
 const _getLeftmost = _getEndOnAxis('x', false)
@@ -161,7 +162,7 @@ export const AiPlayer = () => {
       status = _attackRandomCell(board)
     }
     if (status.shipStatus === 'damaged') {
-      lastHit = { y: status.y, x: status.x } 
+      lastHit = { y: status.y, x: status.x }
       hitCells.push(lastHit)
     }
     if (status.shipStatus === 'destroyed') {

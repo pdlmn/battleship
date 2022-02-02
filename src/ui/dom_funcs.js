@@ -23,13 +23,23 @@ const addClass = curry((newClass, element) => {
   return element
 })
 
-const addDataAttr = curry((dataAttr, dataVal, element) => {
-  element[dataAttr] = dataVal
+const removeClass = curry((removed, element) => {
+  element.classList.remove(removed)
   return element
 })
 
-const removeClass = curry((removed, element) => {
-  element.classList.remove(removed)
+const replaceClass = curry((oldClass, newClass, element) => {
+  element.classList.replace(oldClass, newClass)
+  return element
+})
+
+const toggleClass = curry((toggledClass, element) => {
+  element.classList.toggle(toggledClass)
+  return element
+})
+
+const addDataAttr = curry((dataAttr, dataVal, element) => {
+  element[dataAttr] = dataVal
   return element
 })
 
@@ -39,13 +49,26 @@ const cssSelector = curry((element, query) => {
 
 const queryDocument = cssSelector(document)
 
+const replaceEl = curry((oldElement, newElement) => {
+  oldElement.parentNode.replaceChild(newElement, oldElement)
+  return newElement
+})
+
+const cloneEl = curry((element) => {
+  return element.cloneNode(true)
+})
+
 export {
   wrapInDiv,
   createEl,
   addId,
   addClass,
-  addDataAttr,
   removeClass,
+  replaceClass,
+  toggleClass,
+  addDataAttr,
   cssSelector,
-  queryDocument
+  queryDocument,
+  replaceEl,
+  cloneEl
 }

@@ -1,13 +1,48 @@
+@font-face {
+  font-family: 'BlackOpsOne';
+  src: url('../assets/BlackOpsOne-Regular.ttf') format('truetype');
+}
+
 body {
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin: 0;
+  font-size: 1.25rem;
+  background: rgb(200, 200, 200);
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+header {
+  font-family: 'BlackOpsOne';
+  font-size: 2rem;
+  text-align: center;
+  background: rgb(0, 150, 70);
 }
 
 main {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+footer {
+  background: rgb(0, 150, 70);
+  font-size: 1.2rem;
+  font-family: 'BlackOpsOne';
+  padding: 1.2rem;
+  text-align: center;
+}
+
+button {
+  font-family: 'BlackOpsOne';
+  font-size: 1.5rem;
+  margin: .5rem; 
+  padding: .5rem 1.5rem;
+  border: .5rem solid rgb(0, 70, 150);
+  border-radius: .25rem;
 }
 
 .menu {
@@ -16,15 +51,58 @@ main {
   justify-content: center;
   align-items: center;
   gap: .5rem;
+  margin-right: auto;
+  padding-left: 3rem;
+  width: 20%;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+#input-name,
+#player-name {
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+#input-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+#player-name {
+  width: 75%;
+  padding: .25rem;
+}
+
+.log-area,
+.log-window {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .log-window h2 {
   text-align: center;
 }
 
-#hints {
-  text-align: center;
-  margin: .5rem;
+.boards-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+}
+
+.gutter {
+  width: 15%;
 }
 
 .boards {
@@ -40,6 +118,10 @@ main {
   background: yellow;
   display: flex;
   flex-wrap: wrap;
+  border-top: 2rem ridge rgb(0, 70, 150);
+  border-left: 2rem ridge rgb(0, 70, 150);
+  border-right: 2rem groove rgb(0, 70, 150);
+  border-bottom: 2rem groove rgb(0, 70, 150);
 }
 
 .cell {
@@ -138,4 +220,8 @@ main {
 
 .display-none {
   display: none;
+}
+
+.hidden {
+  visibility: hidden;
 }
