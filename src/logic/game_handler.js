@@ -6,7 +6,7 @@ import { Gameboard } from '../factories/gameboard'
 import { AiGameboard } from '../factories/ai_gameboard'
 import { boardHandler } from '../ui/dom_board'
 import { delay } from '../utils/helper_funcs'
-import { wrapInDiv, queryDocument, addClass, removeClass, replaceClass, toggleClass, createEl, replaceEl, cloneEl } from '../ui/dom_funcs'
+import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl, addClasses } from '../ui/dom_funcs'
 
 ;(function uiLogic () {
   const startBtn = queryDocument('#start-game')
@@ -22,14 +22,19 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceClass, toggleCl
 
   startBtn.disabled = true
 
-  startBtn.addEventListener('click', () => {
-    ;[startBtn, rotateBtn].forEach((el) => addClass('display-none', el))
-    nameInp.disabled = true
-    eventsHandler.trigger(events.GAME_STARTED, nameInp.value)
-    hintsDiv.innerText = 'Good luck, Admiral!'
-  })
+  const _hide = (el) => addClass('display-none', el)
 
-  rotateBtn.addEventListener('click', () => {
+  const _show = (el) => removeClass('display-none', el)
+
+  const handleStart = () => {
+    ;[startBtn, rotateBtn].forEach(_hide)
+    _show(restartBtn)
+    nameInp.disabled = true
+    hintsDiv.innerText = 'Good luck, Admiral!'
+    eventsHandler.trigger(events.GAME_STARTED, nameInp.value)
+  }
+
+  const rotate = () => {
     if (rotateBtn.dataset.plane === 'vertically') {
       rotateBtn.dataset.plane = 'horizontally'
       rotateBtn.innerText = 'Horizontal'
@@ -38,31 +43,30 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceClass, toggleCl
       rotateBtn.innerText = 'Vertical'
     }
     eventsHandler.trigger(events.SHIP_ROTATED, rotateBtn.dataset.plane)
-  })
+  }
 
-  nameInp.addEventListener('input', (e) => {
+  const _checkStartConditions = () => {
+    ;(nameInputed && shipsPlaced)
+      ? startBtn.disabled = false
+      : startBtn.disabled = true
+  }
+
+  const checkName = (e) => {
     (e.currentTarget.value.length > 0)
       ? nameInputed = true
       : nameInputed = false
-    ;(nameInputed && shipsPlaced)
-      ? startBtn.disabled = false
-      : startBtn.disabled = true
-  })
+    _checkStartConditions()
+  }
 
-  eventsHandler.on(events.SHIP_PLACED, ({ areShipsPlaced, shipType }) => {
-    ;(areShipsPlaced)
+  const checkShipsReadiness = ({ areShipsPlaced, shipType }) => {
+    (areShipsPlaced)
       ? shipsPlaced = true
       : shipsPlaced = false
-    ;(nameInputed && shipsPlaced)
-      ? startBtn.disabled = false
-      : startBtn.disabled = true
+    _checkStartConditions()
     hintsDiv.innerText = `${shipType} has been placed.`
-  })
+  }
 
-  eventsHandler.onEach([
-    events.COMPUTER_BOARD_ATTACKED,
-    events.COMPUTER_FINISHED_TURN
-  ], ({ status, player }) => {
+  const _createLogMessage = (status, player) => {
     const logClass = `log-${player.type}-${status.shipStatus || status.value}`
     let msg = `Turn ${++msgCount}. y${status.y} y${status.x}`
     if (status.value === 'missed') {
@@ -71,17 +75,33 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceClass, toggleCl
     if (status.value === 'hit') {
       msg += ` ${player.name} ${status.shipStatus} ${status.ship}!`
     }
-    const log = wrapInDiv(msg, [logClass])
+    return wrapInDiv(msg, [logClass])
+  }
+
+  const displayLogMessage = ({ status, player }) => {
+    const log = _createLogMessage(status, player)
     const hint = cloneEl(log)
     hint.id = 'hints'
     logDiv.prepend(log)
     hintsDiv = replaceEl(hintsDiv, hint)
-  })
+  }
 
-  eventsHandler.on(events.GAME_ENDED, (name) => {
+  const handleEnd = (name) => {
     hintsDiv.innerText = `${name} won!`
     removeClass('hidden', restartBtn)
-  })
+  }
+
+  const initMenu = () => {
+    startBtn.addEventListener('click', handleStart)
+    rotateBtn.addEventListener('click', rotate)
+    nameInp.addEventListener('input', checkName)
+    eventsHandler.on(events.SHIP_PLACED, checkShipsReadiness)
+    eventsHandler.onEach([events.COMPUTER_BOARD_ATTACKED, events.COMPUTER_FINISHED_TURN], displayLogMessage)
+    eventsHandler.on(events.GAME_ENDED, handleEnd)
+  }
+
+  initMenu()
+
 })()
 
 ;(function boardViewLogic () {

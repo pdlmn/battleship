@@ -38,6 +38,16 @@ const toggleClass = curry((toggledClass, element) => {
   return element
 })
 
+const addClasses = curry((classes, element) => {
+  element.classList.add(...classes)
+  return element
+})
+
+const removeClasses = curry((classes, element) => {
+  element.classList.remove(...classes)
+  return element
+})
+
 const addDataAttr = curry((dataAttr, dataVal, element) => {
   element[dataAttr] = dataVal
   return element
@@ -63,7 +73,9 @@ export {
   createEl,
   addId,
   addClass,
+  addClasses,
   removeClass,
+  removeClasses,
   replaceClass,
   toggleClass,
   addDataAttr,

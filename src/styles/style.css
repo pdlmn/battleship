@@ -216,23 +216,23 @@ button:disabled {
 }
 
 .log-player-missed {
-  color: rgb(80, 100, 100);
+  color: rgb(180, 180, 180);
 }
 
 .log-player-damaged {
-  color: rgb(100, 120, 220);
+  color: rgb(70, 200, 200);
 }
 
 .log-player-destroyed {
-  color: rgb(20, 150, 20);
+  color: rgb(70, 200, 70);
 }
 
 .log-computer-missed {
-  color: rgb(130, 130, 20);
+  color: rgb(180, 180, 50);
 }
 
 .log-computer-damaged {
-  color: rgb(250, 80, 20);
+  color: rgb(250, 100, 20);
 }
 
 .log-computer-destroyed {
