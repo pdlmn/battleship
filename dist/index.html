@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Battleship</title>
-<script defer src="main.js"></script><link href="main.css" rel="stylesheet"></head>
+  <head>
+    <meta charset="UTF-8">
+    <title>Battleship</title>
+  <script defer src="main.js"></script><link href="main.css" rel="stylesheet"></head>
 <body>
 
   <header>
@@ -14,43 +14,47 @@
 
     <div class="menu">
 
-      <div id="input-name">
+      <div id="input-area">
         <label for="player-name">Enter your name</label>
-        <input type="text" placeholder="Player 1" id="player-name">
+        <input type="text" placeholder="Player 1" id="player-name" maxlength="15">
       </div>
 
-      <div>
+      <div class="menu-buttons">
+
+        <button id="start-game">
+          Start
+        </button>
+
         <button id="rotate" data-plane="horizontally">
           Horizontal
         </button>
 
-        <button id="start-game">
-          Start game
+        <button class="" id="restart-game">
+          Restart
         </button>
-      </div>
 
-      <div class="log-window display-none">
-        <h2>Battleship log</h2>
-        <div id="log"></div>
       </div>
 
     </div>
 
-    <div class="hints-restart">
+    <div class="boards-area">
 
       <div id="hints">Welcome to Battleship!</div>
 
-      <button class="hidden" id="restart-game">
-        Restart
-      </button>
+      <div class="boards">
+
+        <div class="board" id="player-board"></div>
+        <div class="board no-display" id="computer-board"></div>
+
+      </div>
 
     </div>
 
-    <div class="boards">
-
-      <div class="board" id="player-board"></div>
-      <div class="board display-none" id="computer-board"></div>
-
+    <div class="log-area">
+      <div class="log-window">
+        <h2>Battleship log</h2>
+        <div id="log"></div>
+      </div>
     </div>
 
   </main>
