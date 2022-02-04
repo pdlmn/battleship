@@ -12,21 +12,14 @@
 
   <main>
 
-    <div class="log-area">
-      <div class="log-window display-none">
-        <h2>Battleship log</h2>
-        <div id="log"></div>
-      </div>
-    </div>
-
     <div class="menu">
+
       <div id="input-area">
         <label for="player-name">Enter your name</label>
         <input type="text" placeholder="Player 1" id="player-name" maxlength="15">
       </div>
 
       <div class="menu-buttons">
-
 
         <button id="start-game">
           Start
@@ -40,14 +33,12 @@
           Restart
         </button>
 
-        <button class="" id="log-button">
-          Toggle log
-        </button>
-
       </div>
+
     </div>
 
     <div class="boards-area">
+
       <div id="hints">Welcome to Battleship!</div>
 
       <div class="boards">
@@ -55,6 +46,14 @@
         <div class="board" id="player-board"></div>
         <div class="board no-display" id="computer-board"></div>
 
+      </div>
+
+    </div>
+
+    <div class="log-area">
+      <div class="log-window">
+        <h2>Battleship log</h2>
+        <div id="log"></div>
       </div>
     </div>
 

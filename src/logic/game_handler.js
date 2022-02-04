@@ -12,21 +12,19 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceClass, toggleCl
   const startBtn = queryDocument('#start-game')
   const restartBtn = queryDocument('#restart-game')
   const nameInp = queryDocument('#player-name')
-  const nameInpDiv = queryDocument('#input-area')
   const rotateBtn = queryDocument('#rotate')
   const logDiv = queryDocument('#log')
-  const logWindow = queryDocument('#log-area')
-  const logBtn = queryDocument('#log-button')
   let hintsDiv = queryDocument('#hints')
 
   let nameInputed = Boolean(nameInp.value)
   let shipsPlaced = false
+  let msgCount = 0
+
   startBtn.disabled = true
 
   startBtn.addEventListener('click', () => {
-    ;[nameInp, nameInpDiv].forEach((el) => addClass('hidden', el))
     ;[startBtn, rotateBtn].forEach((el) => addClass('display-none', el))
-    removeClass('display-none', logBtn)
+    nameInp.disabled = true
     eventsHandler.trigger(events.GAME_STARTED, nameInp.value)
     hintsDiv.innerText = 'Good luck, Admiral!'
   })
@@ -40,10 +38,6 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceClass, toggleCl
       rotateBtn.innerText = 'Vertical'
     }
     eventsHandler.trigger(events.SHIP_ROTATED, rotateBtn.dataset.plane)
-  })
-
-  logBtn.addEventListener('click', () => {
-    toggleClass('display-none', logWindow)
   })
 
   nameInp.addEventListener('input', (e) => {
@@ -70,12 +64,12 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceClass, toggleCl
     events.COMPUTER_FINISHED_TURN
   ], ({ status, player }) => {
     const logClass = `log-${player.type}-${status.shipStatus || status.value}`
-    let msg
+    let msg = `Turn ${++msgCount}. y${status.y} y${status.x}`
     if (status.value === 'missed') {
-      msg = `${status.y} ${status.x}. ${player.name} missed...`
+      msg += ` ${player.name} missed...`
     }
     if (status.value === 'hit') {
-      msg = `${status.y} ${status.x}. ${player.name} ${status.shipStatus} ${status.ship}!`
+      msg += ` ${player.name} ${status.shipStatus} ${status.ship}!`
     }
     const log = wrapInDiv(msg, [logClass])
     const hint = cloneEl(log)
