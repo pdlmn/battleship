@@ -6,9 +6,9 @@ import { Gameboard } from '../factories/gameboard'
 import { AiGameboard } from '../factories/ai_gameboard'
 import { boardHandler } from '../ui/dom_board'
 import { delay } from '../utils/helper_funcs'
-import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl, addClasses } from '../ui/dom_funcs'
+import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } from '../ui/dom_funcs'
 
-;(function uiLogic () {
+;(function menuHandler () {
   const startBtn = queryDocument('#start-game')
   const restartBtn = queryDocument('#restart-game')
   const nameInp = queryDocument('#player-name')
@@ -16,11 +16,8 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl, ad
   const logDiv = queryDocument('#log')
   let hintsDiv = queryDocument('#hints')
 
-  let nameInputed = Boolean(nameInp.value)
   let shipsPlaced = false
   let msgCount = 0
-
-  startBtn.disabled = true
 
   const _hide = (el) => addClass('display-none', el)
 
@@ -45,24 +42,15 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl, ad
     eventsHandler.trigger(events.SHIP_ROTATED, rotateBtn.dataset.plane)
   }
 
-  const _checkStartConditions = () => {
-    ;(nameInputed && shipsPlaced)
-      ? startBtn.disabled = false
-      : startBtn.disabled = true
-  }
-
-  const checkName = (e) => {
-    (e.currentTarget.value.length > 0)
-      ? nameInputed = true
-      : nameInputed = false
-    _checkStartConditions()
+  const checkStartConditions = () => {
+    startBtn.disabled = !(nameInp.value && shipsPlaced)
   }
 
   const checkShipsReadiness = ({ areShipsPlaced, shipType }) => {
     (areShipsPlaced)
       ? shipsPlaced = true
       : shipsPlaced = false
-    _checkStartConditions()
+    checkStartConditions()
     hintsDiv.innerText = `${shipType} has been placed.`
   }
 
@@ -92,9 +80,10 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl, ad
   }
 
   const initMenu = () => {
+    checkStartConditions()
     startBtn.addEventListener('click', handleStart)
     rotateBtn.addEventListener('click', rotate)
-    nameInp.addEventListener('input', checkName)
+    nameInp.addEventListener('input', checkStartConditions)
     eventsHandler.on(events.SHIP_PLACED, checkShipsReadiness)
     eventsHandler.onEach([events.COMPUTER_BOARD_ATTACKED, events.COMPUTER_FINISHED_TURN], displayLogMessage)
     eventsHandler.on(events.GAME_ENDED, handleEnd)
