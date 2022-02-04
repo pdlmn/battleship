@@ -81,10 +81,6 @@ export const boardHandler = (() => {
     )(segments)
   }
 
-  const displayBoard = (board) => {
-    removeClass('display-none', board)
-  }
-
   const place = (y, x, size) => {
     const shipSegments = _cellsFinder[plane](y, x, size)
     shipSegments.forEach((el) => el.classList.add('ship'))
@@ -99,7 +95,6 @@ export const boardHandler = (() => {
     extractCoords,
     highlightFutureShip,
     clearHighlights,
-    displayBoard,
     place
   }
 })()

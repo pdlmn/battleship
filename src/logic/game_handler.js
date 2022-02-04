@@ -91,65 +91,78 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
 
   initMenu()
 
+  return {
+    initMenu
+  }
 })()
 
 ;(function boardViewLogic () {
   const playerBoard = queryDocument('#player-board')
   const computerBoard = queryDocument('#computer-board')
 
-  boardHandler.createBoard(false, playerBoard)
-  boardHandler.createBoard(true, computerBoard)
-
   const renderPlayer = boardHandler.renderBoard(playerBoard)
   const renderComputer = boardHandler.renderBoard(computerBoard)
 
-  playerBoard.addEventListener('mouseover', (e) => {
+  const createBoards = () => {
+    boardHandler.createBoard(false, playerBoard)
+    boardHandler.createBoard(true, computerBoard)
+  }
+
+  const sendCoordsForValidation = (e) => {
     if (e.target.classList.contains('cell')) {
       const coords = boardHandler.extractCoords(e.target)
       eventsHandler.trigger(events.BOARD_HOVERED, coords)
     }
-  })
+  }
 
-  eventsHandler.on(events.SHIP_VALIDATED, (data) => {
+  const hightlightValidatedCoords = (data) => {
     boardHandler.highlightFutureShip(...data)
-  })
+  }
 
-  playerBoard.addEventListener('click', (e) => {
+  const sendShipForValidation = (e) => {
     if (e.target.classList.contains('cell')) {
       const coords = boardHandler.extractCoords(e.target)
       eventsHandler.trigger(events.BOARD_CLICKED, coords)
     }
-  })
+  }
 
-  eventsHandler.on(events.SHIP_PLACED, ({ ship }) => {
+  const placeValidatedShip = ({ ship }) => {
     boardHandler.place(...ship)
-  })
+  }
 
-  eventsHandler.on(events.GAME_STARTED, () => {
-    boardHandler.displayBoard(computerBoard)
-  })
-
-  playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
-
-  eventsHandler.onEach([
-    events.COMPUTER_PLACED_SHIPS,
-    events.COMPUTER_BOARD_ATTACKED
-  ], ({ state }) => {
+  const renderComputerState = ({ state }) => {
     renderComputer(state)
-  })
+  }
 
-  computerBoard.addEventListener('click', (e) => {
+  const renderPlayerState = ({ state }) => {
+    renderPlayer(state)
+  }
+
+  const sendAttackedCoords = (e) => {
     if (e.target.classList.contains('cell')) {
       const coords = boardHandler.extractCoords(e.target)
       eventsHandler.trigger(events.COMPUTER_BOARD_CLICKED, coords)
     }
-  })
+  }
 
-  eventsHandler.on(events.COMPUTER_FINISHED_TURN, ({ state }) => {
-    renderPlayer(state)
-  })
+  const initBoards = () => {
+    createBoards()
+    playerBoard.addEventListener('mouseover', sendCoordsForValidation)
+    eventsHandler.on(events.SHIP_VALIDATED, hightlightValidatedCoords)
+    playerBoard.addEventListener('click', sendShipForValidation)
+    eventsHandler.on(events.SHIP_PLACED, placeValidatedShip)
+    playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
+    eventsHandler.onEach([events.COMPUTER_PLACED_SHIPS, events.COMPUTER_BOARD_ATTACKED], renderComputerState)
+    computerBoard.addEventListener('click', sendAttackedCoords)
+    eventsHandler.on(events.COMPUTER_FINISHED_TURN, renderPlayerState)
+    eventsHandler.on(events.SHIP_ROTATED, boardHandler.setPlane)
+  }
 
-  eventsHandler.on(events.SHIP_ROTATED, boardHandler.setPlane)
+  initBoards()
+
+  return {
+    initBoards
+  }
 })()
 
 ;(function gameLogic () {
