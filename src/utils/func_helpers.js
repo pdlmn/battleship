@@ -171,7 +171,6 @@ const removeDuplicateObj = curry((arr) => {
   const len = arr.length
   if (len <= 1) return arr
   const result = []
-  const occurances = 0
   for (let i = 0; i < len; i++) {
     if (!objectInArray(arr[i], result)) {
       result.push(arr[i])

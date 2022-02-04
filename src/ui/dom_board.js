@@ -1,5 +1,4 @@
 import { forEach, pipe, filter, curry } from '../utils/func_helpers'
-import { removeClass } from './dom_funcs'
 
 const _cellTable = {
   s: 'ship',

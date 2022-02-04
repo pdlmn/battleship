@@ -165,7 +165,7 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
   }
 })()
 
-;(function gameLogic () {
+;(function gameHandler () {
   const shipsToPlace = [5, 4, 3, 2, 1]
   const playerBoard = Gameboard()
   const computerBoard = AiGameboard()
@@ -174,15 +174,15 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
   let gameStarted = false
   let gameEnded = false
 
-  eventsHandler.on(events.BOARD_HOVERED, (coords) => {
+  const validateCoords = (coords) => {
     if (shipsToPlace.length === 0) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
     const isValid = playerBoard.isValidForPlace(y, x, nextShipSize)
     eventsHandler.trigger(events.SHIP_VALIDATED, [y, x, nextShipSize, isValid])
-  })
+  }
 
-  eventsHandler.on(events.BOARD_CLICKED, (coords) => {
+  const validatePlacement = (coords) => {
     if (shipsToPlace.length === 0) return
     const [y, x] = coords
     const nextShipSize = shipsToPlace[0]
@@ -198,22 +198,17 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
         areShipsPlaced: shipsToPlace.length === 0
       }
     )
-  })
+  }
 
-  eventsHandler.on(events.SHIP_ROTATED, playerBoard.setPlane)
-
-  eventsHandler.on(events.GAME_STARTED, (name) => {
+  const startGame = (name) => {
     gameStarted = true
     player = Player(name, true)
     computer = AiPlayer()
     computerBoard.placeFleet(5)
-    eventsHandler.trigger(
-      events.COMPUTER_PLACED_SHIPS,
-      { state: computerBoard.state }
-    )
-  })
+    eventsHandler.trigger(events.COMPUTER_PLACED_SHIPS, { state: computerBoard.state })
+  }
 
-  eventsHandler.on(events.COMPUTER_BOARD_CLICKED, (coords) => {
+  const handlePlayerAttack = (coords) => {
     if (!gameStarted || gameEnded || !player.turn || !computerBoard.isValidTarget(...coords)) return
     player.attack(computerBoard, ...coords)
     const status = computerBoard.getAttackStatus(...coords)
@@ -228,9 +223,9 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
       gameEnded = true
       eventsHandler.trigger(events.GAME_ENDED, player.name)
     }
-  })
+  }
 
-  eventsHandler.on(events.PLAYER_FINISHED_TURN, async () => {
+  const handleComputerAttack = async () => {
     if (playerBoard.isFleetSunk()) {
       gameEnded = true
       eventsHandler.trigger(events.GAME_ENDED, computer.name)
@@ -247,5 +242,20 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
       return
     }
     player.changeTurn()
-  })
+  }
+
+  const initGame = () => {
+    eventsHandler.on(events.BOARD_HOVERED, validateCoords)
+    eventsHandler.on(events.BOARD_CLICKED, validatePlacement)
+    eventsHandler.on(events.SHIP_ROTATED, playerBoard.setPlane)
+    eventsHandler.on(events.GAME_STARTED, startGame)
+    eventsHandler.on(events.COMPUTER_BOARD_CLICKED, handlePlayerAttack)
+    eventsHandler.on(events.PLAYER_FINISHED_TURN, handleComputerAttack)
+  }
+
+  initGame()
+
+  return {
+    initGame
+  }
 })()
