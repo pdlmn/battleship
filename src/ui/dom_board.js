@@ -1,4 +1,5 @@
 import { forEach, pipe, filter, curry } from '../utils/func_helpers'
+import { addClass } from './dom_funcs'
 
 const _cellTable = {
   s: 'ship',
@@ -68,21 +69,27 @@ export const boardHandler = (() => {
   })
 
   const clearHighlights = () => document.querySelectorAll('.cell')
-    .forEach((el) => el.classList.remove('future-ship', 'wrong-placement'))
+    .forEach((el) => el.classList.remove('future-ship', 'wrong-placement', `h-${plane}-start`, `h-${plane}-end`))
 
   const highlightFutureShip = (y, x, size, isValid) => {
     const className = (isValid) ? 'future-ship' : 'wrong-placement'
     const segments = _cellsFinder[plane](y, x, size)
     clearHighlights()
-    pipe(
-      filter((el) => Boolean(el)),
-      forEach((el) => el.classList.add(className))
-    )(segments)
+    const validCells = segments.filter((el) => Boolean(el))
+    validCells.forEach((el, i) => {
+      addClass(className, el)
+      if (i === 0) addClass(`h-${plane}-start`, el)
+      if (i === segments.length - 1) addClass(`h-${plane}-end`, el)
+    })
   }
 
   const place = (y, x, size) => {
-    const shipSegments = _cellsFinder[plane](y, x, size)
-    shipSegments.forEach((el) => el.classList.add('ship'))
+    const segments = _cellsFinder[plane](y, x, size)
+    segments.forEach((el, i) => {
+      el.classList.add('ship')
+      if (i === 0) addClass(`${plane}-start`, el)
+      if (i === segments.length - 1) addClass(`${plane}-end`, el)
+    })
   }
 
   const setPlane = (newPlane) => { plane = newPlane }

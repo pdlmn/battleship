@@ -145,17 +145,24 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     }
   }
 
+  const stopListeningToPreGameEvents = () => {
+    playerBoard.removeEventListener('mouseover', sendCoordsForValidation)
+    playerBoard.removeEventListener('click', sendShipForValidation)
+    playerBoard.removeEventListener('mouseleave', boardHandler.clearHighlights)
+  }
+
   const initBoards = () => {
     createBoards()
     playerBoard.addEventListener('mouseover', sendCoordsForValidation)
-    eventsHandler.on(events.SHIP_VALIDATED, hightlightValidatedCoords)
     playerBoard.addEventListener('click', sendShipForValidation)
-    eventsHandler.on(events.SHIP_PLACED, placeValidatedShip)
     playerBoard.addEventListener('mouseleave', boardHandler.clearHighlights)
-    eventsHandler.onEach([events.COMPUTER_PLACED_SHIPS, events.COMPUTER_BOARD_ATTACKED], renderComputerState)
     computerBoard.addEventListener('click', sendAttackedCoords)
-    eventsHandler.on(events.COMPUTER_FINISHED_TURN, renderPlayerState)
+    eventsHandler.on(events.SHIP_VALIDATED, hightlightValidatedCoords)
+    eventsHandler.on(events.SHIP_PLACED, placeValidatedShip)
     eventsHandler.on(events.SHIP_ROTATED, boardHandler.setPlane)
+    eventsHandler.on(events.GAME_STARTED, stopListeningToPreGameEvents)
+    eventsHandler.on(events.COMPUTER_FINISHED_TURN, renderPlayerState)
+    eventsHandler.onEach([events.COMPUTER_PLACED_SHIPS, events.COMPUTER_BOARD_ATTACKED], renderComputerState)
   }
 
   initBoards()
@@ -231,7 +238,7 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
       eventsHandler.trigger(events.GAME_ENDED, computer.name)
       return
     }
-    await delay(250)
+    await delay(400)
     const status = computer.attackPlayer(playerBoard)
     eventsHandler.trigger(
       events.COMPUTER_FINISHED_TURN,

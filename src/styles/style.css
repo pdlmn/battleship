@@ -154,6 +154,46 @@ button:disabled {
   width: 35px;
 }
 
+.h-horizontally-start {
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+
+.h-horizontally-end {
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.h-vertically-start {
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.h-vertically-end {
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.horizontally-start {
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+
+.horizontally-end {
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.vertically-start {
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.vertically-end {
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
 .water:hover {
   background: rgb(0, 190, 145);
 }
