@@ -1,5 +1,4 @@
 const _types = {
-  1: 'Patrol boat',
   2: 'Destroyer',
   3: 'Cruiser',
   4: 'Battleship',

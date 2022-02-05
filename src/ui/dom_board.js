@@ -1,5 +1,6 @@
 import { forEach, pipe, filter, curry } from '../utils/func_helpers'
-import { addClass } from './dom_funcs'
+import { addClass, removeClass } from './dom_funcs'
+import { states } from '../constants/cell_states'
 
 const _cellTable = {
   s: 'ship',
@@ -55,14 +56,16 @@ export const boardHandler = (() => {
     }
   }
 
-  const renderBoard = curry((domBoard, boardState) => {
+  const renderBoard = curry((domBoard, isHidden, boardState) => {
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
         const cellState = boardState[i][j]
         const cellView = domBoard.querySelector(`[data-y='${i + 1}'][data-x='${j + 1}']`)
         if (!cellView.classList.contains(_cellTable[cellState])) {
-          cellView.classList.remove(..._cellClasses)
-          cellView.classList.add(_cellTable[cellState])
+          addClass(_cellTable[cellState], cellView)
+        }
+        if (isHidden && [states.MISSED, states.HIT, states.SUNK, states.AROUND_SUNK].includes(cellState)) {
+          removeClass('fog-of-war', cellView)
         }
       }
     }

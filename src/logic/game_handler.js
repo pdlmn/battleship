@@ -100,8 +100,8 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
   const playerBoard = queryDocument('#player-board')
   const computerBoard = queryDocument('#computer-board')
 
-  const renderPlayer = boardHandler.renderBoard(playerBoard)
-  const renderComputer = boardHandler.renderBoard(computerBoard)
+  const renderPlayer = boardHandler.renderBoard(playerBoard, false)
+  const renderComputer = boardHandler.renderBoard(computerBoard, true)
 
   const createBoards = () => {
     boardHandler.createBoard(false, playerBoard)
@@ -173,7 +173,7 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
 })()
 
 ;(function gameHandler () {
-  const shipsToPlace = [5, 4, 3, 2, 1]
+  const shipsToPlace = [5, 4, 3, 2, 2]
   const playerBoard = Gameboard()
   const computerBoard = AiGameboard()
   let player

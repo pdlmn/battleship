@@ -327,4 +327,25 @@ describe('Gameboard methods work correctly', () => {
     const result = gameboard.getAreaAroundSunk().sort((a, b) => a.x - b.x).sort((a, b) => a.y - b.y)
     expect(result).toMatchObject(expected)
   })
+
+  test('getAreaAroundSunk() gets cells around sunk ships (3)', () => {
+    const expected = [
+      { y: 2, x: 1 },
+      { y: 2, x: 2 },
+      { y: 2, x: 3 },
+      { y: 2, x: 4 },
+      { y: 3, x: 1 },
+      { y: 3, x: 4 },
+      { y: 4, x: 1 },
+      { y: 4, x: 2 },
+      { y: 4, x: 3 },
+      { y: 4, x: 4 }
+    ]
+    const gameboard = Gameboard()
+    gameboard.place(3, 2, 2)
+    gameboard.receiveAttack(3, 2)
+    gameboard.receiveAttack(3, 3)
+    const result = gameboard.getAreaAroundSunk()
+    expect(result).toEqual(expect.arrayContaining(expected))
+  })
 })
