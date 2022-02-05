@@ -31,6 +31,19 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     eventsHandler.trigger(events.GAME_STARTED, nameInp.value)
   }
 
+  const handleEnd = (name) => {
+    hintsDiv.innerText = `${name} won!`
+    removeClass('hidden', restartBtn)
+  }
+
+  const handleRestart = () => {
+    ;[startBtn, rotateBtn].forEach(_show)
+    _hide(restartBtn)
+    nameInp.disabled = false
+    hintsDiv.innerText = 'Welcome back, Admiral!'
+    eventsHandler.trigger(events.GAME_RESTARTED, nameInp.value)
+  }
+
   const rotate = () => {
     if (rotateBtn.dataset.plane === 'vertically') {
       rotateBtn.dataset.plane = 'horizontally'
@@ -74,14 +87,10 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     hintsDiv = replaceEl(hintsDiv, hint)
   }
 
-  const handleEnd = (name) => {
-    hintsDiv.innerText = `${name} won!`
-    removeClass('hidden', restartBtn)
-  }
-
   const initMenu = () => {
     checkStartConditions()
     startBtn.addEventListener('click', handleStart)
+    restartBtn.addEventListener('click', handleRestart)
     rotateBtn.addEventListener('click', rotate)
     nameInp.addEventListener('input', checkStartConditions)
     eventsHandler.on(events.SHIP_PLACED, checkShipsReadiness)

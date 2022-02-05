@@ -11,5 +11,6 @@ export const events = Object.freeze({
   COMPUTER_BOARD_ATTACKED: 'Computer board attacked',
   PLAYER_FINISHED_TURN: 'Player made move',
   COMPUTER_FINISHED_TURN: 'Computer made move',
-  GAME_ENDED: 'Game ended'
+  GAME_ENDED: 'Game ended',
+  GAME_RESTERTED: 'Game restarted'
 })

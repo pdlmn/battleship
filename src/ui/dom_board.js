@@ -72,27 +72,19 @@ export const boardHandler = (() => {
   })
 
   const clearHighlights = () => document.querySelectorAll('.cell')
-    .forEach((el) => el.classList.remove('future-ship', 'wrong-placement', `h-${plane}-start`, `h-${plane}-end`))
+    .forEach((el) => el.classList.remove('future-ship', 'wrong-placement'))
 
   const highlightFutureShip = (y, x, size, isValid) => {
     const className = (isValid) ? 'future-ship' : 'wrong-placement'
     const segments = _cellsFinder[plane](y, x, size)
     clearHighlights()
     const validCells = segments.filter((el) => Boolean(el))
-    validCells.forEach((el, i) => {
-      addClass(className, el)
-      if (i === 0) addClass(`h-${plane}-start`, el)
-      if (i === segments.length - 1) addClass(`h-${plane}-end`, el)
-    })
+    validCells.forEach((el) => addClass(className, el))
   }
 
   const place = (y, x, size) => {
     const segments = _cellsFinder[plane](y, x, size)
-    segments.forEach((el, i) => {
-      el.classList.add('ship')
-      if (i === 0) addClass(`${plane}-start`, el)
-      if (i === segments.length - 1) addClass(`${plane}-end`, el)
-    })
+    segments.forEach((el) => addClass('ship', el))
   }
 
   const setPlane = (newPlane) => { plane = newPlane }
