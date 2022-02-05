@@ -40,7 +40,7 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     _hide(restartBtn)
     nameInp.disabled = false
     hintsDiv.innerText = `Welcome back, Admiral ${nameInp.value}!`
-    eventsHandler.trigger(events.GAME_RESTARTED, nameInp.value)
+    eventsHandler.trigger(events.GAME_RESTARTED, rotateBtn.dataset.plane)
   }
 
   const rotate = () => {
@@ -116,6 +116,12 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     boardHandler.createBoard(true, computerBoard)
   }
 
+  const resetBoards = (plane) => {
+    boardHandler.recreateBoard(false, playerBoard)
+    boardHandler.recreateBoard(true, computerBoard)
+    boardHandler.setPlane(plane)
+  }
+
   const sendCoordsForValidation = (e) => {
     if (e.target.classList.contains('cell')) {
       const coords = boardHandler.extractCoords(e.target)
@@ -153,10 +159,8 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     }
   }
 
-  const stopListeningToPreGameEvents = () => {
-    playerBoard.removeEventListener('mouseover', sendCoordsForValidation)
-    playerBoard.removeEventListener('click', sendShipForValidation)
-    playerBoard.removeEventListener('mouseleave', boardHandler.clearHighlights)
+  const changePlane = (plane) => {
+    boardHandler.setPlane(plane)
   }
 
   const initBoards = () => {
@@ -167,9 +171,9 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     computerBoard.addEventListener('click', sendAttackedCoords)
     eventsHandler.on(events.SHIP_VALIDATED, hightlightValidatedCoords)
     eventsHandler.on(events.SHIP_PLACED, placeValidatedShip)
-    eventsHandler.on(events.SHIP_ROTATED, boardHandler.setPlane)
-    eventsHandler.on(events.GAME_STARTED, stopListeningToPreGameEvents)
+    eventsHandler.on(events.SHIP_ROTATED, changePlane)
     eventsHandler.on(events.COMPUTER_FINISHED_TURN, renderPlayerState)
+    eventsHandler.on(events.GAME_RESTARTED, resetBoards)
     eventsHandler.onEach([events.COMPUTER_PLACED_SHIPS, events.COMPUTER_BOARD_ATTACKED], renderComputerState)
   }
 
@@ -181,9 +185,9 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
 })()
 
 ;(function gameHandler () {
-  const shipsToPlace = [5, 4, 3, 2, 2]
-  const playerBoard = Gameboard()
-  const computerBoard = AiGameboard()
+  let playerBoard = Gameboard()
+  let computerBoard = AiGameboard()
+  let shipsToPlace = [5, 4, 3, 2, 2]
   let player
   let computer
   let gameStarted = false
@@ -223,6 +227,15 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     eventsHandler.trigger(events.COMPUTER_PLACED_SHIPS, { state: computerBoard.state })
   }
 
+  const restartGame = (plane) => {
+    shipsToPlace = [5, 4, 3, 2, 2]
+    gameStarted = false
+    gameEnded = false
+    playerBoard = Gameboard()
+    computerBoard = AiGameboard()
+    playerBoard.setPlane(plane)
+  }
+
   const handlePlayerAttack = (coords) => {
     if (!gameStarted || gameEnded || !player.turn || !computerBoard.isValidTarget(...coords)) return
     player.attack(computerBoard, ...coords)
@@ -259,11 +272,16 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     player.changeTurn()
   }
 
+  const changePlane = (plane) => {
+    playerBoard.setPlane(plane)
+  }
+
   const initGame = () => {
     eventsHandler.on(events.BOARD_HOVERED, validateCoords)
     eventsHandler.on(events.BOARD_CLICKED, validatePlacement)
-    eventsHandler.on(events.SHIP_ROTATED, playerBoard.setPlane)
+    eventsHandler.on(events.SHIP_ROTATED, changePlane)
     eventsHandler.on(events.GAME_STARTED, startGame)
+    eventsHandler.on(events.GAME_RESTARTED, restartGame)
     eventsHandler.on(events.COMPUTER_BOARD_CLICKED, handlePlayerAttack)
     eventsHandler.on(events.PLAYER_FINISHED_TURN, handleComputerAttack)
   }

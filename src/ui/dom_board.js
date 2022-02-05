@@ -1,5 +1,5 @@
 import { forEach, pipe, filter, curry } from '../utils/func_helpers'
-import { addClass, removeClass } from './dom_funcs'
+import { addClass, clearElContent, removeClass } from './dom_funcs'
 import { states } from '../constants/cell_states'
 
 const _cellTable = {
@@ -56,6 +56,11 @@ export const boardHandler = (() => {
     }
   }
 
+  const recreateBoard = (isHidden, domBoard) => {
+    clearElContent(domBoard)
+    createBoard(isHidden, domBoard)
+  }
+
   const renderBoard = curry((domBoard, isHidden, boardState) => {
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
@@ -89,6 +94,7 @@ export const boardHandler = (() => {
 
   return {
     createBoard,
+    recreateBoard,
     renderBoard,
     setPlane,
     extractCoords,

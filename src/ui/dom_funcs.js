@@ -68,6 +68,13 @@ const cloneEl = curry((element) => {
   return element.cloneNode(true)
 })
 
+const clearElContent = curry((element) => {
+  while (element.lastChild) {
+    element.lastChild.remove()
+  }
+  return element
+})
+
 export {
   wrapInDiv,
   createEl,
@@ -82,5 +89,6 @@ export {
   cssSelector,
   queryDocument,
   replaceEl,
-  cloneEl
+  cloneEl,
+  clearElContent
 }
