@@ -42,7 +42,7 @@ const _cellsFinder = {
   }
 }
 
-export const boardHandler = (() => {
+export const domBoard = (() => {
   let plane = 'horizontally'
 
   const extractCoords = (cell) =>
