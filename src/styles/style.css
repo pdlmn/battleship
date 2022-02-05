@@ -218,7 +218,7 @@ button:disabled {
 
 #log {
   overflow-y: scroll;
-  width: 70%;
+  width: 50ch;
   height: 12ch;
 }
 
