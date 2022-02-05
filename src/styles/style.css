@@ -154,7 +154,7 @@ button:disabled {
   width: 35px;
 }
 
-.water:hover {
+.water:hover:not(.ship):not(.hit):not(.sunk):not(.future-ship):not(.wrong-placement) {
   background: rgb(0, 159, 199);
 }
 
@@ -166,19 +166,12 @@ button:disabled {
   background: rgb(120, 120, 120) !important;
 }
 
-.future-ship,
-.future-ship:hover {
+.future-ship {
   background: rgb(120, 200, 120);
 }
 
-.wrong-placement,
-.wrong-placement:hover {
+.wrong-placement {
   background: rgb(250, 140, 140);
-}
-
-.ship,
-.ship:hover {
-  background: rgb(200, 200, 80);
 }
 
 .hit,
@@ -211,11 +204,15 @@ button:disabled {
   background: rgb(150, 50, 50);
 }
 
-#player-board .sunk {
-  background: rgb(250, 100, 100);
+.ship {
+  background: rgb(200, 200, 80);
 }
 
-#computer-board .sunk {
+.hit {
+  background: rgb(250, 170, 80);
+}
+
+.sunk {
   background: rgb(250, 100, 100);
 }
 

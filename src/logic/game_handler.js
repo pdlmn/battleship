@@ -27,7 +27,7 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     ;[startBtn, rotateBtn].forEach(_hide)
     _show(restartBtn)
     nameInp.disabled = true
-    hintsDiv.innerText = 'Good luck, Admiral!'
+    hintsDiv.innerText = `Good luck, Admiral ${nameInp.value}!`
     eventsHandler.trigger(events.GAME_STARTED, nameInp.value)
   }
 
@@ -39,7 +39,7 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     ;[startBtn, rotateBtn].forEach(_show)
     _hide(restartBtn)
     nameInp.disabled = false
-    hintsDiv.innerText = 'Welcome back, Admiral!'
+    hintsDiv.innerText = `Welcome back, Admiral ${nameInp.value}!`
     eventsHandler.trigger(events.GAME_RESTARTED, nameInp.value)
   }
 
