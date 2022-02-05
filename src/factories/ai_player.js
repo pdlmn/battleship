@@ -3,6 +3,12 @@ import { states } from '../constants/cell_states'
 import { getRandomInteger, getRandomCoords } from '../utils/helper_funcs'
 import { curry, gt, lt, remove } from '../utils/func_helpers'
 
+/* AiPlayer factory for players controlled by an ai.
+ * Ai players find and attack ships on the player boards. At first,
+ * they attacks are random, but when they find the ship cell, they try to find
+ * direction with other ship cells, and then press into this direction,
+ * until the ship is sunk. */
+
 const _attackDirections = {
   left: (y, x) => ({ y, x: x - 1 }),
   right: (y, x) => ({ y, x: x + 1 }),

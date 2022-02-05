@@ -3,7 +3,11 @@ import { eventsHandler } from '../utils/events_handler'
 import { domBoard } from '../ui/dom_board'
 import { queryDocument  } from '../ui/dom_funcs'
 
-const boardHandler = (() => {
+/* boardsHandler controls the boards: highlights ships, send coords to
+ * game handler for validation, attaches to boards event listeners,
+ * renders the boards after player and computer attacks */
+
+const boardsHandler = (() => {
   const playerBoard = queryDocument('#player-board')
   const computerBoard = queryDocument('#computer-board')
 
@@ -76,11 +80,9 @@ const boardHandler = (() => {
     eventsHandler.onEach([events.COMPUTER_PLACED_SHIPS, events.COMPUTER_BOARD_ATTACKED], renderComputerState)
   }
 
-  initBoards()
-
   return {
     initBoards
   }
 })()
 
-export { boardHandler }
+export { boardsHandler }

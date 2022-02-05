@@ -3,6 +3,10 @@ import { eventsHandler } from '../utils/events_handler'
 import { pipe } from '../utils/func_helpers'
 import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl, createEl, addId, addText } from '../ui/dom_funcs'
 
+/* menuHandler controls the menu: disables, hides and shows menu elements,
+ * attaches event listeners to them, controls logs, gives the user ability
+ * to start, restart menu, to input their name */
+
 const menuHandler = (() => {
   const startBtn = queryDocument('#start-game')
   const restartBtn = queryDocument('#restart-game')
@@ -104,8 +108,6 @@ const menuHandler = (() => {
     eventsHandler.on(events.RESTART_VALIDATED, handleRestart)
     eventsHandler.onEach([events.COMPUTER_BOARD_ATTACKED, events.COMPUTER_FINISHED_TURN], displayLogMessage)
   }
-
-  initMenu()
 
   return {
     initMenu

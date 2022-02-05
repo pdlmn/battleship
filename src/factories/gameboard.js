@@ -2,6 +2,10 @@ import { repeat, findIndex, pipe, map, flatten, decrement, curry, eq, any, filte
 import { Ship } from './ship'
 import { states } from '../constants/cell_states'
 
+/* Factory for gameboard objects.
+ * Gameboard represents the virtual boards. It validates and receive attacks,
+ * validates and places ships onto itself, maps sells with different states */
+
 const _createRow = () => repeat(() => states.WATER, 10)
 const _createGameboard = () => repeat(_createRow, 10)
 

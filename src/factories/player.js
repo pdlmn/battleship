@@ -1,4 +1,7 @@
-export const Player = (name, isFirst) => {
+/* Factory for player objects.
+ * Players have name, turn precedence, can attack other boards, have types. */
+
+const Player = (name, isFirst) => {
   const type = isFirst ? 'player' : 'computer'
   let turn = isFirst
 
@@ -20,3 +23,5 @@ export const Player = (name, isFirst) => {
     changeTurn
   }
 }
+
+export { Player }

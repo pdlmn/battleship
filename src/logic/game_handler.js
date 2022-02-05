@@ -6,6 +6,10 @@ import { Gameboard } from '../factories/gameboard'
 import { AiGameboard } from '../factories/ai_gameboard'
 import { delay } from '../utils/helper_funcs'
 
+/* gameHandler controls the flow of the game: validates data
+ * sent from menuHandler and boardsHandler and uses methods of all
+ * relevant for the game factories for virtual board manipulation */
+
 const gameHandler = (() => {
   let playerBoard = Gameboard()
   let computerBoard = AiGameboard()
@@ -110,8 +114,6 @@ const gameHandler = (() => {
     eventsHandler.on(events.COMPUTER_BOARD_CLICKED, handlePlayerAttack)
     eventsHandler.on(events.PLAYER_FINISHED_TURN, handleComputerAttack)
   }
-
-  initGame()
 
   return {
     initGame

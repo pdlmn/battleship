@@ -1,3 +1,6 @@
+/* Factory for the ship objects.
+ * Ships have types, segments, can be hit and sunk */
+
 const _types = {
   2: 'Destroyer',
   3: 'Cruiser',
@@ -22,7 +25,7 @@ const _segmentsCreator = {
   }
 }
 
-export const Ship = (y, x, size, plane) => {
+const Ship = (y, x, size, plane) => {
   const type = _types[size]
   if (type === undefined) throw new Error('Improper ship size')
 
@@ -40,3 +43,5 @@ export const Ship = (y, x, size, plane) => {
     get segments () { return segments }
   }
 }
+
+export { Ship }

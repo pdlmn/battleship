@@ -1,6 +1,10 @@
 import { Gameboard } from './gameboard'
 import { getRandomInteger, getRandomCoords } from '../utils/helper_funcs'
 
+/* AiGameboard factory for gameboards controlled by an ai.
+ * Those objects have methods that help AI to play the game,
+ * like for placing random ships across virtual board. */
+
 const _getRandomPlane = () => {
   return getRandomInteger(1, 2) === 1 ? 'horizontally' : 'vertically'
 }
