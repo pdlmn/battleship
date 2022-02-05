@@ -33,7 +33,6 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
 
   const handleEnd = (name) => {
     hintsDiv.innerText = `${name} won!`
-    removeClass('hidden', restartBtn)
   }
 
   const handleRestart = () => {
