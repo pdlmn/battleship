@@ -12,5 +12,7 @@ export const events = Object.freeze({
   PLAYER_FINISHED_TURN: 'Player made move',
   COMPUTER_FINISHED_TURN: 'Computer made move',
   GAME_ENDED: 'Game ended',
+  RESTART_REQUESTED: 'Restart requested',
+  RESTART_VALIDATED: 'Restart validated',
   GAME_RESTARTED: 'Game restarted'
 })

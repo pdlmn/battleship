@@ -6,9 +6,10 @@ import { Gameboard } from '../factories/gameboard'
 import { AiGameboard } from '../factories/ai_gameboard'
 import { boardHandler } from '../ui/dom_board'
 import { delay } from '../utils/helper_funcs'
-import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } from '../ui/dom_funcs'
+import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl, createEl, addId, addText } from '../ui/dom_funcs'
 
-;(function menuHandler () {
+;import { pipe } from '../utils/func_helpers'
+(function menuHandler () {
   const startBtn = queryDocument('#start-game')
   const restartBtn = queryDocument('#restart-game')
   const nameInp = queryDocument('#player-name')
@@ -23,23 +24,35 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
 
   const _show = (el) => removeClass('display-none', el)
 
+  const _replaceHints = (msg) => pipe(
+      createEl(['hints']),
+      addId('hints'),
+      addText(msg),
+      replaceEl(hintsDiv)
+    )('div')
+
   const handleStart = () => {
+    const msg = `Good luck, Admiral ${nameInp.value}!`
+    hintsDiv = _replaceHints(msg)
     ;[startBtn, rotateBtn].forEach(_hide)
     _show(restartBtn)
     nameInp.disabled = true
-    hintsDiv.innerText = `Good luck, Admiral ${nameInp.value}!`
     eventsHandler.trigger(events.GAME_STARTED, nameInp.value)
   }
 
-  const handleEnd = (name) => {
-    hintsDiv.innerText = `${name} won!`
-  }
+  const handleEnd = (name) => { hintsDiv.innerText = `${name} won!` }
 
-  const handleRestart = () => {
+  const requestRestart = () => eventsHandler.trigger(events.RESTART_REQUESTED)
+
+  const handleRestart = ({ turn, ended }) => {
+    if (!(turn || ended)) return
+    const msg = `Welcome back, Admiral ${nameInp.value}!`
+    hintsDiv = _replaceHints(msg)
     ;[startBtn, rotateBtn].forEach(_show)
     _hide(restartBtn)
+    shipsPlaced = false
     nameInp.disabled = false
-    hintsDiv.innerText = `Welcome back, Admiral ${nameInp.value}!`
+    checkStartConditions()
     eventsHandler.trigger(events.GAME_RESTARTED, rotateBtn.dataset.plane)
   }
 
@@ -89,12 +102,13 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
   const initMenu = () => {
     checkStartConditions()
     startBtn.addEventListener('click', handleStart)
-    restartBtn.addEventListener('click', handleRestart)
+    restartBtn.addEventListener('click', requestRestart)
     rotateBtn.addEventListener('click', rotate)
     nameInp.addEventListener('input', checkStartConditions)
     eventsHandler.on(events.SHIP_PLACED, checkShipsReadiness)
-    eventsHandler.onEach([events.COMPUTER_BOARD_ATTACKED, events.COMPUTER_FINISHED_TURN], displayLogMessage)
     eventsHandler.on(events.GAME_ENDED, handleEnd)
+    eventsHandler.on(events.RESTART_VALIDATED, handleRestart)
+    eventsHandler.onEach([events.COMPUTER_BOARD_ATTACKED, events.COMPUTER_FINISHED_TURN], displayLogMessage)
   }
 
   initMenu()
@@ -276,11 +290,14 @@ import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl } f
     playerBoard.setPlane(plane)
   }
 
+  const validateRestart = () => eventsHandler.trigger(events.RESTART_VALIDATED, { turn: player.turn, ended: gameEnded })
+
   const initGame = () => {
     eventsHandler.on(events.BOARD_HOVERED, validateCoords)
     eventsHandler.on(events.BOARD_CLICKED, validatePlacement)
     eventsHandler.on(events.SHIP_ROTATED, changePlane)
     eventsHandler.on(events.GAME_STARTED, startGame)
+    eventsHandler.on(events.RESTART_REQUESTED, validateRestart)
     eventsHandler.on(events.GAME_RESTARTED, restartGame)
     eventsHandler.on(events.COMPUTER_BOARD_CLICKED, handlePlayerAttack)
     eventsHandler.on(events.PLAYER_FINISHED_TURN, handleComputerAttack)

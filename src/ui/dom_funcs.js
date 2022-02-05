@@ -18,6 +18,11 @@ const addId = curry((id, element) => {
   return element
 })
 
+const addText = curry((str, element) => {
+  element.textContent = str
+  return element
+})
+
 const addClass = curry((newClass, element) => {
   element.classList.add(newClass)
   return element
@@ -79,6 +84,7 @@ export {
   wrapInDiv,
   createEl,
   addId,
+  addText,
   addClass,
   addClasses,
   removeClass,
