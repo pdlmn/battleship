@@ -50,6 +50,7 @@ const menuHandler = (() => {
     _hide(restartBtn)
     shipsPlaced = false
     nameInp.disabled = false
+    msgCount = 0
     checkStartConditions()
     eventsHandler.trigger(events.GAME_RESTARTED, rotateBtn.dataset.plane)
   }

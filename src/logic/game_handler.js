@@ -13,7 +13,7 @@ import { delay } from '../utils/helper_funcs'
 const gameHandler = (() => {
   let playerBoard = Gameboard()
   let computerBoard = AiGameboard()
-  let shipsToPlace = [5, 4, 3, 2, 2]
+  let shipsToPlace = [5, 4, 3, 3, 2, 2, 1, 1]
   let player
   let computer
   let gameStarted = false
@@ -54,7 +54,7 @@ const gameHandler = (() => {
   }
 
   const restartGame = (plane) => {
-    shipsToPlace = [5, 4, 3, 2, 2]
+    shipsToPlace = [5, 4, 3, 3, 2, 2, 1, 1]
     gameStarted = false
     gameEnded = false
     playerBoard = Gameboard()
