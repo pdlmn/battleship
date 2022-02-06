@@ -34,7 +34,5 @@
       "expect"
     ]
   },
-  "dependencies": {
-    "snazzy": "^9.0.0"
-  }
+  "dependencies": {}
 }
