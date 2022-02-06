@@ -1,4 +1,4 @@
-import { forEach, pipe, filter, curry } from '../utils/func_helpers'
+import { curry } from '../utils/func_helpers'
 import { addClass, clearElContent, removeClass } from './dom_funcs'
 import { states } from '../constants/cell_states'
 
@@ -10,8 +10,6 @@ const _cellTable = {
   x: 'sunk',
   a: 'around-sunk'
 }
-
-const _cellClasses = Object.values(_cellTable)
 
 const _createCell = (isHidden, y, x) => {
   const cell = document.createElement('div')

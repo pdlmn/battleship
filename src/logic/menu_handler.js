@@ -23,11 +23,11 @@ const menuHandler = (() => {
   const _show = (el) => removeClass('display-none', el)
 
   const _replaceHints = (msg) => pipe(
-      createEl(['hints']),
-      addId('hints'),
-      addText(msg),
-      replaceEl(hintsDiv)
-    )('div')
+    createEl(['hints']),
+    addId('hints'),
+    addText(msg),
+    replaceEl(hintsDiv)
+  )('div')
 
   const handleStart = () => {
     const msg = `Good luck, Admiral ${nameInp.value}!`

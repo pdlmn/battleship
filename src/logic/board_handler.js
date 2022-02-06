@@ -1,7 +1,7 @@
 import { events } from '../constants/event_types'
 import { eventsHandler } from '../utils/events_handler'
 import { domBoard } from '../ui/dom_board'
-import { queryDocument  } from '../ui/dom_funcs'
+import { queryDocument } from '../ui/dom_funcs'
 
 /* boardsHandler controls the boards: highlights ships, send coords to
  * game handler for validation, attaches to boards event listeners,

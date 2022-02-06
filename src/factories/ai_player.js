@@ -43,8 +43,7 @@ const _getEndOnAxis = curry((axis, getLast, hitCells) => {
       ? prev
       : next
   )
-}
-)
+})
 
 const _getLeftmost = _getEndOnAxis('x', false)
 const _getRightmost = _getEndOnAxis('x', true)

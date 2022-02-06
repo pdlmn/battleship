@@ -24,7 +24,7 @@ export const AiGameboard = () => {
 
   const placeFleet = () => {
     const sizes = [5, 4, 3, 3, 2, 2, 1, 1]
-    for (let size of sizes) {
+    for (const size of sizes) {
       _placeShipAtRandom(size)
     }
   }
