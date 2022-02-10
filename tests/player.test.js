@@ -1,4 +1,4 @@
-import { Player } from '../factories/player'
+import { Player } from '../src/factories/player'
 
 describe('Player factory & methods work correctly', () => {
   test('player factory correctly determines turn precedence of players', () => {

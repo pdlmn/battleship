@@ -1,5 +1,5 @@
-import { Gameboard, _createGameboard } from '../factories/gameboard'
-import { states } from '../constants/cell_states'
+import { Gameboard, _createGameboard } from '../src/factories/gameboard'
+import { states } from '../src/constants/cell_states'
 
 describe('Gameboard methods work correctly', () => {
   test('place() correctly changes virtual board after placing ship horizontally (1)', () => {

@@ -1,6 +1,6 @@
-import { AiPlayer } from '../factories/ai_player'
-import { Gameboard } from '../factories/gameboard'
-import { states } from '../constants/cell_states'
+import { AiPlayer } from '../src/factories/ai_player'
+import { Gameboard } from '../src/factories/gameboard'
+import { states } from '../src/constants/cell_states'
 
 describe('ai player works correctly', () => {
   test('attackPlayer() pushes towards same attack direction after hitting ship twice (1)', () => {
