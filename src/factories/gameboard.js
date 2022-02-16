@@ -1,4 +1,4 @@
-import { repeat, findIndex, pipe, map, flatten, decrement, curry, eq, any, filter, objectInArray, gt, lt, removeDuplicateObj } from '../utils/func_helpers'
+import { repeat, findIndex, pipe, map, flatten, decrement, curry, eq, any, filter, objectInArray, gt, lt, removeDuplicateObj } from '@pdlmn/func-helpers'
 import { Ship } from './ship'
 import { states } from '../constants/cell_states'
 

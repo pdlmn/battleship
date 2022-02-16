@@ -1,7 +1,7 @@
 import { Player } from './player'
 import { states } from '../constants/cell_states'
 import { getRandomInteger, getRandomCoords } from '../utils/helper_funcs'
-import { curry, gt, lt, remove } from '../utils/func_helpers'
+import { curry, gt, lt, remove } from '@pdlmn/func-helpers'
 
 /* AiPlayer factory for players controlled by an ai.
  * Ai players find and attack ships on the player boards. At first,

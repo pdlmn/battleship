@@ -1,4 +1,4 @@
-import { curry } from '../utils/func_helpers'
+import { curry } from '@pdlmn/func-helpers'
 import { addClass, clearElContent, removeClass } from './dom_funcs'
 import { states } from '../constants/cell_states'
 

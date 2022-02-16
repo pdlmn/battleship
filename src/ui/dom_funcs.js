@@ -1,4 +1,4 @@
-import { curry } from '../utils/func_helpers'
+import { curry } from '@pdlmn/func-helpers'
 
 const wrapInDiv = curry((str, classes) => {
   const div = document.createElement('div')

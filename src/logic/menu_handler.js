@@ -1,6 +1,6 @@
 import { events } from '../constants/event_types'
 import { eventsHandler } from '../utils/events_handler'
-import { pipe } from '../utils/func_helpers'
+import { pipe } from '@pdlmn/func-helpers'
 import { wrapInDiv, queryDocument, addClass, removeClass, replaceEl, cloneEl, createEl, addId, addText } from '../ui/dom_funcs'
 
 /* menuHandler controls the menu: disables, hides and shows menu elements,
